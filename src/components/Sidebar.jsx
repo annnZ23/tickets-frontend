@@ -8,15 +8,15 @@ import {
   FaCog,
   FaSignOutAlt
 } from "react-icons/fa";
+import "./sidebar.css";
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isActive = (path) => location.pathname === path;
-
-  
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const isActive = (path) => location.pathname === path;
 
   const logout = () => {
     localStorage.removeItem("user");
@@ -26,21 +26,23 @@ export default function Sidebar() {
   return (
     <div className="sidebar">
 
+     
+     <div className="logo-box">
+  <img src="/logo.png" className="logo-img" alt="logo" />
+  <span className="logo-text">Baprosa</span>
+</div>
       
-      <div className="logo">Baprosa</div>
-
-      <div className="user-info">
-        {user?.name}
+      <div className="user-area">
+        {user?.area || "AdminIT"}
       </div>
 
       <p className="nav-title">Navegación</p>
 
+     
       <div className="menu">
 
-        <div
-          className={`menu-item ${isActive("/crear") ? "active" : ""}`}
-          onClick={() => navigate("/crear")}
-        >
+        <div className={`menu-item ${isActive("/crear") ? "active" : ""}`}
+          onClick={() => navigate("/crear")}>
           <FaTicketAlt />
           <span>Tickets Soporte</span>
         </div>

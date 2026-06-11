@@ -123,7 +123,7 @@ export default function RegisterTicket() {
             <input value={prioridad} placeholder="Prioridad" readOnly />
           </div>
 
-          {/* ESTADO + URGENCIA */}
+         
           <div className="grid">
             <input value={estado} readOnly />
 
@@ -143,13 +143,13 @@ export default function RegisterTicket() {
 
           <h3>Datos del solicitante</h3>
 
-          {/* NOMBRE + CORREO */}
+          
           <div className="grid">
             <input value={nombre} readOnly />
             <input value={correo} readOnly />
           </div>
 
-          {/* AREA + ASESOR */}
+          
           <div className="grid">
             <select>
               <option>Área</option>
@@ -175,7 +175,7 @@ export default function RegisterTicket() {
 
           <input value={correoAsesor} placeholder="Correo del asesor" readOnly />
 
-          {/* NOTIFICACIÓN */}
+        
           <div className="full">
             <label className="label">Correos a notificar</label>
             <input
@@ -187,7 +187,6 @@ export default function RegisterTicket() {
 
           <input className="full" placeholder="Asunto" />
 
-          {/* DESCRIPCIÓN */}
           <textarea
             className="full"
             placeholder="Describe el problema detalladamente..."
@@ -200,7 +199,7 @@ export default function RegisterTicket() {
             Arrastre y suelte los archivos aquí
           </div>
 
-          {/* BOTONES */}
+         
           <div className="buttons">
             <button
               className="btn-primary"
