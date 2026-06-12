@@ -19,9 +19,8 @@ export default function RegisterTicket() {
   const [asesor, setAsesor] = useState("");
   const [correoAsesor, setCorreoAsesor] = useState("");
   const [notificar, setNotificar] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // ✅ correcto
 
-  
   const obtenerCorreoAsesor = (nombre) => {
     switch (nombre) {
       case "Ing Manuel Flores": return "manuel@empresa.com";
@@ -33,7 +32,6 @@ export default function RegisterTicket() {
     }
   };
 
-  
   const calcularPrioridad = (tipo, urgencia) => {
     if (tipo === "Incidente" && urgencia === "Alta") return "Alta";
     if (tipo === "Problema") return "Media";
@@ -50,61 +48,58 @@ export default function RegisterTicket() {
   };
 
   const crearTicket = async () => {
-
+    // ✅ Validación básica antes de enviar
     if (!tipo || !descripcion) {
-      alert("Completa tipo y descripción");
+      alert("Por favor completa el tipo y la descripción");
       return;
     }
 
-    setLoading(true);
-
     try {
+      setLoading(true); // ✅ activa el loading
+
       const res = await fetch("http://127.0.0.1:3000/api/tickets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-  nombre,
-  correo,
-  tipo,
-  descripcion,
-  prioridad,
-})
-
+          nombre,
+          correo,
+          tipo,
+          descripcion,
+          prioridad,
+        }),
       });
 
       const data = await res.json();
 
-      console.log("TICKET:", data);
-
       if (!data.id) {
         alert("Error al crear ticket");
-        setLoading(false);
         return;
       }
 
-     
       navigate(`/chat/${data.id}`);
 
     } catch (error) {
       console.error(error);
       alert("Error al crear ticket");
+    } finally {
+      setLoading(false); // ✅ siempre desactiva al terminar
     }
-
-    setLoading(false);
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", minHeight: "100vh", alignItems: "stretch" }}>
       <Sidebar />
 
-      <div className="content">
-        <h2>Nuevo incidente</h2>
+      <div className="content" style={{ flex: 1, overflowY: "auto" }}>
 
-        <div className="form-box">
+        <div style={{ padding: "20px 25px" }}>
+          <h2 style={{ marginBottom: "15px" }}>Nuevo incidente</h2>
+        </div>
 
-          {/* TIPO + PRIORIDAD */}
+        <div className="form-box" style={{ margin: "0 25px 25px", maxWidth: "900px" }}>
+
           <div className="grid">
             <select
               value={tipo}
@@ -123,7 +118,6 @@ export default function RegisterTicket() {
             <input value={prioridad} placeholder="Prioridad" readOnly />
           </div>
 
-         
           <div className="grid">
             <input value={estado} readOnly />
 
@@ -143,13 +137,11 @@ export default function RegisterTicket() {
 
           <h3>Datos del solicitante</h3>
 
-          
           <div className="grid">
             <input value={nombre} readOnly />
             <input value={correo} readOnly />
           </div>
 
-          
           <div className="grid">
             <select>
               <option>Área</option>
@@ -175,7 +167,6 @@ export default function RegisterTicket() {
 
           <input value={correoAsesor} placeholder="Correo del asesor" readOnly />
 
-        
           <div className="full">
             <label className="label">Correos a notificar</label>
             <input
@@ -192,24 +183,29 @@ export default function RegisterTicket() {
             placeholder="Describe el problema detalladamente..."
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            style={{ minHeight: "150px", resize: "none" }}
+            style={{ minHeight: "140px" }}
           />
 
           <div className="upload">
-            Arrastre y suelte los archivos aquí
+            Arrastra archivos aquí
           </div>
 
-         
           <div className="buttons">
             <button
               className="btn-primary"
               onClick={crearTicket}
               disabled={loading}
+              style={{ opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
             >
               {loading ? "Creando..." : "Crear Ticket"}
             </button>
 
-            <button className="btn-light">Cancelar</button>
+            <button
+              className="btn-light"
+              onClick={() => navigate("/admin")}
+            >
+              Cancelar
+            </button>
           </div>
 
         </div>

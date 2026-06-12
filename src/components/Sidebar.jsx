@@ -1,3 +1,4 @@
+import logo from "../assets/baprosa-logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaTicketAlt,
@@ -13,7 +14,6 @@ import "./sidebar.css";
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   const isActive = (path) => location.pathname === path;
@@ -26,19 +26,16 @@ export default function Sidebar() {
   return (
     <div className="sidebar">
 
-     
-     <div className="logo-box">
-  <img src="/logo.png" className="logo-img" alt="logo" />
-  <span className="logo-text">Baprosa</span>
-</div>
-      
+      <div className="logo-box">
+        <img src={logo} className="logo-img" alt="Logo" />
+      </div>
+
       <div className="user-area">
-        {user?.area || "AdminIT"}
+        {user?.email}
       </div>
 
       <p className="nav-title">Navegación</p>
 
-     
       <div className="menu">
 
         <div className={`menu-item ${isActive("/crear") ? "active" : ""}`}
@@ -72,11 +69,14 @@ export default function Sidebar() {
           <span>Configuración</span>
         </div>
 
+      </div>
+
+      {/* Logout siempre al fondo */}
+      <div className="sidebar-footer">
         <div className="menu-item logout" onClick={logout}>
           <FaSignOutAlt />
           <span>Cerrar sesión</span>
         </div>
-
       </div>
 
     </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import Chatbot from "./Chatbot";
 
@@ -7,55 +7,53 @@ import iconLogin from "../assets/icon-login.png";
 import control from "../assets/control de equipo.png";
 import mantenimiento from "../assets/mantenimiento.png";
 import seguimiento from "../assets/seguimiento.png";
-import logo from "../assets/Baprosa logo.png";
+import logo from "../assets/baprosa-logo.png";
 import seguridad from "../assets/Seguridad.png";
 import userIcon from "../assets/usuario.png";
 import passIcon from "../assets/contraseña.png";
 import chatIcon from "../assets/chat.png";
 
+// Roles que van al inventario
+const ROLES_INVENTARIO = ["ADMIN_SOPORTE", "ADMIN_RUTAS"];
+// Roles que van al dashboard
+const ROLES_ADMIN = ["SUPER_ADMIN", "ADMIN_DESARROLLO", "ADMIN", "ADMIN_SOPORTE", "ADMIN_RUTAS"];
+
 function Login({ setUsuario }) {
-  
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [usuarioInput, setUsuarioInput] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     try {
-
-      console.log("Enviando login:", usuarioInput, password);
-
       const res = await fetch("http://localhost:3000/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          usuario: usuarioInput.trim().toLowerCase(), 
+          usuario: usuarioInput.trim().toLowerCase(),
           password: password.trim(),
         }),
       });
 
       const data = await res.json();
 
-      console.log("RESPUESTA BACKEND:", data);
-
-     
       if (!data.ok) {
         alert("Usuario o contraseña incorrectos");
         return;
       }
 
-     
       localStorage.setItem("user", JSON.stringify(data.user));
 
-     
-      if (setUsuario) {
-        setUsuario(data.user);
-      }
+      if (setUsuario) setUsuario(data.user);
 
-     
-      if (data.user.role === "ADMIN") {
+      const role = data.user.role;
+
+      // Redirección según rol
+      if (role === "USER") {
+        navigate("/crear");
+      } else if (ROLES_INVENTARIO.includes(role)) {
+        navigate("/inventario");
+      } else if (ROLES_ADMIN.includes(role)) {
         navigate("/admin");
       } else {
         navigate("/crear");
@@ -63,52 +61,39 @@ function Login({ setUsuario }) {
 
     } catch (error) {
       console.error("ERROR:", error);
-
-     
-      alert("Error real: backend no conectado");
+      alert("Error: backend no conectado");
     }
   };
 
   return (
     <div className="container">
 
-      {/* LOGO */}
-      <img src={logo} className="logo" alt="Baprosa" />
+      <img src={logo} className="logo" alt="baprosa" />
 
-      {/* PANEL IZQUIERDO */}
       <div className="panel-left">
-
         <div className="icon-circle">
           <img src={iconLogin} alt="" />
         </div>
-
         <h2>Sistema de Inventario</h2>
         <p className="subtitle-left">Soporte Técnico IT</p>
-
         <div className="divider-line"></div>
-
         <div className="features">
           <div>
             <img src={control} alt="" />
             <span>Control de equipos y dispositivos</span>
           </div>
-
           <div>
             <img src={mantenimiento} alt="" />
             <span>Gestión de mantenimientos</span>
           </div>
-
           <div>
             <img src={seguimiento} alt="" />
             <span>Seguimiento de incidencias</span>
           </div>
         </div>
-
       </div>
 
-      
       <div className="panel-right">
-
         <h3>
           <img src={seguridad} alt="" />
           Iniciar Sesión
@@ -118,40 +103,32 @@ function Login({ setUsuario }) {
           Ingresa tus credenciales para acceder al sistema
         </p>
 
-        
         <label className="form-label">Usuario</label>
         <div className="input-row">
           <img src={userIcon} className="input-icon" alt="" />
-
           <div className="input-group">
             <input
               type="text"
               placeholder="Escribe tu usuario"
               value={usuarioInput}
               onChange={(e) => setUsuarioInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
             />
           </div>
         </div>
 
-        
         <label className="form-label">Contraseña</label>
         <div className="input-row">
           <img src={passIcon} className="input-icon" alt="" />
-
           <div className="input-group password-group">
             <input
               type={showPass ? "text" : "password"}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
             />
-
-            <span
-              className="eye-icon"
-              onClick={() => setShowPass(!showPass)}
-            >
-              👁
-            </span>
+            <span className="eye-icon" onClick={() => setShowPass(!showPass)}>👁</span>
           </div>
         </div>
 
@@ -180,10 +157,8 @@ function Login({ setUsuario }) {
           ¿Necesitas ayuda?<br />
           <strong>practicait@baprosa.com</strong>
         </p>
-
       </div>
 
-      {/* CHAT */}
       <img src={chatIcon} alt="chat" className="chat-icon" />
       <Chatbot />
 

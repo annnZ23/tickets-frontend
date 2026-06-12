@@ -7,15 +7,13 @@ import {
   FaCheckCircle,
   FaStar,
   FaBell,
-  FaEnvelope,
-  FaUserCircle
+  FaEnvelope
 } from "react-icons/fa";
 import "./Dashboard.css";
 
 export default function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -26,30 +24,39 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", minHeight: "100vh", alignItems: "stretch" }}>
+
       <Sidebar />
 
-      <div className="content">
+      <div className="content" style={{ flex: 1, overflowY: "auto" }}>
 
-       
+        {/* TOPBAR */}
         <div className="topbar-pro">
+          <div className="top-actions">
 
-          <div className="icons">
-            <FaBell />
-            <FaEnvelope />
-          </div>
-
-          <div className="user-info">
-            <FaUserCircle className="avatar" />
-            <div>
-              <strong>{user?.area || "AdminIT"}</strong>
-              <small>{user?.role || "Admin"}</small>
+            <div className="icon-wrapper">
+              <FaBell className="topbar-icon" />
+              <span className="badge-noti">3</span>
             </div>
-          </div>
 
+            <FaEnvelope className="topbar-icon" />
+
+            <div className="topbar-divider"></div>
+
+            <div className="user-info-top">
+              <div className="avatar-circle-top">
+                {user?.email?.charAt(0).toUpperCase()}
+              </div>
+              <div className="user-text">
+                <strong>{user?.email}</strong>
+                <small>{user?.role}</small>
+              </div>
+            </div>
+
+          </div>
         </div>
 
-        
+        {/* KPI */}
         <div className="kpi-pro">
 
           <div className="card-pro">
@@ -78,15 +85,13 @@ export default function AdminDashboard() {
 
         </div>
 
-        
+        {/* TICKETS */}
         <div className="ticket-container">
-
           {tickets.map((t) => (
             <div key={t.id} className="ticket-card">
 
               <div className="ticket-header">
                 <span>#TK-{t.id}</span>
-
                 <span className={`badge ${t.prioridad.toLowerCase()}`}>
                   {t.prioridad}
                 </span>
@@ -108,7 +113,6 @@ export default function AdminDashboard() {
 
             </div>
           ))}
-
         </div>
 
       </div>

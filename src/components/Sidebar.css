@@ -1,89 +1,107 @@
 .sidebar {
-  width: 240px;
-  height: 100vh;
-  background: #ffffff;
+  width: 180px;
+   height: 100vh;
+  background: white;
+   padding: 8px 10px; 
+  border-right: 1px solid #eee;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  border-right: 1px solid #eee;
+  align-self: stretch;
+  min-height: 100%;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.06);
 }
 
-
+/* LOGO */
 .logo-box {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 25px;
+  justify-content: center;
+  margin-bottom: 12px;
+  padding: 18px 12px 14px;
+
 }
 .logo-img {
-  width: 30px;
-  height: 80px;
+  width: 100%;   /* 🔥 QUE OCUPE TODO EL ANCHO */
+  max-width: 140px; /* 🔥 límite bonito */
+  height: auto;
 }
 
-.logo-text {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-}
-
-
+/* USER */
 .user-area {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  margin-bottom: 15px;
   color: #444;
+  padding: 12px 16px 6px;
 }
 
-
+/* NAV TITLE */
 .nav-title {
-  font-size: 13px;
-  color: #999;
-  margin-bottom: 10px;
+  font-size: 12px;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 6px 16px 10px;
+  margin: 0;
+  margin-bottom: 6px;
 }
 
-
+/* MENU */
 .menu {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  padding: 0 10px;
+  flex: 1;
 }
-
 
 .menu-item {
+  padding: 8px;
+  font-size: 13px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 10px;
-  cursor: pointer;
+  gap: 10px;
   color: #444;
-  transition: 0.2s;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
 }
-
-/* HOVER */
+.menu-item svg {
+  font-size: 15px;
+  color: #aaa;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
 .menu-item:hover {
-  background: #f6f6f6;
+  background: #fff3e6;
+  color: #ff7a00;
 }
-
-/* ACTIVO */
+.menu-item:hover svg {
+  color: #ff7a00;
+}
 .menu-item.active {
   background: #fff3e6;
-  border-left: 5px solid #ff7a00;
+  border-left: 4px solid #ff7a00;
   color: #ff7a00;
   font-weight: 600;
+  padding-left: 8px;
+}
+.menu-item.active svg {
+  color: #ff7a00;
 }
 
-/* ICONOS */
-.menu-item svg {
-  font-size: 16px;
-}
-
-
-.logout {
+/* FOOTER — logout siempre abajo */
+.sidebar-footer {
+  padding: 10px;
+  border-top: 1px solid #f0f0f0;
   margin-top: auto;
-  color: #e74c3c;
 }
-
+.logout {
+  color: #e53e3e !important;
+}
+.logout svg {
+  color: #e53e3e !important;
+}
 .logout:hover {
-  background: #fdecea;
+  background: #fff0f0 !important;
+  color: #c53030 !important;
 }
