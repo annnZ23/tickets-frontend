@@ -38,13 +38,20 @@ export default function Sidebar() {
 
       <div className="menu">
 
-        <div className={`menu-item ${isActive("/crear") ? "active" : ""}`}
-          onClick={() => navigate("/crear")}>
+        {/* CORREGIDO: Redirige al Dashboard de Admin si es ADMIN, o a Crear si es USER */}
+        <div 
+          className={`menu-item ${isActive("/admin") || isActive("/crear") ? "active" : ""}`}
+          onClick={() => navigate(user?.role === "ADMIN" ? "/admin" : "/crear")}
+        >
           <FaTicketAlt />
           <span>Tickets Soporte</span>
         </div>
 
-        <div className="menu-item">
+        {/* CORREGIDO: Ahora sí tiene el onClick y la clase active para /admin/tareas */}
+        <div 
+          className={`menu-item ${isActive("/admin/tareas") ? "active" : ""}`}
+          onClick={() => navigate("/admin/tareas")}
+        >
           <FaListUl />
           <span>Asignación Tareas IT</span>
         </div>

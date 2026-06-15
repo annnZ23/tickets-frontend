@@ -378,3 +378,171 @@
   padding: 20px 25px 10px;
 }
 
+/* ===== DISEÑO ASIGNACIÓN TAREAS IT ===== */
+
+/* Contenedor con margen externo para centrar la tarjeta principal */
+.tareas-layout-container {
+  padding: 24px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Tarjeta principal blanca contenedora */
+.tareas-card-main {
+  background: white;
+  border-radius: 16px;
+  width: 480px; /* Ancho ajustado idéntico al mockup */
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+}
+
+/* Fila superior del título y botón + Asignar */
+.tareas-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tareas-title-flex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-list-icon {
+  color: #ff7a00;
+  font-size: 16px;
+}
+
+.tareas-card-main h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+/* Botón + Asignar */
+.btn-asignar-orange {
+  background: #ff8a00;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-asignar-orange:hover {
+  background: #e56700;
+}
+
+/* Contenedor vertical de bloques de áreas */
+.areas-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Caja de cada Grupo de Área (Borde naranja suave de fondo) */
+.area-group-box {
+  border: 1px solid #ffe3cb;
+  background-color: #fffaf5;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+/* Encabezado del área interna */
+.area-title-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+.text-orange {
+  color: #ff7a00;
+}
+
+.area-icon {
+  font-size: 14px;
+}
+
+/* Bloque contenedor de ítems */
+.tareas-list-box {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tarea individual */
+.single-tarea-item {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Línea divisoria interna gris entre tareas del mismo bloque */
+.tarea-divider-line {
+  height: 1px;
+  background-color: #ebdcd0;
+  margin: 12px 0;
+}
+
+.tarea-item-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2c2c2c;
+  margin: 0 0 4px 0;
+}
+
+.tarea-meta-text {
+  font-size: 12px;
+  color: #666;
+  margin: 2px 0;
+}
+
+.email-flex {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #777;
+}
+
+.meta-email-icon {
+  font-size: 11px;
+}
+
+/* Fila de Prioridad y Vencimiento */
+.tarea-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Badges pequeños del diseño interno */
+.badge-task {
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+}
+
+.badge-task.alta {
+  background-color: #ff8a00; /* Naranja fuerte */
+}
+
+.badge-task.media {
+  background-color: #ffb74d; /* Amarillo/Naranja medio */
+}
+
+.deadline-text {
+  font-size: 12px;
+  color: #666;
+}
