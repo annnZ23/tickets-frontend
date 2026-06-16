@@ -7,6 +7,7 @@ import ChatTicket from "./pages/ChatTicket";
 import AdminDashboard from "./pages/AdminDashboard";
 import AsignacionTareas from "./pages/AsignacionTareas";
 import ChatPorArea from "./pages/ChatPorArea";
+import Reportes from "./pages/Reportes";
 
 const ProtectedRoute = ({ allowedRole, children }) => {
   const storedUser = localStorage.getItem("user");
@@ -27,10 +28,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Ruta Pública */}
+       
         <Route path="/" element={<Login />} />
 
-        {/* Ruta exclusiva para Asesores/Usuarios Regulares */}
+       
         <Route
           path="/crear"
           element={
@@ -39,8 +40,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* Panel de administración */}
+<Route path="/admin/reportes" element={<Reportes />} />
+       
         <Route
           path="/admin"
           element={
@@ -50,7 +51,7 @@ function App() {
           }
         />
 
-        {/* 🛠️ Asignación de tareas de IT (Corregido: Permite entrada a ADMIN y USER para evitar rupturas síncronas) */}
+       
         <Route
           path="/admin/tareas"
           element={
@@ -60,17 +61,11 @@ function App() {
           }
         />
 
-        {/* 🔒 Chat por Área Protegido */}
-        <Route 
-          path="/admin/chat" 
-          element={
-            <ProtectedRoute>
-              <ChatPorArea />
-            </ProtectedRoute>
-          } 
-        /> 
+       
+        <Route path="/chat" element={<ChatPorArea />} />
+<Route path="/chat/:idTicket" element={<ChatPorArea />} />
         
-        {/* Chat individual de un ticket específico */}
+        
         <Route
           path="/chat/:id"
           element={
@@ -80,7 +75,7 @@ function App() {
           }
         />
 
-        {/* Redirección por defecto si la ruta no existe */}
+       
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

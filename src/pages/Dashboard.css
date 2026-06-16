@@ -546,3 +546,43 @@
   font-size: 12px;
   color: #666;
 }
+
+.kpi-badge-green {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.kpi-badge-orange {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(253, 126, 20, 0.1);
+  color: #fd7e14;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.kpi-badge-gray {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.btn-finalize:hover {
+  background-color: #218838 !important;
+}

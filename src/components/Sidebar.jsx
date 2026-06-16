@@ -23,6 +23,9 @@ export default function Sidebar() {
     window.location.href = "/";
   };
 
+ 
+  const isAdmin = user?.role === "ADMIN" || user?.role === "ADMIN_SOPORTE";
+
   return (
     <div className="sidebar">
 
@@ -38,7 +41,7 @@ export default function Sidebar() {
 
       <div className="menu">
 
-        {/* CORREGIDO: Redirige al Dashboard de Admin si es ADMIN, o a Crear si es USER */}
+        
         <div 
           className={`menu-item ${isActive("/admin") || isActive("/crear") ? "active" : ""}`}
           onClick={() => navigate(user?.role === "ADMIN" ? "/admin" : "/crear")}
@@ -47,38 +50,60 @@ export default function Sidebar() {
           <span>Tickets Soporte</span>
         </div>
 
-        {/* CORREGIDO: Ahora sí tiene el onClick y la clase active para /admin/tareas */}
-        <div 
-          className={`menu-item ${isActive("/admin/tareas") ? "active" : ""}`}
-          onClick={() => navigate("/admin/tareas")}
-        >
-          <FaListUl />
-          <span>Asignación Tareas IT</span>
-        </div>
+       
+        {isAdmin && (
+          <div 
+            className={`menu-item ${isActive("/admin/tareas") ? "active" : ""}`}
+            onClick={() => navigate("/admin/tareas")}
+          >
+            <FaListUl />
+            <span>Asignación Tareas IT</span>
+          </div>
+        )}
 
-        <div className="menu-item">
+       
+        <div 
+          className={`menu-item ${isActive("/chat-area") ? "active" : ""}`}
+          onClick={() => navigate("/chat-area")}
+        >
           <FaComments />
           <span>Chat por Área</span>
         </div>
 
-        <div className="menu-item">
-          <FaUsers />
-          <span>Usuarios</span>
-        </div>
+       
+        {isAdmin && (
+          <div 
+            className={`menu-item ${isActive("/admin/usuarios") ? "active" : ""}`}
+            onClick={() => navigate("/admin/usuarios")}
+          >
+            <FaUsers />
+            <span>Usuarios</span>
+          </div>
+        )}
 
-        <div className="menu-item">
-          <FaChartBar />
-          <span>Reportes</span>
-        </div>
+       
+        {isAdmin && (
+          <div 
+            className={`menu-item ${isActive("/admin/reportes") ? "active" : ""}`}
+            onClick={() => navigate("/admin/reportes")}
+          >
+            <FaChartBar />
+            <span>Reportes</span>
+          </div>
+        )}
 
-        <div className="menu-item">
+        
+        <div 
+          className={`menu-item ${isActive("/configuracion") ? "active" : ""}`}
+          onClick={() => navigate("/configuracion")}
+        >
           <FaCog />
           <span>Configuración</span>
         </div>
 
       </div>
 
-      {/* Logout siempre al fondo */}
+      
       <div className="sidebar-footer">
         <div className="menu-item logout" onClick={logout}>
           <FaSignOutAlt />

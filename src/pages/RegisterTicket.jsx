@@ -19,8 +19,7 @@ export default function RegisterTicket() {
   const [asesor, setAsesor] = useState("");
   const [correoAsesor, setCorreoAsesor] = useState("");
   const [notificar, setNotificar] = useState("");
-  const [loading, setLoading] = useState(false); // ✅ correcto
-
+  const [loading, setLoading] = useState(false); 
   const obtenerCorreoAsesor = (nombre) => {
     switch (nombre) {
       case "Ing Manuel Flores": return "manuel@empresa.com";
@@ -47,17 +46,17 @@ export default function RegisterTicket() {
     setPrioridad(p);
   };
 
-  const crearTicket = async () => {
-    // ✅ Validación básica antes de enviar
+ const crearTicket = async () => {
     if (!tipo || !descripcion) {
       alert("Por favor completa el tipo y la descripción");
       return;
     }
 
     try {
-      setLoading(true); // ✅ activa el loading
+      setLoading(true); 
 
-      const res = await fetch("http://127.0.0.1:3000/api/tickets", {
+      // Cambiado de 127.0.0.1 a localhost para evitar bloqueos de origen cruzado de Vite
+      const res = await fetch("http://localhost:3000/api/tickets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,18 +72,18 @@ export default function RegisterTicket() {
 
       const data = await res.json();
 
-      if (!data.id) {
-        alert("Error al crear ticket");
-        return;
+      // Validación más robusta: verifica si data existe y trae el id
+      if (data && data.id) {
+        navigate(`/chat/${data.id}`);
+      } else {
+        alert("Error al crear ticket: El servidor no devolvió un ID válido.");
       }
 
-      navigate(`/chat/${data.id}`);
-
     } catch (error) {
-      console.error(error);
-      alert("Error al crear ticket");
+      console.error("Error en la petición:", error);
+      alert("Error al conectar con el servidor.");
     } finally {
-      setLoading(false); // ✅ siempre desactiva al terminar
+      setLoading(false); 
     }
   };
 
