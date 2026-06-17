@@ -23,24 +23,19 @@ export default function Sidebar() {
     window.location.href = "/";
   };
 
- 
   const isAdmin = user?.role === "ADMIN" || user?.role === "ADMIN_SOPORTE";
 
   return (
     <div className="sidebar">
 
-      <div className="logo-box">
-        <img src={logo} className="logo-img" alt="Logo" />
-      </div>
-
-      <div className="user-area">
-        {user?.email}
+      {/* Caja del Logo reubicada al inicio */}
+      <div className="logo-box" style={{ marginTop: "5px", marginBottom: "15px" }}>
+        <img src={logo} className="logo-img" alt="Logo corporativo Baprosa" />
       </div>
 
       <p className="nav-title">Navegación</p>
 
       <div className="menu">
-
         
         <div 
           className={`menu-item ${isActive("/admin") || isActive("/crear") ? "active" : ""}`}
@@ -50,7 +45,6 @@ export default function Sidebar() {
           <span>Tickets Soporte</span>
         </div>
 
-       
         {isAdmin && (
           <div 
             className={`menu-item ${isActive("/admin/tareas") ? "active" : ""}`}
@@ -61,16 +55,14 @@ export default function Sidebar() {
           </div>
         )}
 
-       
         <div 
-          className={`menu-item ${isActive("/chat-area") ? "active" : ""}`}
+          className={`menu-item ${isActive("/chat-area") || location.pathname.includes("/chat-por-area") ? "active" : ""}`}
           onClick={() => navigate("/chat-area")}
         >
           <FaComments />
           <span>Chat por Área</span>
         </div>
 
-       
         {isAdmin && (
           <div 
             className={`menu-item ${isActive("/admin/usuarios") ? "active" : ""}`}
@@ -81,7 +73,6 @@ export default function Sidebar() {
           </div>
         )}
 
-       
         {isAdmin && (
           <div 
             className={`menu-item ${isActive("/admin/reportes") ? "active" : ""}`}
@@ -92,7 +83,6 @@ export default function Sidebar() {
           </div>
         )}
 
-        
         <div 
           className={`menu-item ${isActive("/configuracion") ? "active" : ""}`}
           onClick={() => navigate("/configuracion")}
@@ -103,7 +93,6 @@ export default function Sidebar() {
 
       </div>
 
-      
       <div className="sidebar-footer">
         <div className="menu-item logout" onClick={logout}>
           <FaSignOutAlt />

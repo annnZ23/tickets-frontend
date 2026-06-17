@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import Sidebar from "../components/Sidebar";
 import { 
   FaPaperPlane, FaComments, FaUser, FaClipboardList, 
-  FaChevronDown, FaRegClock, FaPaperclip, FaUserShield, FaBusinessTime 
+  FaChevronDown, FaChevronUp, FaRegClock, FaPaperclip, FaUserShield, FaBusinessTime 
 } from "react-icons/fa";
 import "./Dashboard.css"; 
 
@@ -20,6 +20,9 @@ export default function ChatPorArea() {
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const [ticketDetails, setTicketDetails] = useState(null);
+  
+  // Estado para colapsar/expandir la sección de descripción
+  const [isDescOpen, setIsDescOpen] = useState(true);
 
   const chatEndRef = useRef(null);
 
@@ -84,6 +87,17 @@ export default function ChatPorArea() {
     setMessageText("");
   };
 
+  // Funciones para los botones de acción inferiores
+  const handleRestablecer = () => {
+    if(window.confirm("¿Deseas restablecer los valores de este chat?")) {
+      setMessages([]);
+    }
+  };
+
+  const handleCancelar = () => {
+    setMessageText("");
+  };
+
   return (
     <div style={{ display: "flex", minHeight: "100vh", width: "100vw", overflowX: "hidden", background: "#f3f4f6" }}>
       <Sidebar />
@@ -99,22 +113,21 @@ export default function ChatPorArea() {
           boxShadow: "0 4px 15px rgba(255, 127, 34, 0.25)",
           display: "flex",
           alignItems: "center",
-          justifyContent: "between"
+          justifyContent: "space-between"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "white" }}>
             <FaComments style={{ fontSize: "26px", filter: "drop-shadow(0px 2px 4px rgba(0,0,0,0.15))" }} />
             <div>
               <h3 style={{ margin: 0, fontSize: "20px", fontWeight: "700", letterSpacing: "0.5px" }}>
-                {idTicket ? `Centro de Continuidad • Incidente #TK-${idTicket}` : "Mesa de Coordinación por Área IT"}
+                {idTicket ? `Chat por Área  #TK-${idTicket}` : "Mesa de Coordinación por Área IT"}
               </h3>
               <p style={{ margin: 0, fontSize: "12px", color: "rgba(255,255,255,0.85)", marginTop: "2px" }}>
-                Monitoreo y respuesta en tiempo real para Baprosa S.A.
+                Monitoreo y respuesta en tiempo real Baprosa S.A.
               </p>
             </div>
           </div>
         </div>
 
-        {/* selectores de canales */}
         {!idTicket && (
           <div style={{ display: "flex", gap: "12px", background: "#fff", padding: "8px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", width: "fit-content" }}>
             {areas.map((area) => (
@@ -130,7 +143,7 @@ export default function ChatPorArea() {
                   cursor: "pointer",
                   backgroundColor: selectedArea === area ? "#ff7f22" : "transparent",
                   color: selectedArea === area ? "white" : "#6b7280",
-                  transition: "all 0.25s ease-transform"
+                  transition: "all 0.25s ease"
                 }}
               >
                 {area}
@@ -139,10 +152,9 @@ export default function ChatPorArea() {
           </div>
         )}
 
-        {/* Contenedor Principal Flexible */}
         <div style={{ display: "flex", flex: 1, gap: "24px", width: "100%", alignItems: "stretch" }}>
-          
-          {/* Panel de Chat */}
+        
+          {/* Contenedor del Chat */}
           <div style={{ flex: 3, background: "#fff", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", overflow: "hidden", border: "1px solid #e5e7eb" }}>
             <div style={{ background: "#fafafa", padding: "14px 24px", borderBottom: "1px solid #edf2f7", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ fontWeight: "600", color: "#4b5563", fontSize: "14px" }}>
@@ -151,7 +163,6 @@ export default function ChatPorArea() {
               <span style={{ width: "8px", height: "8px", background: "#10b981", borderRadius: "50%", display: "inline-block", boxShadow: "0 0 8px #10b981" }}></span>
             </div>
 
-            {/* Zona de mensajes */}
             <div style={{ flex: 1, padding: "24px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px", background: "#fcfcfd" }}>
               {messages.length === 0 ? (
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", color: "#9ca3af" }}>
@@ -186,7 +197,6 @@ export default function ChatPorArea() {
               <div ref={chatEndRef} />
             </div>
 
-            {/* Input Formulario */}
             <form onSubmit={handleSendMessage} style={{ display: "flex", padding: "18px 24px", background: "#ffffff", borderTop: "1px solid #f3f4f6", gap: "12px" }}>
               <input
                 type="text"
@@ -203,61 +213,61 @@ export default function ChatPorArea() {
             </form>
           </div>
 
-          {/* Lateral Derecho: Credenciales del Solicitante + Asesor + SLA */}
+          {/* Panel Lateral Derecho Totalmente Vinculado */}
           {idTicket && (
-            <div style={{ flex: 1, background: "#ffffff", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)", border: "1px solid #e5e7eb", padding: "24px", display: "flex", flexDirection: "column", gap: "24px", overflowY: "auto" }}>
+            <div style={{ flex: 1, background: "#ffffff", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)", border: "1px solid #e5e7eb", padding: "24px", display: "flex", flexDirection: "column", gap: "20px", overflowY: "auto", maxWidth: "340px" }}>
               
-              {/* Bloque 1: Solicitante (Empleado) */}
+              {/* Bloque 1: Solicitante del Incidente */}
               <div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "14px" }}>
-                  <span style={{ fontWeight: "700", fontSize: "13px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                <div style={{ display: "flex", alignItems: "center", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "12px" }}>
+                  <span style={{ fontWeight: "700", fontSize: "12px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
                     <FaUser style={{ color: "#ff7f22" }} /> Solicitante del Incidente
                   </span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "13px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px" }}>
                   <div>
                     <span style={{ color: "#9ca3af", fontSize: "11px", display: "block" }}>Nombre Completo</span>
-                    <strong style={{ color: "#1f2937", fontSize: "14px" }}>{ticketDetails?.assignedTo || "Ana Zepeda"}</strong>
+                    <strong style={{ color: "#1f2937", fontSize: "14px" }}>{ticketDetails?.usuarioNombre || "Ana Zepeda"}</strong>
                   </div>
                   <div>
                     <span style={{ color: "#9ca3af", fontSize: "11px", display: "block" }}>Correo Institucional</span>
-                    <span style={{ color: "#2563eb", fontWeight: "500" }}>{ticketDetails?.email || "a.zepeda@baprosa.com"}</span>
-                  </div>
-                  <div>
-                    <span style={{ color: "#9ca3af", fontSize: "11px", display: "block" }}>Departamento / Ubicación</span>
-                    <strong style={{ color: "#4b5563" }}>{ticketDetails?.area || "Soporte Técnico"} (Base Site)</strong>
+                    <span style={{ color: "#ff7f22", fontWeight: "600", fontSize: "13px" }}>{ticketDetails?.usuarioEmail || "ana@gmail.com"}</span>
                   </div>
                 </div>
               </div>
 
-              {/* NUEVO Bloque 2: Credenciales del Asesor de IT Asignado */}
+              {/* Bloque 2: Asesor Asignado */}
               <div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "14px" }}>
-                  <span style={{ fontWeight: "700", fontSize: "13px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                <div style={{ display: "flex", alignItems: "center", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "12px" }}>
+                  <span style={{ fontWeight: "700", fontSize: "12px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
                     <FaUserShield style={{ color: "#4b5563" }} /> Asesor Asignado
                   </span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "13px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px" }}>
                   <div>
                     <span style={{ color: "#9ca3af", fontSize: "11px", display: "block" }}>Especialista a Cargo</span>
-                    <strong style={{ color: "#1f2937", fontSize: "14px" }}>{ticketDetails?.techName || "Ing. Leonel Pastrana"}</strong>
+                    <strong style={{ color: "#1f2937", fontSize: "14px" }}>{ticketDetails?.asesor || "Manuel Flores"}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "#9ca3af", fontSize: "11px", display: "block" }}>Área de Especialidad</span>
-                    <strong style={{ color: "#4b5563" }}>Mesa de Control / {ticketDetails?.area || "IT"}</strong>
+                    <span style={{ color: "#9ca3af", fontSize: "11px", display: "block" }}>Correo Corporativo</span>
+                    <span style={{ color: "#ff7f22", fontWeight: "600", fontSize: "13px" }}>{ticketDetails?.correoAsesor || "manuel@empresa.com"}</span>
+                  </div>
+                  <div>
+                    <span style={{ color: "#9ca3af", fontSize: "11px", display: "block" }}>Área IT</span>
+                    <strong style={{ color: "#4b5563" }}>{ticketDetails?.area || "Soporte Técnico"}</strong>
                   </div>
                 </div>
               </div>
 
-              {/* Bloque 3: Propiedades del Incidente + Cronómetro SLA */}
+              {/* Bloque 3: Propiedades Básicas */}
               <div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "14px" }}>
-                  <span style={{ fontWeight: "700", fontSize: "13px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                <div style={{ display: "flex", alignItems: "center", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "12px" }}>
+                  <span style={{ fontWeight: "700", fontSize: "12px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
                     <FaClipboardList style={{ color: "#ff7f22" }} /> Propiedades Básicas
                   </span>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontSize: "13px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "13px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ color: "#6b7280" }}>Código Solicitud</span>
                     <span style={{ background: "#f3f4f6", padding: "3px 8px", borderRadius: "6px", fontFamily: "monospace", fontWeight: "700", color: "#1f2937" }}>#{idTicket}</span>
@@ -279,34 +289,59 @@ export default function ChatPorArea() {
                     </span>
                   </div>
 
-                  {/* CRONÓMETRO DINÁMICO PROGRAMADO POR EL ASESOR */}
-                  <div style={{ 
-                    marginTop: "8px",
-                    background: "#fdf8f6", 
-                    border: "1px dashed #fda4af", 
-                    padding: "12px", 
-                    borderRadius: "10px",
-                    display: "flex",
-                    gap: "10px",
-                    alignItems: "flex-start"
-                  }}>
+                  {/* SLA Box */}
+                  <div style={{ marginTop: "6px", background: "#fdf8f6", border: "1px dashed #fda4af", padding: "12px", borderRadius: "10px", display: "flex", gap: "10px", alignItems: "flex-start" }}>
                     <FaRegClock style={{ color: "#e11d48", fontSize: "18px", marginTop: "2px" }} />
                     <div>
-                      <span style={{ color: "#e11d48", fontWeight: "700", fontSize: "12px", display: "block" }}>Tiempo Estimado de Solución</span>
+                      <span style={{ color: "#e11d48", fontWeight: "700", fontSize: "11px", display: "block" }}>Tiempo Estimado de Solución</span>
                       <strong style={{ color: "#1f2937", fontSize: "13px" }}>
                         {ticketDetails?.estimatedTime ? `${ticketDetails.estimatedTime}` : "Establecido por el asesor"}
                       </strong>
-                      <span style={{ display: "block", fontSize: "10px", color: "#6b7280", marginTop: "2px" }}>
-                        El incidente tardará el tiempo programado reglamentario.
-                      </span>
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "6px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "4px" }}>
                     <span style={{ color: "#6b7280" }}>Archivos adjuntos</span>
                     <span style={{ color: "#374151", fontWeight: "600" }}><FaPaperclip style={{ marginRight: "4px", color: "#9ca3af" }}/>0</span>
                   </div>
                 </div>
+              </div>
+
+              {/* Acordeón de Descripción Idéntico */}
+              <div style={{ border: "1px solid #e5e7eb", borderRadius: "10px", overflow: "hidden" }}>
+                <div 
+                  onClick={() => setIsDescOpen(!isDescOpen)}
+                  style={{ background: "#fafafa", padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", borderBottom: isDescOpen ? "1px solid #e5e7eb" : "none" }}
+                >
+                  <span style={{ fontWeight: "700", fontSize: "12px", color: "#374151", textTransform: "uppercase" }}>Descripción</span>
+                  {isDescOpen ? <FaChevronUp style={{ fontSize: "12px", color: "#6b7280" }} /> : <FaChevronDown style={{ fontSize: "12px", color: "#6b7280" }} />}
+                </div>
+                
+                {isDescOpen && (
+                  <div style={{ padding: "14px", fontSize: "13px", color: "#4b5563", backgroundColor: "#fff", lineHeight: "1.5" }}>
+                    {ticketDetails?.description || "No se especificó un cuerpo detallado de descripción en este incidente."}
+                  </div>
+                )}
+              </div>
+
+              {/* Botones de Acción Funcionales */}
+              <div style={{ display: "flex", gap: "10px", marginTop: "auto", paddingTop: "10px" }}>
+                <button 
+                  onClick={handleRestablecer}
+                  style={{ flex: 1, backgroundColor: "#ff7f22", color: "white", border: "none", padding: "10px", borderRadius: "8px", fontWeight: "600", fontSize: "13px", cursor: "pointer", transition: "background 0.2s" }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = "#e66a10"}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = "#ff7f22"}
+                >
+                  Restablecer
+                </button>
+                <button 
+                  onClick={handleCancelar}
+                  style={{ flex: 1, backgroundColor: "#e5e7eb", color: "#374151", border: "none", padding: "10px", borderRadius: "8px", fontWeight: "600", fontSize: "13px", cursor: "pointer", transition: "background 0.2s" }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = "#d1d5db"}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = "#e5e7eb"}
+                >
+                  Cancelar
+                </button>
               </div>
 
             </div>

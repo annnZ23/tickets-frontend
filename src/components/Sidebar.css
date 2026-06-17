@@ -1,14 +1,13 @@
 .sidebar {
-  width: 180px;
-   height: 100vh;
-  background: white;
-   padding: 8px 10px; 
-  border-right: 1px solid #eee;
+  width: 260px;
+  min-height: 100vh; /* Obliga a que cubra toda la pantalla de arriba a abajo */
+  background-color: #ffffff; /* O tu color oscuro base corporativo */
   display: flex;
   flex-direction: column;
-  align-self: stretch;
-  min-height: 100%;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 
 /* LOGO */

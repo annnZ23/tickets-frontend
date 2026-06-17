@@ -1,9 +1,12 @@
 /* ===== LAYOUT ===== */
 .content {
   flex: 1;
-  background:#f6f3ef;
-  padding: 0;
+  background: #f3f4f6;
+  padding: 24px;
   overflow-y: auto;
+  height: 100vh; /* Mantiene el scroll interno sin romper la vista principal */
+  display: flex;
+  flex-direction: column;
 }
 
 /* CONTENIDO INTERNO */
@@ -585,4 +588,11 @@
 
 .btn-finalize:hover {
   background-color: #218838 !important;
+}
+
+[contenteditable]:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  font-style: italic;
+  cursor: text;
 }

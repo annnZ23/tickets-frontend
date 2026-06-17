@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Sidebar from "../components/Sidebar";
 import { FaListUl, FaTools, FaCode, FaRoute, FaRegEnvelope, FaTimes } from "react-icons/fa";
-import "./Dashboard.css"; // Deja solo una importación de estilos si corresponde
+import "./Dashboard.css";
 
 export default function AsignacionTareas() {
   const [user] = useState(() => {
@@ -19,8 +19,7 @@ export default function AsignacionTareas() {
     priority: "Media",
     deadline: ""
   });
-
-  // 1. Definición estable de loadTasks con useCallback
+  
  const loadTasks = useCallback(async () => {
   if (!user?.email) return;
   try {
@@ -35,7 +34,7 @@ export default function AsignacionTareas() {
     console.error("Error al traer tareas:", error);
   }
 }, [user]);
-  // 2. useEffect corregido y bien cerrado
+ 
  useEffect(() => {
   const loadTasks = async () => {
     if (!user?.email) return;
@@ -43,7 +42,7 @@ export default function AsignacionTareas() {
       const response = await fetch(`http://localhost:3000/api/tasks?email=${user.email}&role=${user.role}`);
       if (response.ok) {
         const data = await response.json();
-        setTasks(data); // Ahora es 100% seguro cambiar el estado aquí
+        setTasks(data); 
       }
     } catch (error) {
       console.error("Error al traer tareas:", error);
@@ -166,7 +165,7 @@ export default function AsignacionTareas() {
         </div>
       </div>
 
-      {/* Modal */}
+      
       {showModal && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
           <div style={{ backgroundColor: "#fff", padding: "30px", borderRadius: "12px", width: "450px", boxShadow: "0 4px 15px rgba(0,0,0,0.2)" }}>

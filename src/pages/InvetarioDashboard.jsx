@@ -7,7 +7,6 @@ import {
   FaExclamationTriangle, FaClock, FaChevronDown
 } from "react-icons/fa";
 import "./Inventario.css";
-
 const menuItems = [
   { icon: <FaSignInAlt />, label: "Registro de Entrada", key: "entrada" },
   { icon: <FaHistory />, label: "Historial", key: "historial" },
@@ -17,19 +16,15 @@ const menuItems = [
   { icon: <FaChartBar />, label: "Reportes", key: "reportes" },
   { icon: <FaCog />, label: "Configuración", key: "config" },
 ];
-
 export default function InventarioDashboard() {
   const [active, setActive] = useState("entrada");
-
   return (
     <div className="inv-layout">
-
       {/* SIDEBAR */}
       <aside className="inv-sidebar">
         <div className="inv-logo-box">
           <img src={logo} alt="Baprosa" className="inv-logo" />
         </div>
-
         <nav className="inv-menu">
           {menuItems.map((item) => (
             <div
@@ -42,8 +37,6 @@ export default function InventarioDashboard() {
             </div>
           ))}
         </nav>
-
-        {/* ALERTAS ESTÁTICAS */}
         <div className="inv-alerts">
           <div className="inv-alert warning">
             <FaExclamationTriangle className="inv-alert-icon" />
@@ -52,7 +45,6 @@ export default function InventarioDashboard() {
               <p>3 categorías de equipos tienen inventario por debajo del mínimo.</p>
             </div>
           </div>
-
           <div className="inv-alert info">
             <FaClock className="inv-alert-icon" />
             <div>
@@ -61,17 +53,12 @@ export default function InventarioDashboard() {
             </div>
           </div>
         </div>
-
         <div className="inv-menu-item inv-help">
           <span className="inv-menu-icon"><FaQuestionCircle /></span>
           <span>Ayuda</span>
         </div>
       </aside>
-
-      {/* CONTENIDO */}
       <main className="inv-main">
-
-        {/* TOPBAR */}
         <div className="inv-topbar">
           <div className="inv-topbar-left">
             <button className="inv-icon-btn"><FaSearch /></button>
@@ -91,15 +78,12 @@ export default function InventarioDashboard() {
             </div>
           </div>
         </div>
-
-        {/* PÁGINA: REGISTRO DE ENTRADA */}
         {active === "entrada" && (
           <div className="inv-page">
             <div className="inv-page-header">
               <h1>Registro de Entrada</h1>
               <p>Antes de registrar un equipo, selecciona el tipo de entrada que deseas realizar. Esto nos permitirá guiarte por el flujo correcto.</p>
             </div>
-
             <div className="inv-hint">
               <span className="inv-hint-icon">💡</span>
               ¿El equipo que vas a registrar es nuevo o viene reasignado de otro usuario?
