@@ -23,6 +23,7 @@ export default function AsignacionTareas() {
  const loadTasks = useCallback(async () => {
   if (!user?.email) return;
   try {
+
     const response = await fetch(
       `http://localhost:3000/api/tasks?email=${user.email}&role=${user.role}`
     );
@@ -105,7 +106,6 @@ export default function AsignacionTareas() {
           </div>
         </div>
 
-        {/* Contenedor Principal */}
         <div className="tareas-layout-container" style={{ width: "100%", maxWidth: "100%", marginTop: "20px" }}>
           <div className="tareas-card-main" style={{ width: "100%", padding: "25px" }}>
             <div className="tareas-header-row">
@@ -120,7 +120,6 @@ export default function AsignacionTareas() {
               )}
             </div>
 
-            {/* Áreas */}
             <div className="areas-stack" style={{ width: "100%" }}>
               {areasDefinidas.map((area) => {
                 const tareasDelArea = tasks.filter((t) => t.area === area.nombre);

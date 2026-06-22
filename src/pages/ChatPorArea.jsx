@@ -13,15 +13,11 @@ const socket = io("http://localhost:3000");
 export default function ChatPorArea() {
   const user = JSON.parse(localStorage.getItem("user"));
   const { idTicket } = useParams(); 
-  
   const areas = ["Soporte Técnico", "Desarrollo Web", "Analista de Rutas"];
-  
   const [selectedArea, setSelectedArea] = useState("Soporte Técnico");
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const [ticketDetails, setTicketDetails] = useState(null);
-  
-  // Estado para colapsar/expandir la sección de descripción
   const [isDescOpen, setIsDescOpen] = useState(true);
 
   const chatEndRef = useRef(null);
@@ -87,7 +83,6 @@ export default function ChatPorArea() {
     setMessageText("");
   };
 
-  // Funciones para los botones de acción inferiores
   const handleRestablecer = () => {
     if(window.confirm("¿Deseas restablecer los valores de este chat?")) {
       setMessages([]);
@@ -104,7 +99,6 @@ export default function ChatPorArea() {
 
       <div className="content" style={{ flex: 1, padding: "24px", display: "flex", flexDirection: "column", gap: "20px" }}>
         
-        {/* Topbar Modernizada */}
         <div style={{
           width: "100%", 
           background: "linear-gradient(135deg, #ff7f22 0%, #e66a10 100%)", 
@@ -154,7 +148,7 @@ export default function ChatPorArea() {
 
         <div style={{ display: "flex", flex: 1, gap: "24px", width: "100%", alignItems: "stretch" }}>
         
-          {/* Contenedor del Chat */}
+         
           <div style={{ flex: 3, background: "#fff", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", overflow: "hidden", border: "1px solid #e5e7eb" }}>
             <div style={{ background: "#fafafa", padding: "14px 24px", borderBottom: "1px solid #edf2f7", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ fontWeight: "600", color: "#4b5563", fontSize: "14px" }}>
@@ -213,11 +207,9 @@ export default function ChatPorArea() {
             </form>
           </div>
 
-          {/* Panel Lateral Derecho Totalmente Vinculado */}
           {idTicket && (
             <div style={{ flex: 1, background: "#ffffff", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.03)", border: "1px solid #e5e7eb", padding: "24px", display: "flex", flexDirection: "column", gap: "20px", overflowY: "auto", maxWidth: "340px" }}>
-              
-              {/* Bloque 1: Solicitante del Incidente */}
+
               <div>
                 <div style={{ display: "flex", alignItems: "center", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "12px" }}>
                   <span style={{ fontWeight: "700", fontSize: "12px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
@@ -236,7 +228,7 @@ export default function ChatPorArea() {
                 </div>
               </div>
 
-              {/* Bloque 2: Asesor Asignado */}
+             
               <div>
                 <div style={{ display: "flex", alignItems: "center", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "12px" }}>
                   <span style={{ fontWeight: "700", fontSize: "12px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
@@ -259,7 +251,6 @@ export default function ChatPorArea() {
                 </div>
               </div>
 
-              {/* Bloque 3: Propiedades Básicas */}
               <div>
                 <div style={{ display: "flex", alignItems: "center", paddingBottom: "10px", borderBottom: "2px solid #f3f4f6", marginBottom: "12px" }}>
                   <span style={{ fontWeight: "700", fontSize: "12px", color: "#374151", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
@@ -289,7 +280,7 @@ export default function ChatPorArea() {
                     </span>
                   </div>
 
-                  {/* SLA Box */}
+                
                   <div style={{ marginTop: "6px", background: "#fdf8f6", border: "1px dashed #fda4af", padding: "12px", borderRadius: "10px", display: "flex", gap: "10px", alignItems: "flex-start" }}>
                     <FaRegClock style={{ color: "#e11d48", fontSize: "18px", marginTop: "2px" }} />
                     <div>
@@ -307,7 +298,7 @@ export default function ChatPorArea() {
                 </div>
               </div>
 
-              {/* Acordeón de Descripción Idéntico */}
+             
               <div style={{ border: "1px solid #e5e7eb", borderRadius: "10px", overflow: "hidden" }}>
                 <div 
                   onClick={() => setIsDescOpen(!isDescOpen)}
@@ -324,7 +315,7 @@ export default function ChatPorArea() {
                 )}
               </div>
 
-              {/* Botones de Acción Funcionales */}
+             
               <div style={{ display: "flex", gap: "10px", marginTop: "auto", paddingTop: "10px" }}>
                 <button 
                   onClick={handleRestablecer}

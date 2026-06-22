@@ -12,10 +12,7 @@ import seguridad from "../assets/Seguridad.png";
 import userIcon from "../assets/usuario.png";
 import passIcon from "../assets/contraseña.png";
 import chatIcon from "../assets/chat.png";
-
-// Roles que van al inventario
 const ROLES_INVENTARIO = ["ADMIN_SOPORTE", "ADMIN_RUTAS"];
-// Roles que van al dashboard
 const ROLES_ADMIN = ["SUPER_ADMIN", "ADMIN_DESARROLLO", "ADMIN", "ADMIN_SOPORTE", "ADMIN_RUTAS"];
 
 function Login({ setUsuario }) {
@@ -47,8 +44,6 @@ function Login({ setUsuario }) {
       if (setUsuario) setUsuario(data.user);
 
       const role = data.user.role;
-
-      // Redirección según rol
       if (role === "USER") {
         navigate("/crear");
       } else if (ROLES_INVENTARIO.includes(role)) {

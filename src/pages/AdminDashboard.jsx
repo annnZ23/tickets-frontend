@@ -19,10 +19,10 @@ import "./Dashboard.css";
 export default function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
   const [stats, setStats] = useState({
-    totalTickets: 17,
-    enProceso: 1,
-    resueltos: 16,
-    satisfaccion: "4.6"
+    totalTickets: 0,
+    enProceso: 0,
+    resueltos: 0,
+    satisfaccion: "5.0"
   });
 
   const [ticketSeleccionado, setTicketSeleccionado] = useState(null);
@@ -33,8 +33,6 @@ export default function AdminDashboard() {
   const [horasEstimadas, setHorasEstimadas] = useState("02:00");
 
   const chatEndRef = useRef(null);
-
-  // Datos de usuario para la barra superior idéntica a tu diseño funcional
   const user = {
     email: "admin@gmail.com",
     name: "Ana Zepeda",
@@ -42,28 +40,23 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    // Fetch adaptado a tu backend local
     fetch("http://localhost:5178/api/tickets")
       .then(res => res.json())
       .then(data => {
-        if (data && data.length > 0) {
+        if (data && data.tickets) {
+          setTickets(data.tickets);
+          setStats(data.stats); 
+        } else if (Array.isArray(data)) {
           setTickets(data);
-        } else {
-          generarTicketsSimulados();
+          if (data.length === 0) {
+            setStats({ totalTickets: 0, enProceso: 0, resueltos: 0, satisfaccion: "5.0" });
+          }
         }
       })
-      .catch(() => {
-        generarTicketsSimulados();
+      .catch((err) => {
+        console.error("Error al conectar con el backend:", err);
       });
   }, []);
-
-  const generarTicketsSimulados = () => {
-    setTickets([
-      { id: 17, asunto: "Problema", tipo: "Soporte Técnico", usuario: "", departamento: "", prioridad: "Media", estado: "Open", correo: "" },
-      { id: 16, asunto: "Problema", tipo: "Soporte Técnico", usuario: "", departamento: "", prioridad: "Media", estado: "Open", correo: "" },
-      { id: 15, asunto: "Problema", tipo: "Soporte Técnico", usuario: "", departamento: "", prioridad: "Media", estado: "Open", correo: "" }
-    ]);
-  };
 
   useEffect(() => {
     if (chatEndRef.current) {
@@ -72,20 +65,36 @@ export default function AdminDashboard() {
   }, [mensajesChat]);
 
   const abrirTicketChat = (ticket) => {
-    // Validamos campos para que nunca aparezca en blanco si vienen nulos de la base de datos
-    const ticketValidado = {
-      ...ticket,
-      usuario: ticket.usuario && ticket.usuario.trim() !== "" ? ticket.usuario : "Colaborador",
-      departamento: ticket.departamento && ticket.departamento.trim() !== "" ? ticket.departamento : "Operaciones",
-      correo: ticket.correo && ticket.correo.trim() !== "" ? ticket.correo : "colaborador@baprosa.com"
-    };
+    fetch(`http://localhost:5178/api/tickets/${ticket.id}/abrir`, {
+      method: "PUT"
+    })
+      .then(res => res.json())
+      .then(ticketActualizado => {
+        const ticketValidado = {
+          ...ticket,
+          estado: ticketActualizado.estado || "En Proceso",
+          usuario: ticket.usuario && ticket.usuario.trim() !== "" ? ticket.usuario : "Colaborador",
+          departamento: ticket.departamento && ticket.departamento.trim() !== "" ? ticket.departamento : "Operaciones",
+          correo: ticket.correo && ticket.correo.trim() !== "" ? ticket.correo : "colaborador@baprosa.com"
+        };
 
-    setTicketSeleccionado(ticketValidado);
-    setEstadoTicket(ticketValidado.estado || "Open");
-    setMensajesChat([
-      { id: 1, remitente: ticketValidado.usuario, texto: "Hola, abro este ticket debido al siguiente inconveniente: k", hora: "14:48 PM", esAdmin: false },
-      { id: 2, remitente: "Mesa de Control", texto: "Ticket asignado automáticamente al área destino. Prioridad establecida en: Media.", esSistema: true }
-    ]);
+        setTicketSeleccionado(ticketValidado);
+        setEstadoTicket(ticketValidado.estado);
+
+        if (ticketValidado.prioridad === "Alta") {
+          setHorasEstimadas("01:00");
+        } else if (ticketValidado.prioridad === "Media") {
+          setHorasEstimadas("02:00");
+        } else {
+          setHorasEstimadas("04:00");
+        }
+
+        setMensajesChat([
+          { id: 1, remitente: ticketValidado.usuario, texto: ticketValidado.descripcion || "Hola, abro este ticket debido al siguiente inconveniente.", hora: "Justo ahora", esAdmin: false },
+          { id: 2, remitente: "Mesa de Control", texto: `Ticket abierto por el asesor. Estado actualizado a: En Proceso. Tiempo estimado: ${ticketValidado.prioridad === "Alta" ? "1h" : ticketValidado.prioridad === "Media" ? "2h" : "4h"}.`, esSistema: true }
+        ]);
+      })
+      .catch(err => console.error("Error al actualizar la apertura del ticket:", err));
   };
 
   const handleEnviarMensaje = (e) => {
@@ -102,7 +111,6 @@ export default function AdminDashboard() {
     setNuevoMensaje("");
   };
 
-  // Función para obtener iniciales del avatar de forma limpia
   const getIniciales = (name) => {
     if (!name) return "A";
     const parts = name.split(" ");
@@ -111,32 +119,25 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f4f6f8", fontFamily: "'Segoe UI', sans-serif" }}>
-      {/* BARRA LATERAL ESTABLECIDA */}
+
       <Sidebar />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         
-        {/* BARRA SUPERIOR EXACTA (image_2a7c1c.png) */}
+        {/* TOPBAR */}
         <div style={{ height: "65px", width: "100%", backgroundColor: "#ff7f22", display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "0 40px", boxSizing: "border-box" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "28px" }}>
             
-            {/* Notificaciones */}
             <div style={{ position: "relative", cursor: "pointer", display: "flex", alignItems: "center" }}>
               <FaRegBell style={{ color: "#ffffff", fontSize: "20px" }} />
               <span style={{ position: "absolute", top: "-6px", right: "-8px", backgroundColor: "#ef4444", color: "white", borderRadius: "50%", width: "16px", height: "16px", fontSize: "10px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
                 3
               </span>
             </div>
-
-            {/* Correo */}
             <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
               <FaRegEnvelope style={{ color: "#ffffff", fontSize: "20px" }} />
             </div>
-
-            {/* Divisor Limpio */}
             <div style={{ width: "1px", height: "22px", backgroundColor: "rgba(255,255,255,0.25)" }}></div>
-
-            {/* Perfil de Usuario */}
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <div style={{ width: "38px", height: "38px", borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.3)", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "13px", letterSpacing: "0.5px" }}>
                 {getIniciales(user.name)}
@@ -153,7 +154,7 @@ export default function AdminDashboard() {
         {/* CONTENIDO PRINCIPAL */}
         <div style={{ flex: 1, overflowY: "auto", padding: "30px" }}>
           
-          {/* BLOQUE DE KPIS MEJORADOS IDÉNTICOS A TU CAPTURA ESTÉTICA */}
+          {/* SECCIÓN DE METRICAS DEL DASHBOARD */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "35px" }}>
             
             {/* KPI 1 */}
@@ -172,7 +173,7 @@ export default function AdminDashboard() {
             <div style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", justifyContent: "space-between", height: "105px", boxSizing: "border-box" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
                 <FaClock style={{ color: "#ff7f22", fontSize: "18px" }} />
-                <span style={{ color: "#ff7f22", fontSize: "11px", fontWeight: "700" }}>5 hoy</span>
+                <span style={{ color: "#ff7f22", fontSize: "11px", fontWeight: "700" }}>En vivo</span>
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: "26px", fontWeight: "700", color: "#1e293b", lineHeight: "1" }}>{stats.enProceso}</h3>
@@ -206,43 +207,48 @@ export default function AdminDashboard() {
 
           </div>
 
-          {/* FLUJO DINÁMICO */}
+          {/* LISTADO O DETALLE SEGÚN SELECCIÓN */}
           {!ticketSeleccionado ? (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ marginBottom: "4px", fontSize: "14px", fontWeight: "700", color: "#334155" }}>
                 <span style={{ color: "#ff7f22", marginRight: "6px" }}>●</span> Monitoreo de Incidentes Activos
               </div>
 
-              {tickets.map((t) => (
-                <div key={t.id} style={{ backgroundColor: "#ffffff", borderRadius: "10px", padding: "24px", border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.01)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                    <span style={{ fontSize: "12px", color: "#64748b", fontWeight: "bold" }}>#TK-{t.id}</span>
-                    <span style={{ fontSize: "11px", padding: "3px 8px", backgroundColor: "#ffedd5", color: "#ea580c", borderRadius: "8px", fontWeight: "bold" }}>{t.prioridad}</span>
-                  </div>
-                  <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", color: "#1e293b" }}>{t.asunto}</h4>
-                  <p style={{ margin: "0 0 16px 0", fontSize: "13px", color: "#64748b" }}>
-                    Solicitante: <span style={{ fontWeight: "600", color: "#475569" }}>{t.usuario || "—"}</span> · Depto: {t.departamento || "—"}
-                  </p>
-                  
-                  <div style={{ height: "6px", width: "100%", backgroundColor: "#e2e8f0", borderRadius: "10px", overflow: "hidden", marginBottom: "12px" }}>
-                    <div style={{ height: "100%", width: "60%", backgroundColor: "#ff7f22" }}></div>
-                  </div>
+              {tickets.length === 0 ? (
+                <div style={{ backgroundColor: "#ffffff", borderRadius: "10px", padding: "40px", textAlign: "center", border: "1px solid #e2e8f0", color: "#64748b", fontSize: "14px", fontWeight: "500" }}>
+                  📭 No hay incidentes activos en este momento. Las tablas están completamente limpias.
+                </div>
+              ) : (
+                tickets.map((t) => (
+                  <div key={t.id} style={{ backgroundColor: "#ffffff", borderRadius: "10px", padding: "24px", border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.01)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "12px", color: "#64748b", fontWeight: "bold" }}>#TK-{t.id}</span>
+                      <span style={{ fontSize: "11px", padding: "3px 8px", backgroundColor: "#ffedd5", color: "#ea580c", borderRadius: "8px", fontWeight: "bold" }}>{t.prioridad}</span>
+                    </div>
+                    <h4 style={{ margin: "0 0 4px 0", fontSize: "16px", color: "#1e293b" }}>{t.asunto}</h4>
+                    <p style={{ margin: "0 0 16px 0", fontSize: "13px", color: "#64748b" }}>
+                      Solicitante: <span style={{ fontWeight: "600", color: "#475569" }}>{t.usuario || "—"}</span> · Depto: {t.departamento || "—"}
+                    </p>
+                    
+                    <div style={{ height: "6px", width: "100%", backgroundColor: "#e2e8f0", borderRadius: "10px", overflow: "hidden", marginBottom: "12px" }}>
+                      <div style={{ height: "100%", width: t.estado === "En Proceso" ? "60%" : "20%", backgroundColor: "#ff7f22", transition: "width 0.5s ease" }}></div>
+                    </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "12px", color: "#64748b" }}>Progreso Asignado: 60%</span>
-                    <div style={{ display: "flex", gap: "10px" }}>
-                      <button onClick={() => abrirTicketChat(t)} style={{ backgroundColor: "#ff7f22", color: "white", border: "none", padding: "6px 18px", borderRadius: "4px", fontSize: "12px", fontWeight: "bold", cursor: "pointer" }}>Abrir</button>
-                      <button style={{ backgroundColor: "#28a745", color: "white", border: "none", padding: "6px 18px", borderRadius: "4px", fontSize: "12px", fontWeight: "bold", cursor: "pointer" }}>Finalizar</button>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "12px", color: "#64748b" }}>Estado actual: <b style={{ color: "#ff7f22" }}>{t.estado}</b></span>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <button onClick={() => abrirTicketChat(t)} style={{ backgroundColor: "#ff7f22", color: "white", border: "none", padding: "6px 18px", borderRadius: "4px", fontSize: "12px", fontWeight: "bold", cursor: "pointer" }}>Abrir</button>
+                        <button style={{ backgroundColor: "#28a745", color: "white", border: "none", padding: "6px 18px", borderRadius: "4px", fontSize: "12px", fontWeight: "bold", cursor: "pointer" }}>Finalizar</button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           ) : (
-            
-            /* CHAT INTEGRADO SIN ERRORES */
             <div style={{ display: "flex", gap: "25px", alignItems: "stretch" }}>
               
+              {/* CAJA DEL CHAT */}
               <div style={{ flex: 1.7, backgroundColor: "#ffffff", borderRadius: "12px", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", height: "550px" }}>
                 <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "12px", backgroundColor: "#f8fafc" }}>
                   <button onClick={() => setTicketSeleccionado(null)} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer" }}><FaArrowLeft /></button>
@@ -272,10 +278,8 @@ export default function AdminDashboard() {
                 </form>
               </div>
 
-              {/* SECCIÓN LATERAL DE CAMPOS REQUERIDOS */}
+              {/* BARRA LATERAL DERECHA DE PROPIEDADES */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "20px", height: "550px", overflowY: "auto" }}>
-                
-                {/* PROPIEDADES */}
                 <div style={{ backgroundColor: "#ffffff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "20px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <span style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>Propiedades</span>
@@ -290,7 +294,7 @@ export default function AdminDashboard() {
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ color: "#64748b" }}>Estado</span>
                       <select value={estadoTicket} onChange={(e) => setEstadoTicket(e.target.value)} style={{ border: "none", color: "#1e293b", fontWeight: "600", background: "none", cursor: "pointer", outline: "none" }}>
-                        <option value="Open">Open</option>
+                        <option value="Creado">Creado</option>
                         <option value="En Proceso">En Proceso</option>
                         <option value="Resuelto">Resuelto</option>
                       </select>
@@ -322,7 +326,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* DETALLES DEL SOLICITANTE COMPLETAMENTE LIMPIO */}
+                {/* DETALLES DEL SOLICITANTE */}
                 <div style={{ backgroundColor: "#ffffff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "20px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
                     <span style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>Detalles del solicitante</span>
@@ -331,7 +335,7 @@ export default function AdminDashboard() {
 
                   <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "16px" }}>
                     <div style={{ width: "42px", height: "42px", borderRadius: "50%", backgroundColor: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b", fontWeight: "bold" }}>
-                      {ticketSeleccionado.usuario.charAt(0)}
+                      {ticketSeleccionado.usuario ? ticketSeleccionado.usuario.charAt(0) : "U"}
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
                       <span style={{ fontSize: "14px", fontWeight: "600", color: "#1e293b" }}>{ticketSeleccionado.usuario}</span>
@@ -346,7 +350,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <button style={{ width: "100%", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "8px", padding: "10px", fontSize: "12px", fontWeight: "600", color: "#334155", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: "pointer" }}>
+                  <button type="button" style={{ width: "100%", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "8px", padding: "10px", fontSize: "12px", fontWeight: "600", color: "#334155", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: "pointer" }}>
                     <FaHistory style={{ color: "#64748b" }} /> Solicitudes previas
                   </button>
                 </div>

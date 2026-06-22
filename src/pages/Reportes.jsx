@@ -14,14 +14,10 @@ export default function Reportes() {
 
     const obtenerDatos = async () => {
       try {
-       
         setLoading(true);
-
-       
         const resHistorial = await fetch("http://localhost:3000/api/reportes/historial");
         const dataHistorial = await resHistorial.json();
-        
-        
+
         const resStats = await fetch("http://localhost:3000/api/reportes/estadisticas");
         const dataStats = await resStats.json();
 
@@ -116,7 +112,6 @@ export default function Reportes() {
             </button>
           </div>
 
-          {/* TARJETAS RESUMEN */}
           <div className="kpi-pro" style={{ marginBottom: "30px", marginTop: "20px" }}>
             <div className="card-pro">
               <h2>{estadisticas.totalTickets || 0}</h2>

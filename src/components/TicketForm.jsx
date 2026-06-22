@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 function TicketForm({
   setVista,
   setTickets,
@@ -28,7 +27,6 @@ function TicketForm({
     setTipo(plantillas[value] || "");
   };
 
-  
   const handleFiles = (files) => {
     const lista = Array.from(files).map((file) => ({
       file,
@@ -56,7 +54,6 @@ function TicketForm({
         formData.append("file", archivos[0].file);
       }
 
-      
       const response = await fetch("http://localhost:3000/api/tickets", {
         method: "POST",
         body: formData
@@ -132,7 +129,6 @@ function TicketForm({
           </select>
         </div>
 
-       
         <div style={field}>
           <label>Asesor</label>
           <select
@@ -147,7 +143,6 @@ function TicketForm({
         </div>
       </div>
 
-     
       <div style={field}>
         <label>Asunto</label>
         <input

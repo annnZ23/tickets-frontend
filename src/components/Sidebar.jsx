@@ -1,13 +1,13 @@
 import logo from "../assets/baprosa-logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  FaTicketAlt,
-  FaListUl,
-  FaComments,
-  FaUsers,
-  FaChartBar,
-  FaCog,
-  FaSignOutAlt
+import { 
+  FaTicketAlt, 
+  FaListUl, 
+  FaComments, 
+  FaUsers, 
+  FaChartBar, 
+  FaCog, 
+  FaSignOutAlt 
 } from "react-icons/fa";
 import "./sidebar.css";
 
@@ -15,7 +15,8 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
-
+  
+  const isAdmin = user?.role === "ADMIN" || user?.role === "ADMIN_SOPORTE";
   const isActive = (path) => location.pathname === path;
 
   const logout = () => {
@@ -23,12 +24,8 @@ export default function Sidebar() {
     window.location.href = "/";
   };
 
-  const isAdmin = user?.role === "ADMIN" || user?.role === "ADMIN_SOPORTE";
-
   return (
     <div className="sidebar">
-
-      {/* Caja del Logo reubicada al inicio */}
       <div className="logo-box" style={{ marginTop: "5px", marginBottom: "15px" }}>
         <img src={logo} className="logo-img" alt="Logo corporativo Baprosa" />
       </div>
@@ -36,13 +33,11 @@ export default function Sidebar() {
       <p className="nav-title">Navegación</p>
 
       <div className="menu">
-        
         <div 
-          className={`menu-item ${isActive("/admin") || isActive("/crear") ? "active" : ""}`}
-          onClick={() => navigate(user?.role === "ADMIN" ? "/admin" : "/crear")}
+          className={`menu-item ${isActive("/admin/dashboard") || isActive("/crear") ? "active" : ""}`}
+          onClick={() => navigate(user?.role === "ADMIN" ? "/admin/dashboard" : "/crear")}
         >
-          <FaTicketAlt />
-          <span>Tickets Soporte</span>
+          <FaTicketAlt /> <span>Tickets Soporte</span>
         </div>
 
         {isAdmin && (
@@ -50,17 +45,15 @@ export default function Sidebar() {
             className={`menu-item ${isActive("/admin/tareas") ? "active" : ""}`}
             onClick={() => navigate("/admin/tareas")}
           >
-            <FaListUl />
-            <span>Asignación Tareas IT</span>
+            <FaListUl /> <span>Asignación Tareas IT</span>
           </div>
         )}
 
         <div 
-          className={`menu-item ${isActive("/chat-area") || location.pathname.includes("/chat-por-area") ? "active" : ""}`}
-          onClick={() => navigate("/chat-area")}
+          className={`menu-item ${isActive("/admin/chat-area") ? "active" : ""}`}
+          onClick={() => navigate("/admin/chat-area")}
         >
-          <FaComments />
-          <span>Chat por Área</span>
+          <FaComments /> <span>Chat por Área</span>
         </div>
 
         {isAdmin && (
@@ -68,8 +61,7 @@ export default function Sidebar() {
             className={`menu-item ${isActive("/admin/usuarios") ? "active" : ""}`}
             onClick={() => navigate("/admin/usuarios")}
           >
-            <FaUsers />
-            <span>Usuarios</span>
+            <FaUsers /> <span>Usuarios</span>
           </div>
         )}
 
@@ -78,28 +70,25 @@ export default function Sidebar() {
             className={`menu-item ${isActive("/admin/reportes") ? "active" : ""}`}
             onClick={() => navigate("/admin/reportes")}
           >
-            <FaChartBar />
-            <span>Reportes</span>
+            <FaChartBar /> <span>Reportes</span>
           </div>
         )}
 
         <div 
-          className={`menu-item ${isActive("/configuracion") ? "active" : ""}`}
-          onClick={() => navigate("/configuracion")}
+          className={`menu-item ${isActive("/admin/configuracion") ? "active" : ""}`}
+          onClick={() => navigate("/admin/configuracion")}
         >
-          <FaCog />
-          <span>Configuración</span>
+          <FaCog /> <span>Configuración</span>
         </div>
-
       </div>
 
+      {/* REINTEGRACIÓN DEL BOTÓN DE CIERRE DE SESIÓN */}
       <div className="sidebar-footer">
-        <div className="menu-item logout" onClick={logout}>
+        <div className="menu-item logout" onClick={logout} style={{ marginTop: "20px", color: "#e74c3c" }}>
           <FaSignOutAlt />
           <span>Cerrar sesión</span>
         </div>
       </div>
-
     </div>
   );
 }
