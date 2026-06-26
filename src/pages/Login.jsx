@@ -12,16 +12,25 @@ import seguridad from "../assets/Seguridad.png";
 import userIcon from "../assets/usuario.png";
 import passIcon from "../assets/contraseña.png";
 import chatIcon from "../assets/chat.png";
-const ROLES_INVENTARIO = ["ADMIN_SOPORTE", "ADMIN_RUTAS"];
-const ROLES_ADMIN = ["SUPER_ADMIN", "ADMIN_DESARROLLO", "ADMIN", "ADMIN_SOPORTE", "ADMIN_RUTAS"];
 
 function Login({ setUsuario }) {
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [usuarioInput, setUsuarioInput] = useState("");
   const [password, setPassword] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
+    setError("");
+
+    if (!usuarioInput.trim() || !password.trim()) {
+      setError("Escribe tu usuario y contraseña.");
+      return;
+    }
+
+    setCargando(true);
+
     try {
       const res = await fetch("http://localhost:3000/api/login", {
         method: "POST",
@@ -35,35 +44,33 @@ function Login({ setUsuario }) {
       const data = await res.json();
 
       if (!data.ok) {
-        alert("Usuario o contraseña incorrectos");
+        setError(data.message || "Usuario o contraseña incorrectos.");
+        setCargando(false);
         return;
       }
 
+      localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       if (setUsuario) setUsuario(data.user);
 
       const role = data.user.role;
-      if (role === "USER") {
-        navigate("/crear");
-      } else if (ROLES_INVENTARIO.includes(role)) {
-        navigate("/inventario");
-      } else if (ROLES_ADMIN.includes(role)) {
+      if (role === "SUPERADMIN" || role === "ADMIN") {
         navigate("/admin");
       } else {
         navigate("/crear");
       }
-
-    } catch (error) {
-      console.error("ERROR:", error);
-      alert("Error: backend no conectado");
+    } catch (err) {
+      console.error("Error de login:", err);
+      setError("No se pudo conectar con el servidor.");
+    } finally {
+      setCargando(false);
     }
   };
 
   return (
     <div className="container">
-
-      <img src={logo} className="logo" alt="baprosa" />
+      <img src={logo} className="logo" alt="Baprosa" />
 
       <div className="panel-left">
         <div className="icon-circle">
@@ -127,6 +134,12 @@ function Login({ setUsuario }) {
           </div>
         </div>
 
+        {error && (
+          <p style={{ color: "#e53e3e", fontSize: "12px", textAlign: "center", margin: "8px 0 0" }}>
+            {error}
+          </p>
+        )}
+
         <div className="options">
           <label>
             <input type="checkbox" />
@@ -134,8 +147,8 @@ function Login({ setUsuario }) {
           </label>
         </div>
 
-        <button className="btn-login" onClick={handleLogin}>
-          Acceder al Sistema
+        <button className="btn-login" onClick={handleLogin} disabled={cargando}>
+          {cargando ? "Verificando..." : "Acceder al Sistema"}
         </button>
 
         <div className="separator">
@@ -156,7 +169,6 @@ function Login({ setUsuario }) {
 
       <img src={chatIcon} alt="chat" className="chat-icon" />
       <Chatbot />
-
     </div>
   );
 }

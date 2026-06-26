@@ -7,8 +7,6 @@ export default function Usuarios() {
   
   const [nuevoUsuario, setNuevoUsuario] = useState({ name: '', email: '', password: '', role: 'ADMIN', area: '' });
   const [nuevaArea, setNuevaArea] = useState('');
-
-  // Encapsulación correcta de la consulta asíncrona al backend
   const cargarDatosSistematicos = async () => {
     try {
       const resUsers = await fetch("http://localhost:3000/api/usuarios");
@@ -87,18 +85,14 @@ export default function Usuarios() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f4f6f8", fontFamily: "'Segoe UI', sans-serif" }}>
-      
-      {/* 1. SE INTEGRA LA BARRA LATERAL FIJA */}
-      <Sidebar />
 
-      {/* 2. CONTENEDOR FLUIDO DE CONTENIDO */}
+      <Sidebar />
       <div style={{ flex: 1, overflowY: "auto", padding: '30px' }}>
         
         <h2 style={{ borderBottom: '2px solid #e67e22', paddingBottom: '8px', marginTop: 0, color: '#1e293b' }}>
-          🛠️ Panel de Control Estructural - IT
+        Panel de Control Estructural - IT
         </h2>
         
-        {/* SECCIÓN GESTIÓN DE ÁREAS IT */}
         <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
           <h3 style={{ marginTop: 0, color: '#e67e22', fontSize: '16px' }}>🏢 Áreas de Especialidad Soporte</h3>
           
@@ -122,8 +116,6 @@ export default function Usuarios() {
             ))}
           </div>
         </div>
-
-        {/* SECCIÓN REGISTRO DE ASESORES */}
         <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
           <h3 style={{ marginTop: 0, color: '#e67e22', fontSize: '16px' }}>👤 Registrar Asesores y Personal</h3>
           
@@ -148,7 +140,6 @@ export default function Usuarios() {
           </form>
         </div>
 
-        {/* TABLA DE USUARIOS */}
         <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white' }}>
             <thead>

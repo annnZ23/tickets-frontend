@@ -94,22 +94,23 @@ export default function ChatPorArea() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", width: "100vw", overflowX: "hidden", background: "#f3f4f6" }}>
-      <Sidebar />
+ <div style={{ display: "flex", minHeight: "100vh", width: "100vw", overflowX: "hidden", background: "#f3f4f6" }}>
+<Sidebar />
 
-      <div className="content" style={{ flex: 1, padding: "24px", display: "flex", flexDirection: "column", gap: "20px" }}>
+<div className="content" style={{ flex: 1, padding: "24px", display: "flex", flexDirection: "column", gap: "20px" }}>
         
-        <div style={{
-          width: "100%", 
-          background: "linear-gradient(135deg, #ff7f22 0%, #e66a10 100%)", 
-          padding: "18px 24px", 
-          borderRadius: "14px", 
-          boxShadow: "0 4px 15px rgba(255, 127, 34, 0.25)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between"
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "white" }}>
+<div style={{
+ width: "100%", 
+ background: "linear-gradient(135deg, #ff7f22 0%, #e66a10 100%)", 
+ padding: "18px 24px", 
+ borderRadius: "14px", 
+ boxShadow: "0 4px 15px rgba(255, 127, 34, 0.25)",
+ display: "flex",
+ alignItems: "center",
+ justifyContent: "space-between"
+  }}>
+                    
+<div style={{ display: "flex", alignItems: "center", gap: "12px", color: "white" }}>
             <FaComments style={{ fontSize: "26px", filter: "drop-shadow(0px 2px 4px rgba(0,0,0,0.15))" }} />
             <div>
               <h3 style={{ margin: 0, fontSize: "20px", fontWeight: "700", letterSpacing: "0.5px" }}>

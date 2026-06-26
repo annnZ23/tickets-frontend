@@ -1,4 +1,3 @@
-/* CONTENEDOR */
 .chat-box {
   width: 340px;
   height: 520px;
@@ -19,7 +18,6 @@
   background: linear-gradient(135deg, #ff7a00, #ff5500);
   color: white;
 }
-/* BODY */
 .chat-body {
   flex: 1;
   padding: 14px;
@@ -27,16 +25,15 @@
   background: #f7f7f7;
 }
 
-/* SCROLL */
 .chat-body::-webkit-scrollbar {
   width: 6px;
 }
+
 .chat-body::-webkit-scrollbar-thumb {
   background: #ddd;
   border-radius: 10px;
 }
 
-/* MENSAJES */
 .msg {
   padding: 12px 16px;
   margin: 8px 0;
@@ -48,20 +45,17 @@
   white-space: pre-line;
 }
 
-/* BOT */
 .bot {
   background: #ffffff;
   border: 1px solid #eee;
 }
 
-/* USER */
 .user {
   background: linear-gradient(135deg, #ff7a00, #ff5500);
   color: white;
   margin-left: auto;
 }
 
-/* MENÚ */
 .menu {
   display: flex;
   flex-direction: column;
@@ -69,7 +63,6 @@
   margin-top: 8px;
 }
 
-/* BOTONES */
 .menu-btn {
   background: #fff;
   border: 1px solid #ff7a00;
@@ -81,14 +74,12 @@
   transition: all 0.2s ease;
 }
 
-/* HOVER PRO */
 .menu-btn:hover {
   background: linear-gradient(135deg, #ff7a00, #ff5500);
   color: white;
   transform: scale(1.03);
 }
 
-/* ICONO CHAT */
 .chat-icon {
   position: fixed;
   bottom: 20px;
@@ -102,7 +93,6 @@
   transform: scale(1.1);
 }
 
-/* BIENVENIDA */
 .welcome-box {
   display: flex;
   flex-direction: column;
@@ -113,19 +103,16 @@
   text-align: center;
 }
 
-/* TÍTULO */
 .welcome-box h2 {
   font-size: 22px;
   margin-bottom: 10px;
 }
 
-/* TEXTO */
 .welcome-box p {
   color: #666;
   font-size: 14px;
 }
 
-/* BOTÓN PRO */
 .start-btn {
   margin-top: 20px;
   padding: 12px 20px;
@@ -138,14 +125,11 @@
   transition: all 0.25s ease;
 }
 
-/* EFECTO PREMIUM 🔥 */
 .start-btn:hover {
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 8px 20px rgba(255, 90, 0, 0.4);
 }
 
-
-/* INPUT CHAT */
 .chat-input {
   display: flex;
   padding: 10px;
@@ -161,7 +145,6 @@
   outline: none;
 }
 
-/* BOTON ENVIAR */
 .chat-input button {
   background: linear-gradient(135deg, #ff7a00, #ff5500);
   color: white;
@@ -177,7 +160,6 @@
   transform: scale(1.05);
 }
 
-/* ANIMACIONES */
 @keyframes slideUp {
   from {
     transform: translateY(10px);
@@ -193,231 +175,3 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
-/* ===== TARJETA DE CONFIRMACIÓN DE TICKET (NUEVO) ===== */
-.ticket-confirm-card {
-  background: #fff;
-  border: 1.5px solid #ff7a00;
-  border-radius: 14px;
-  padding: 14px;
-  margin: 10px 0;
-  font-size: 13px;
-  animation: slideUp 0.3s ease;
-}
-
-.ticket-confirm-title {
-  margin: 0 0 8px 0;
-  font-weight: 700;
-  color: #ff5500;
-}
-
-.ticket-confirm-detail {
-  margin: 0 0 12px 0;
-  color: #444;
-  line-height: 1.5;
-}
-
-.ticket-confirm-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-confirm-yes,
-.btn-confirm-no {
-  flex: 1;
-  border: none;
-  border-radius: 12px;
-  padding: 9px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.btn-confirm-yes {
-  background: linear-gradient(135deg, #ff7a00, #ff5500);
-  color: white;
-}
-
-.btn-confirm-no {
-  background: #f1f1f1;
-  color: #555;
-}
-
-.btn-confirm-yes:hover,
-.btn-confirm-no:hover {
-  transform: scale(1.03);
-}
-
-/* ===== VISTA DEL FORMULARIO DE TICKET ===== */
-.ticket-form-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: #fbfbfb;
-  animation: fadeIn 0.3s ease;
-}
-
-.back-to-menu {
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #ff5500;
-  cursor: pointer;
-  font-weight: 600;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-}
-
-.back-to-menu:hover {
-  background: #f5f5f5;
-}
-
-.form-card-header {
-  display: flex;
-  gap: 12px;
-  padding: 16px;
-  background: #fff;
-  margin: 12px;
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-
-.form-icon {
-  font-size: 24px;
-  background: #fff3e0;
-  padding: 8px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-}
-
-.form-card-header h4 {
-  margin: 0 0 4px 0;
-  font-size: 16px;
-  color: #333;
-}
-
-.form-card-header p {
-  margin: 0;
-  font-size: 12px;
-  color: #666;
-  line-height: 1.4;
-}
-
-.ticket-form-body {
-  padding: 0 16px 16px 16px;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.ticket-form-body label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #444;
-  margin-top: 12px;
-  margin-bottom: 6px;
-}
-
-.ticket-form-body input,
-.ticket-form-body select {
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  font-size: 13px;
-  outline: none;
-  background: #fff;
-}
-
-.ticket-form-body input:focus,
-.ticket-form-body select:focus {
-  border-color: #ff7a00;
-}
-
-.input-help {
-  font-size: 11px;
-  color: #777;
-  margin-top: 4px;
-  line-height: 1.3;
-}
-
-.btn-submit-ticket {
-  margin-top: auto;
-  background: linear-gradient(135deg, #ff7a00, #ff5500);
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 14px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-submit-ticket:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 90, 0, 0.3);
-}
-
-/* ===== TARJETA DE ASESOR EN VIVO (HORARIO LABORAL) ===== */
-.asesor-live-card {
-  background: #fffcf5;
-  border: 1px solid #ffe0b2;
-  border-radius: 16px;
-  padding: 14px;
-  margin: 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  animation: slideUp 0.3s ease;
-}
-
-.asesor-card-content {
-  display: flex;
-  gap: 10px;
-}
-
-.asesor-icon {
-  font-size: 20px;
-  background: #ffe0b2;
-  color: #ff6f00;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.asesor-card-content h5 {
-  margin: 0 0 2px 0;
-  font-size: 13px;
-  color: #333;
-}
-
-.asesor-card-content p {
-  margin: 0;
-  font-size: 11px;
-  color: #666;
-}
-
-.btn-connect-asesor {
-  background: #ffa726;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-connect-asesor:hover {
-  background: #f57c00;
-}
-

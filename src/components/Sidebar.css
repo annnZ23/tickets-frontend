@@ -1,7 +1,7 @@
 .sidebar {
   width: 260px;
-  min-height: 100vh; /* Obliga a que cubra toda la pantalla de arriba a abajo */
-  background-color: #ffffff; /* O tu color oscuro base corporativo */
+  min-height: 100vh;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   box-shadow: 2px 0 10px rgba(0,0,0,0.05);
@@ -10,21 +10,20 @@
   height: 100vh;
 }
 
-/* LOGO */
 .logo-box {
   display: flex;
   justify-content: center;
   margin-bottom: 12px;
   padding: 18px 12px 14px;
-
 }
+
 .logo-img {
-  width: 100%;   /* 🔥 QUE OCUPE TODO EL ANCHO */
-  max-width: 140px; /* 🔥 límite bonito */
-  height: auto;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff7a00;
+  letter-spacing: 1px;
 }
 
-/* USER */
 .user-area {
   font-size: 12px;
   font-weight: 600;
@@ -32,7 +31,6 @@
   padding: 12px 16px 6px;
 }
 
-/* NAV TITLE */
 .nav-title {
   font-size: 12px;
   color: #aaa;
@@ -43,7 +41,6 @@
   margin-bottom: 6px;
 }
 
-/* MENU */
 .menu {
   display: flex;
   flex-direction: column;
@@ -64,19 +61,23 @@
   transition: background 0.15s, color 0.15s;
   text-decoration: none;
 }
+
 .menu-item svg {
   font-size: 15px;
   color: #aaa;
   transition: color 0.15s;
   flex-shrink: 0;
 }
+
 .menu-item:hover {
   background: #fff3e6;
   color: #ff7a00;
 }
+
 .menu-item:hover svg {
   color: #ff7a00;
 }
+
 .menu-item.active {
   background: #fff3e6;
   border-left: 4px solid #ff7a00;
@@ -84,22 +85,25 @@
   font-weight: 600;
   padding-left: 8px;
 }
+
 .menu-item.active svg {
   color: #ff7a00;
 }
 
-/* FOOTER — logout siempre abajo */
 .sidebar-footer {
   padding: 10px;
   border-top: 1px solid #f0f0f0;
   margin-top: auto;
 }
+
 .logout {
   color: #e53e3e !important;
 }
+
 .logout svg {
   color: #e53e3e !important;
 }
+
 .logout:hover {
   background: #fff0f0 !important;
   color: #c53030 !important;
