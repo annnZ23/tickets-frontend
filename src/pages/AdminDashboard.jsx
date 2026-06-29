@@ -56,9 +56,7 @@ const [estadoTicket, setEstadoTicket] = useState("Creado");
       })
       .catch((err) => console.error("Error al actualizar tarea:", err));
   };
-
-  // Construye una línea de tiempo simple a partir de los campos del propio ticket,
-  // sin necesidad de un endpoint nuevo de historial.
+  
   const construirHistorial = (ticket) => {
     const eventos = [
       { etiqueta: "Creado", fecha: ticket.creadoAt },
@@ -126,7 +124,6 @@ const [estadoTicket, setEstadoTicket] = useState("Creado");
 
   useEffect(() => {
     cargarTickets();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -213,9 +210,6 @@ const [estadoTicket, setEstadoTicket] = useState("Creado");
     if (!ticket.fechaLimite || ticket.estado === "Resuelto") return false;
     return new Date(ticket.fechaLimite) < new Date();
   };
-
-  // Calcula qué porcentaje del tiempo estimado por el asesor ya transcurrió,
-  // para dibujar el temporizador circular (0 = recién empezado, 100+ = vencido).
   const progresoTiempo = (ticket) => {
     if (!ticket.fechaLimiteAsesor || !ticket.vistoAt) return null;
     const inicio = new Date(ticket.vistoAt).getTime();
