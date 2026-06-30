@@ -3,6 +3,41 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import "./dashboard.css";
 
+// Misma paleta de marca usada en AdminDashboard.jsx — mantenerlas en sync
+const colors = {
+  naranja: "#ff7f22",
+  naranjaOscuro: "#e66a10",
+  naranjaClaro: "#fff1e6",
+  texto: "#1e293b",
+  textoSec: "#64748b",
+  textoMuted: "#94a3b8",
+  borde: "#eef1f5",
+  fondo: "#f4f6f8",
+  rojo: "#dc2626",
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "11px 14px",
+  borderRadius: "9px",
+  border: `1px solid ${colors.borde}`,
+  fontSize: "13.5px",
+  color: colors.texto,
+  outline: "none",
+  backgroundColor: "#fafbfc",
+  fontFamily: "inherit",
+  boxSizing: "border-box",
+  transition: "border-color 0.15s ease, background-color 0.15s ease",
+};
+
+const labelStyle = {
+  display: "block",
+  fontSize: "12px",
+  fontWeight: "700",
+  color: colors.textoSec,
+  marginBottom: "6px",
+};
+
 export default function RegisterTicket() {
   const navigate = useNavigate();
   const storedUser = localStorage.getItem("user");
@@ -20,10 +55,8 @@ export default function RegisterTicket() {
   const [asunto, setAsunto] = useState("");
   const [detallesImpacto, setDetallesImpacto] = useState("");
 
-  // Área: solo informativo, no filtra el selector de Asesor
   const [area, setArea] = useState("");
 
-  // Lista de asesores (ADMIN/SUPERADMIN) cargada desde el backend
   const [asesores, setAsesores] = useState([]);
   const [asesorId, setAsesorId] = useState("");
   const [cargandoAsesores, setCargandoAsesores] = useState(true);
@@ -37,7 +70,6 @@ export default function RegisterTicket() {
         });
         if (!res.ok) throw new Error("No se pudo cargar la lista de asesores");
         const data = await res.json();
-        // Solo IT (ADMIN/SUPERADMIN) puede recibir tickets; los USER (empleados) no
         const soloAsesores = data.filter(
           (u) => u.role === "ADMIN" || u.role === "SUPERADMIN"
         );
@@ -95,7 +127,7 @@ export default function RegisterTicket() {
           tipo,
           prioridad,
           descripcion: `${asunto}${detallesImpacto ? " — " + detallesImpacto : ""}\n\n${descripcion}`,
-          area, // dato informativo, no filtra asesores
+          area,
           usuarioId: user?.id || null,
           adminIds: [Number(asesorId)],
         }),
@@ -117,126 +149,287 @@ export default function RegisterTicket() {
     }
   };
 
+  // Helper de foco naranja consistente para inputs/selects nativos
+  const onFocusNaranja = (e) => {
+    e.target.style.borderColor = colors.naranja;
+    e.target.style.backgroundColor = "#ffffff";
+  };
+  const onBlurDefault = (e) => {
+    e.target.style.borderColor = colors.borde;
+    e.target.style.backgroundColor = "#fafbfc";
+  };
+
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: colors.fondo }}>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap"
+        rel="stylesheet"
+      />
       <Sidebar />
 
-      <div className="content">
-        <h2>Nuevo incidente</h2>
+      <div style={{ flex: 1, padding: "32px 40px", overflowY: "auto" }}>
+        <h2
+          style={{
+            margin: "0 0 22px 0",
+            fontSize: "22px",
+            fontWeight: "800",
+            color: colors.texto,
+            fontFamily: "'Manrope', 'Segoe UI', sans-serif",
+            letterSpacing: "-0.3px",
+          }}
+        >
+          Nuevo incidente
+        </h2>
 
-        <div className="form-box">
-          <div className="grid">
-            <select
-              value={tipo}
-              onChange={(e) => {
-                setTipo(e.target.value);
-                actualizarPrioridad(e.target.value, null, null);
-              }}
-            >
-              <option value="">Tipo de solicitud</option>
-              <option>Incidente</option>
-              <option>Problema</option>
-              <option>Solicitud de mantenimiento</option>
-              <option>Solicitud de información</option>
-            </select>
+        <div
+          style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "14px",
+            border: `1px solid ${colors.borde}`,
+            padding: "32px",
+            maxWidth: "760px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+          }}
+        >
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "18px" }}>
+            <div>
+              <label style={labelStyle}>Tipo de solicitud</label>
+              <select
+                value={tipo}
+                onChange={(e) => {
+                  setTipo(e.target.value);
+                  actualizarPrioridad(e.target.value, null, null);
+                }}
+                style={inputStyle}
+                onFocus={onFocusNaranja}
+                onBlur={onBlurDefault}
+              >
+                <option value="">Selecciona una opción</option>
+                <option>Incidente</option>
+                <option>Problema</option>
+                <option>Solicitud de mantenimiento</option>
+                <option>Solicitud de información</option>
+              </select>
+            </div>
 
-            <select
-              value={impacto}
-              onChange={(e) => {
-                setImpacto(e.target.value);
-                actualizarPrioridad(null, null, e.target.value);
-              }}
-            >
-              <option value="">Impacto</option>
-              <option>Alto</option>
-              <option>Medio</option>
-              <option>Bajo</option>
-            </select>
+            <div>
+              <label style={labelStyle}>Impacto</label>
+              <select
+                value={impacto}
+                onChange={(e) => {
+                  setImpacto(e.target.value);
+                  actualizarPrioridad(null, null, e.target.value);
+                }}
+                style={inputStyle}
+                onFocus={onFocusNaranja}
+                onBlur={onBlurDefault}
+              >
+                <option value="">Selecciona una opción</option>
+                <option>Alto</option>
+                <option>Medio</option>
+                <option>Bajo</option>
+              </select>
+            </div>
           </div>
 
-          <div className="grid">
-            <input value={estado} readOnly />
-            <input value={prioridad} placeholder="Prioridad" readOnly />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "18px" }}>
+            <div>
+              <label style={labelStyle}>Estado</label>
+              <input value={estado} readOnly style={{ ...inputStyle, color: colors.textoSec, cursor: "default" }} />
+            </div>
+            <div>
+              <label style={labelStyle}>Prioridad</label>
+              <input
+                value={prioridad}
+                placeholder="Se calcula automáticamente"
+                readOnly
+                style={{
+                  ...inputStyle,
+                  color: prioridad === "Alta" ? colors.rojo : colors.naranja,
+                  fontWeight: "700",
+                  cursor: "default",
+                }}
+              />
+            </div>
           </div>
 
-          <div className="grid">
-            <select
-              value={urgencia}
-              onChange={(e) => {
-                setUrgencia(e.target.value);
-                actualizarPrioridad(null, e.target.value, null);
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "18px" }}>
+            <div>
+              <label style={labelStyle}>Urgencia</label>
+              <select
+                value={urgencia}
+                onChange={(e) => {
+                  setUrgencia(e.target.value);
+                  actualizarPrioridad(null, e.target.value, null);
+                }}
+                style={inputStyle}
+                onFocus={onFocusNaranja}
+                onBlur={onBlurDefault}
+              >
+                <option value="">Selecciona una opción</option>
+                <option>Alta</option>
+                <option>Media</option>
+                <option>Baja</option>
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Detalles del impacto</label>
+              <input
+                placeholder="Ej. afecta a todo el departamento"
+                value={detallesImpacto}
+                onChange={(e) => setDetallesImpacto(e.target.value)}
+                style={inputStyle}
+                onFocus={onFocusNaranja}
+                onBlur={onBlurDefault}
+              />
+            </div>
+          </div>
+
+          <div style={{ borderTop: `1px solid ${colors.fondo}`, paddingTop: "20px", marginTop: "4px" }}>
+            <h3
+              style={{
+                margin: "0 0 16px 0",
+                fontSize: "14px",
+                fontWeight: "700",
+                color: colors.texto,
+                fontFamily: "'Manrope', 'Segoe UI', sans-serif",
               }}
             >
-              <option value="">Urgencia</option>
-              <option>Alta</option>
-              <option>Media</option>
-              <option>Baja</option>
-            </select>
+              Datos del solicitante
+            </h3>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "18px" }}>
+              <div>
+                <label style={labelStyle}>Nombre completo</label>
+                <input value={nombre} readOnly style={{ ...inputStyle, color: colors.textoSec, cursor: "default" }} />
+              </div>
+              <div>
+                <label style={labelStyle}>Correo institucional</label>
+                <input value={correo} readOnly style={{ ...inputStyle, color: colors.textoSec, cursor: "default" }} />
+              </div>
+            </div>
+          </div>
 
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "18px" }}>
+            <div>
+              <label style={labelStyle}>Área (informativo)</label>
+              <select
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+                style={inputStyle}
+                onFocus={onFocusNaranja}
+                onBlur={onBlurDefault}
+              >
+                <option value="">Selecciona una opción</option>
+                <option>Soporte Técnico</option>
+                <option>Desarrollo Web</option>
+                <option>Analista de Rutas</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Asesor</label>
+              <select
+                value={asesorId}
+                onChange={(e) => setAsesorId(e.target.value)}
+                disabled={cargandoAsesores}
+                style={{ ...inputStyle, cursor: cargandoAsesores ? "wait" : "pointer" }}
+                onFocus={onFocusNaranja}
+                onBlur={onBlurDefault}
+              >
+                <option value="">
+                  {cargandoAsesores ? "Cargando asesores..." : "Selecciona un asesor"}
+                </option>
+                {asesores.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name} ({a.area?.nombre || "IT"})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label style={labelStyle}>Asunto</label>
             <input
-              placeholder="Detalles del impacto"
-              value={detallesImpacto}
-              onChange={(e) => setDetallesImpacto(e.target.value)}
+              placeholder="Resume el incidente en pocas palabras"
+              value={asunto}
+              onChange={(e) => setAsunto(e.target.value)}
+              style={inputStyle}
+              onFocus={onFocusNaranja}
+              onBlur={onBlurDefault}
             />
           </div>
 
-          <h3>Datos del solicitante</h3>
-          <div className="grid">
-            <input value={nombre} readOnly />
-            <input value={correo} readOnly />
+          <div>
+            <label style={labelStyle}>Descripción del problema</label>
+            <textarea
+              placeholder="Describe con detalle qué está pasando"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              rows={3}
+              style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }}
+              onFocus={onFocusNaranja}
+              onBlur={onBlurDefault}
+            />
           </div>
 
-          {/* FILA 5 — Área es solo informativa, no filtra el selector de Asesor */}
-          <div className="grid">
-            <select value={area} onChange={(e) => setArea(e.target.value)}>
-              <option value="">Área</option>
-              <option>Soporte Técnico</option>
-              <option>Desarrollo Web</option>
-              <option>Analista de Rutas</option>
-            </select>
-
-            <select
-              value={asesorId}
-              onChange={(e) => setAsesorId(e.target.value)}
-              disabled={cargandoAsesores}
-            >
-              <option value="">
-                {cargandoAsesores ? "Cargando asesores..." : "Asesor"}
-              </option>
-              {asesores.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name} ({a.area?.nombre || "IT"})
-                </option>
-              ))}
-            </select>
+          <div
+            style={{
+              border: `1.5px dashed ${colors.borde}`,
+              borderRadius: "10px",
+              padding: "28px",
+              textAlign: "center",
+              color: colors.textoMuted,
+              fontSize: "13px",
+              backgroundColor: colors.fondo,
+            }}
+          >
+            Arrastra archivos aquí
           </div>
 
-          <input
-            className="full"
-            placeholder="Asunto"
-            value={asunto}
-            onChange={(e) => setAsunto(e.target.value)}
-          />
-
-          <input
-            className="full"
-            placeholder="Descripción del problema"
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-          />
-
-          <div className="upload">Arrastra archivos aquí</div>
-
-          <div className="buttons">
+          <div style={{ display: "flex", gap: "12px", marginTop: "6px" }}>
             <button
-              className="btn-primary"
               onClick={crearTicket}
               disabled={enviando}
+              style={{
+                backgroundColor: enviando ? colors.naranjaOscuro : colors.naranja,
+                color: "white",
+                border: "none",
+                padding: "12px 26px",
+                borderRadius: "9px",
+                fontSize: "13.5px",
+                fontWeight: "700",
+                cursor: enviando ? "default" : "pointer",
+                transition: "background-color 0.15s ease",
+              }}
+              onMouseEnter={(e) => {
+                if (!enviando) e.currentTarget.style.backgroundColor = colors.naranjaOscuro;
+              }}
+              onMouseLeave={(e) => {
+                if (!enviando) e.currentTarget.style.backgroundColor = colors.naranja;
+              }}
             >
-              {enviando ? "Creando..." : "Crear Ticket"}
+              {enviando ? "Creando..." : "Crear ticket"}
             </button>
 
-            <button className="btn-light" onClick={() => navigate(-1)}>
+            <button
+              onClick={() => navigate(-1)}
+              style={{
+                backgroundColor: "#ffffff",
+                color: colors.textoSec,
+                border: `1px solid ${colors.borde}`,
+                padding: "12px 26px",
+                borderRadius: "9px",
+                fontSize: "13.5px",
+                fontWeight: "700",
+                cursor: "pointer",
+                transition: "background-color 0.15s ease",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = colors.fondo)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+            >
               Cancelar
             </button>
           </div>
