@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import "./dashboard.css";
 
-// Misma paleta de marca usada en AdminDashboard.jsx — mantenerlas en sync
 const colors = {
   naranja: "#ff7f22",
   naranjaOscuro: "#e66a10",

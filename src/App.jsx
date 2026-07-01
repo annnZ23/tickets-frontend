@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-
 import Login from "./pages/Login";
 import RegisterTicket from "./pages/RegisterTicket";
 import ChatTicket from "./pages/ChatTicket";
@@ -11,12 +10,12 @@ import Reportes from "./pages/Reportes";
 import Usuarios from "./pages/Usuarios";
 import Configuracion from "./pages/Configuracion";
 import EncuestaSatisfaccion from "./pages/EncuestaSatisfaccion";
+import RegistroEntrada from "./pages/RegistroEntrada";
+
 
 const ROLES_ADMIN = ["SUPERADMIN", "ADMIN"];
 const ROLES_GESTION_USUARIOS = ["SUPERADMIN"];
 
-// Componente de protección, declarado FUERA de App para que React
-// no lo recree en cada render.
 function RutaProtegida({ usuario, rolesPermitidos, children }) {
   if (!usuario) {
     return <Navigate to="/" replace />;
@@ -127,7 +126,14 @@ function App() {
             </RutaProtegida>
           }
         />
-
+        <Route
+  path="/admin/registro-entrada"
+  element={
+    <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+      <RegistroEntrada usuario={usuario} cerrarSesion={cerrarSesion} />
+    </RutaProtegida>
+  }
+/>
         <Route
           path="/admin/configuracion"
           element={

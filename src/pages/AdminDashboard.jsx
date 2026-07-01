@@ -17,8 +17,8 @@ import {
 } from "react-icons/fa";
 import "./Dashboard.css";
 import baprosaLogo from "../assets/baprosa-logo.png";
+import { useNotificaciones, ToastContainer } from "../hooks/useNotificaciones";
 
-// Paleta de marca Baprosa — un solo lugar para todos los tonos del dashboard
 const colors = {
   naranja: "#ff7f22",
   naranjaOscuro: "#e66a10",
@@ -52,12 +52,9 @@ export default function AdminDashboard({ usuario, cerrarSesion }) {
   const [tabActiva, setTabActiva] = useState("conversaciones");
   const [misTareas, setMisTareas] = useState([]);
   const [cargandoTareas, setCargandoTareas] = useState(false);
-
-  // Filtro por KPI clickeable + búsqueda
-  const [filtroActivo, setFiltroActivo] = useState("pendientes"); // "todos" | "pendientes" | "En Proceso" | "Resuelto"
+  const [filtroActivo, setFiltroActivo] = useState("pendientes"); 
   const [busqueda, setBusqueda] = useState("");
-
-  // Topbar: notificaciones reales, correos recientes, menú avatar
+  const { toasts } = useNotificaciones(usuario);
   const [menuAvatarAbierto, setMenuAvatarAbierto] = useState(false);
   const [panelNotifAbierto, setPanelNotifAbierto] = useState(false);
   const [panelCorreoAbierto, setPanelCorreoAbierto] = useState(false);
@@ -106,6 +103,7 @@ export default function AdminDashboard({ usuario, cerrarSesion }) {
   const colorNotif = (tipo) => {
     if (tipo === "riesgo") return { bg: "#fee2e2", color: "#991b1b", label: "En riesgo" };
     if (tipo === "encuesta") return { bg: "#e9f9ee", color: "#16a34a", label: "Encuesta" };
+    if (tipo === "subtarea") return { bg: "#eff6ff", color: "#1d4ed8", label: "Sub-tarea" };
     return { bg: "#fff1e6", color: "#9a3412", label: "Nuevo" };
   };
 
@@ -372,6 +370,9 @@ export default function AdminDashboard({ usuario, cerrarSesion }) {
         rel="stylesheet"
       />
       <Sidebar usuario={usuario} cerrarSesion={cerrarSesion} />
+
+      {/* ── TOASTS de notificación en tiempo real ── */}
+      <ToastContainer toasts={toasts} />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {/* ===== TOPBAR BLANCA ===== */}

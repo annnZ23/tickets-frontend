@@ -1,3 +1,16 @@
+:root {
+  --primary: #ff7a00;
+  --primary-hover: #f06c00;
+  --background: #fff8f2;
+  --card-bg: #ffffff;
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --border: #ececec;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --radius: 18px;
+  --font-main: 'Poppins', sans-serif;
+}
+
 .rail {
   width: 72px;
   min-height: 100vh;
@@ -6,22 +19,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 0;
+  padding: 8px 0;
   position: sticky;
   top: 0;
   flex-shrink: 0;
   font-family: 'Segoe UI', sans-serif;
-}
-
-.rail-logo {
-  width: 100%;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 6px;
-  margin-bottom: 8px;
-  box-sizing: border-box;
 }
 
 .rail-avatar {
@@ -98,7 +100,6 @@
   color: #ffffff;
 }
 
-/* Tooltip flotante a la derecha del rail */
 .rail-tooltip {
   position: absolute;
   left: 56px;
@@ -140,3 +141,9 @@
   border-style: solid;
   border-color: transparent #1e293b transparent transparent;
 }
+
+.sidebar { width: 280px; background: var(--primary); color: white; height: 100vh; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+.logo { font-size: 24px; font-weight: 700; margin-bottom: 40px; padding: 10px; }
+.nav-item { display: flex; align-items: center; gap: 15px; padding: 15px; cursor: pointer; border-radius: var(--radius); transition: all 0.3s ease; }
+.nav-item:hover { background: rgba(255,255,255,0.1); transform: translateX(10px); }
+.nav-item.active { background: white; color: var(--primary); font-weight: 600; box-shadow: var(--shadow); }

@@ -1,25 +1,24 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+
 import {
   FaTicketAlt,
   FaListUl,
   FaComments,
+  FaArrowRight,
+  FaHistory,
+  FaWarehouse,
+  FaMoneyBillWave,
   FaUsers,
+  FaArrowLeft,
   FaChartBar,
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
-import baprosaLogo from "../assets/baprosa-logo.png";
 import "./Sidebar.css";
 
 const ROLES_GESTION_USUARIOS = ["SUPERADMIN"];
 const ROLES_ADMIN = ["SUPERADMIN", "ADMIN"];
-
-const getIniciales = (name) => {
-  if (!name) return "U";
-  const parts = name.trim().split(" ");
-  return parts.length > 1 ? `${parts[0][0]}${parts[1][0]}`.toUpperCase() : parts[0][0].toUpperCase();
-};
 
 export default function Sidebar({ usuario, cerrarSesion }) {
   const navigate = useNavigate();
@@ -27,7 +26,6 @@ export default function Sidebar({ usuario, cerrarSesion }) {
   const [hoverItem, setHoverItem] = useState(null);
 
   const isActive = (path) => location.pathname === path;
-
   const handleLogout = () => {
     if (cerrarSesion) {
       cerrarSesion();
@@ -41,54 +39,18 @@ export default function Sidebar({ usuario, cerrarSesion }) {
   const puedeGestionUsuarios = ROLES_GESTION_USUARIOS.includes(usuario?.role);
   const esEquipoIT = ROLES_ADMIN.includes(usuario?.role);
 
-  // Definición única de todos los ítems del rail.
-  // - path: a dónde navega
-  // - permitido: si el usuario actual puede usarlo
-  // - Para USER (empleado): solo "Mis Tickets" y "Chat por Área" quedan habilitados.
-  //   El resto se muestra bloqueado (visible pero no clicable).
   const items = [
-    {
-      key: "tickets",
-      icon: <FaTicketAlt />,
-      label: esEquipoIT ? "Tickets Soporte" : "Mis Tickets",
-      path: esEquipoIT ? "/admin/dashboard" : "/crear",
-      permitido: true, // todos pueden crear/ver tickets, IT o empleado
-    },
-    {
-      key: "tareas",
-      icon: <FaListUl />,
-      label: "Asignación Tareas IT",
-      path: "/admin/tareas",
-      permitido: puedeGestionUsuarios,
-    },
-    {
-      key: "chat",
-      icon: <FaComments />,
-      label: "Chat por Área",
-      path: "/admin/chat-area",
-      permitido: true, // empleados y asesores usan el chat para dar seguimiento al ticket
-    },
-    {
-      key: "usuarios",
-      icon: <FaUsers />,
-      label: "Usuarios",
-      path: "/admin/usuarios",
-      permitido: puedeGestionUsuarios,
-    },
-    {
-      key: "reportes",
-      icon: <FaChartBar />,
-      label: "Reportes",
-      path: "/admin/reportes",
-      permitido: esEquipoIT,
-    },
-    {
-      key: "config",
-      icon: <FaCog />,
-      label: "Configuración",
-      path: "/admin/configuracion",
-      permitido: puedeGestionUsuarios,
-    },
+    { key: "tickets", icon: <FaTicketAlt />, label: "Tickets Soporte", path: esEquipoIT ? "/admin/dashboard" : "/crear", permitido: true },
+    { key: "tareas", icon: <FaListUl />, label: "Asignación Tareas IT", path: "/admin/tareas", permitido: puedeGestionUsuarios },
+    { key: "chat", icon: <FaComments />, label: "Chat por Área", path: "/admin/chat-area", permitido: true },
+    { key: "entrada", icon: <FaArrowRight />, label: "Registro de Entrada", path: "/admin/registro-entrada", permitido: true },
+    { key: "historial", icon: <FaHistory />, label: "Historial", path: "/admin/historial", permitido: true },
+    { key: "almacen", icon: <FaWarehouse />, label: "Almacén", path: "/admin/almacen", permitido: esEquipoIT },
+    { key: "pagos", icon: <FaMoneyBillWave />, label: "Pago de Proveedores", path: "/admin/pagos", permitido: esEquipoIT },
+    { key: "usuarios", icon: <FaUsers />, label: "Usuarios", path: "/admin/usuarios", permitido: puedeGestionUsuarios },
+    { key: "salida", icon: <FaArrowLeft />, label: "Registro de Salida", path: "/admin/registro-salida", permitido: true },
+    { key: "reportes", icon: <FaChartBar />, label: "Reportes", path: "/admin/reportes", permitido: esEquipoIT },
+    { key: "config", icon: <FaCog />, label: "Configuración", path: "/admin/configuracion", permitido: puedeGestionUsuarios },
   ];
 
   const handleClickItem = (item) => {
@@ -98,7 +60,7 @@ export default function Sidebar({ usuario, cerrarSesion }) {
 
   return (
     <div className="rail">
-      <div className="rail-menu" style={{ marginTop: "8px" }}>
+      <div className="rail-menu" style={{ marginTop: "65px" }}>
         {items.map((item) => (
           <div
             key={item.key}
@@ -110,7 +72,7 @@ export default function Sidebar({ usuario, cerrarSesion }) {
             {item.icon}
             {hoverItem === item.key && (
               <div className="rail-tooltip">
-                {item.permitido ? item.label : "No tienes acceso"}
+                <strong>{item.label}</strong>
               </div>
             )}
           </div>
@@ -124,7 +86,11 @@ export default function Sidebar({ usuario, cerrarSesion }) {
         onMouseLeave={() => setHoverItem(null)}
       >
         <FaSignOutAlt />
-        {hoverItem === "logout" && <div className="rail-tooltip">Cerrar sesión</div>}
+        {hoverItem === "logout" && (
+          <div className="rail-tooltip">
+            <strong>Cerrar sesión</strong>
+          </div>
+        )}
       </div>
     </div>
   );

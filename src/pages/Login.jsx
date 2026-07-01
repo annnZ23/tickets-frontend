@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import Chatbot from "./Chatbot";
-
 import iconLogin from "../assets/icon-login.png";
 import control from "../assets/control de equipo.png";
 import mantenimiento from "../assets/mantenimiento.png";
