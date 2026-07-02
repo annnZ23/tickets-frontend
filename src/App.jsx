@@ -11,7 +11,7 @@ import Usuarios from "./pages/Usuarios";
 import Configuracion from "./pages/Configuracion";
 import EncuestaSatisfaccion from "./pages/EncuestaSatisfaccion";
 import RegistroEntrada from "./pages/RegistroEntrada";
-
+import EquipoNuevo from "./pages/EquipoNuevo";
 
 const ROLES_ADMIN = ["SUPERADMIN", "ADMIN"];
 const ROLES_GESTION_USUARIOS = ["SUPERADMIN"];
@@ -142,6 +142,13 @@ function App() {
             </RutaProtegida>
           }
         />
+
+<Route path="/admin/equipo-nuevo" element={
+  <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+    <EquipoNuevo usuario={usuario} cerrarSesion={cerrarSesion} />
+  </RutaProtegida>
+} />
+
         <Route path="/encuesta/:id" element={<EncuestaSatisfaccion />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />

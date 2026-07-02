@@ -20,11 +20,19 @@ const getIniciales = (name) => {
   return parts.length > 1 ? `${parts[0][0]}${parts[1][0]}`.toUpperCase() : parts[0][0].toUpperCase();
 };
 
+const CheckItem = ({ text }) => (
+  <li style={{ display: "flex", alignItems: "flex-start", gap: "9px", padding: "5px 0", borderBottom: "1px solid #f8f9fa", fontSize: "13px", color: "#374151", lineHeight: "1.4" }}>
+    <span style={{ color: colors.naranja, fontWeight: "800", fontSize: "14px", marginTop: "1px", flexShrink: 0 }}>✓</span>
+    {text}
+  </li>
+);
+
 export default function RegistroEntrada({ usuario, cerrarSesion }) {
   const navigate = useNavigate();
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: colors.fondo, fontFamily: "'Segoe UI', sans-serif" }}>
+    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: colors.fondo, fontFamily: "'Manrope', 'Segoe UI', sans-serif" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
       <Sidebar usuario={usuario} cerrarSesion={cerrarSesion} />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -50,95 +58,104 @@ export default function RegistroEntrada({ usuario, cerrarSesion }) {
         </div>
 
         {/* CONTENIDO */}
-        <div style={{ flex: 1, padding: "36px 40px", overflowY: "auto" }}>
+        <div style={{ flex: 1, padding: "32px 48px", overflowY: "auto" }}>
 
-          {/* Botón volver */}
-          <button
-            onClick={() => navigate(-1)}
-            style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", color: colors.textoSec, cursor: "pointer", fontSize: "13px", fontWeight: "600", marginBottom: "24px", padding: "6px 10px", borderRadius: "8px", transition: "background 0.15s, color 0.15s" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = colors.naranjaClaro; e.currentTarget.style.color = colors.naranja; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = colors.textoSec; }}
-          >
-            <FaArrowLeft style={{ fontSize: "13px" }} /> Volver
-          </button>
-
-          {/* Header centrado */}
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <h1 style={{ margin: "0 0 10px", fontSize: "26px", fontWeight: "800", color: colors.texto, fontFamily: "'Manrope', 'Segoe UI', sans-serif", letterSpacing: "-0.3px" }}>
-              Registro de Entrada
-            </h1>
-            <p style={{ fontSize: "14px", color: colors.textoSec, margin: "0 auto", maxWidth: "520px", lineHeight: "1.6" }}>
-              Antes de registrar un equipo, selecciona el tipo de entrada que deseas realizar. Esto nos permitirá guiarte por el flujo correcto.
-            </p>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: colors.naranjaClaro, border: "1px solid #ffcc80", padding: "10px 20px", borderRadius: "9px", marginTop: "18px", color: "#9a3412", fontWeight: "600", fontSize: "13.5px" }}>
-              <span style={{ fontSize: "16px" }}>ⓘ</span>
-              ¿El equipo que vas a registrar es nuevo o viene reasignado de otro usuario?
+          {/* Botón volver + título integrados */}
+          <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "6px" }}>
+            <button
+              onClick={() => navigate(-1)}
+              style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#ffffff", border: `1px solid ${colors.borde}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: colors.textoSec, boxShadow: "0 2px 6px rgba(0,0,0,0.06)", transition: "all 0.15s", flexShrink: 0 }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = colors.naranjaClaro; e.currentTarget.style.color = colors.naranja; e.currentTarget.style.borderColor = colors.naranja; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.color = colors.textoSec; e.currentTarget.style.borderColor = colors.borde; }}
+              title="Volver"
+            >
+              <FaArrowLeft style={{ fontSize: "13px" }} />
+            </button>
+            <div>
+              <h1 style={{ margin: 0, fontSize: "22px", fontWeight: "800", color: colors.texto, letterSpacing: "-0.3px" }}>
+                Registro de Entrada
+              </h1>
+              <p style={{ margin: "2px 0 0", fontSize: "13px", color: colors.textoSec }}>
+                Selecciona el tipo de entrada para guiarte por el flujo correcto.
+              </p>
             </div>
           </div>
 
+          {/* Banner informativo con borde izquierdo naranja */}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "#fffbf5", borderLeft: `4px solid ${colors.naranja}`, border: `1px solid #ffd49e`, borderLeftWidth: "4px", padding: "12px 18px", borderRadius: "0 9px 9px 0", marginTop: "20px", marginBottom: "32px", color: "#92400e", fontWeight: "600", fontSize: "13.5px" }}>
+            <span style={{ fontSize: "18px", flexShrink: 0 }}>ⓘ</span>
+            ¿El equipo que vas a registrar es nuevo o viene reasignado de otro usuario?
+          </div>
+
           {/* Tarjetas */}
-          <div style={{ display: "flex", gap: "24px", justifyContent: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "22px", justifyContent: "center", flexWrap: "wrap" }}>
 
             {/* Equipo Nuevo */}
             <div
-              style={{ background: "#fff", padding: "32px", borderRadius: "16px", width: "380px", textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.04)", border: `1px solid ${colors.borde}`, transition: "box-shadow 0.18s, transform 0.18s" }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 8px 28px rgba(255,127,34,0.12)"; e.currentTarget.style.transform = "translateY(-3px)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.04)"; e.currentTarget.style.transform = "translateY(0)"; }}
+              style={{ background: "#fff", borderRadius: "14px", width: "360px", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.05)", border: `1px solid ${colors.borde}`, borderTop: `4px solid ${colors.naranja}`, transition: "box-shadow 0.18s, transform 0.18s", display: "flex", flexDirection: "column" }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 10px 32px rgba(255,127,34,0.14)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.05)"; e.currentTarget.style.transform = "translateY(0)"; }}
             >
-              <div style={{ width: "56px", height: "56px", background: colors.naranjaClaro, borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", color: colors.naranja, fontSize: "26px" }}>
-                <FaLaptop />
+              <div style={{ padding: "28px 28px 0" }}>
+                <div style={{ width: "52px", height: "52px", background: colors.naranjaClaro, borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "14px", color: colors.naranja, fontSize: "24px" }}>
+                  <FaLaptop />
+                </div>
+                <h2 style={{ margin: "0 0 8px", fontSize: "17px", fontWeight: "800", color: colors.texto }}>Equipo Nuevo</h2>
+                <p style={{ fontSize: "12.5px", color: colors.textoSec, lineHeight: "1.6", marginBottom: "16px" }}>
+                  Registra un equipo que ingresa por primera vez al Inventario. Crea un registro completo con categoría, ubicación, accesorios y genera la hoja de entrega.
+                </p>
+                <ul style={{ padding: 0, margin: "0 0 20px", listStyle: "none" }}>
+                  {["Crear registro con categoría y ubicación", "Agregar accesorios del equipo", "Generar hoja de entrega", "Asignar usuario responsable"].map((item) => (
+                    <CheckItem key={item} text={item} />
+                  ))}
+                </ul>
               </div>
-              <h2 style={{ margin: "0 0 10px", fontSize: "18px", fontWeight: "700", color: colors.texto, fontFamily: "'Manrope', 'Segoe UI', sans-serif" }}>Equipo Nuevo</h2>
-              <p style={{ fontSize: "13px", color: colors.textoSec, lineHeight: "1.6", marginBottom: "20px" }}>
-                Registra un equipo que ingresa por primera vez al Inventario. Podrás crear un nuevo registro completo incluyendo categoría, ubicación, accesorios asociados y generar la hoja de entrega correspondiente.
-              </p>
-              <ul style={{ textAlign: "left", padding: 0, margin: "0 0 24px", listStyle: "none", fontSize: "13px", color: "#444", lineHeight: "2.2" }}>
-                {["Crear registro con categoría y ubicación", "Agregar accesorios del equipo", "Generar hoja de entrega", "Asignar usuario responsable"].map((item) => (
-                  <li key={item} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ color: colors.naranja, fontWeight: "700" }}>✓</span> {item}
-                  </li>
-                ))}
-              </ul>
-              <button
-                style={{ background: colors.naranja, color: "white", border: "none", padding: "13px", width: "100%", borderRadius: "9px", fontWeight: "700", cursor: "pointer", fontSize: "13.5px", transition: "background 0.15s" }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = colors.naranjaOscuro)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = colors.naranja)}
-              >
-                Seleccionar Equipo Nuevo
-              </button>
+              <div style={{ padding: "0 28px 28px", marginTop: "auto" }}>
+                <button
+                  onClick={() => navigate("/admin/equipo-nuevo")}
+                  style={{ background: colors.naranja, color: "white", border: "none", padding: "13px", width: "100%", borderRadius: "9px", fontWeight: "700", cursor: "pointer", fontSize: "13.5px", fontFamily: "inherit", transition: "background 0.15s" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = colors.naranjaOscuro)}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = colors.naranja)}
+                >
+                  Seleccionar Equipo Nuevo
+                </button>
+              </div>
             </div>
 
             {/* Equipo Reasignado */}
             <div
-              style={{ background: "#fff", padding: "32px", borderRadius: "16px", width: "380px", textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.04)", border: `1px solid ${colors.borde}`, transition: "box-shadow 0.18s, transform 0.18s" }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 8px 28px rgba(255,127,34,0.12)"; e.currentTarget.style.transform = "translateY(-3px)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.04)"; e.currentTarget.style.transform = "translateY(0)"; }}
+              style={{ background: "#fff", borderRadius: "14px", width: "360px", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.05)", border: `1px solid ${colors.borde}`, borderTop: "4px solid #94a3b8", transition: "box-shadow 0.18s, transform 0.18s", display: "flex", flexDirection: "column" }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 10px 32px rgba(255,127,34,0.14)"; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.borderTopColor = colors.naranja; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.05)"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderTopColor = "#94a3b8"; }}
             >
-              <div style={{ width: "56px", height: "56px", background: colors.naranjaClaro, borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", color: colors.naranja, fontSize: "26px" }}>
-                <FaUndo />
+              <div style={{ padding: "28px 28px 0" }}>
+                <div style={{ width: "52px", height: "52px", background: colors.naranjaClaro, borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "14px", color: colors.naranja, fontSize: "24px" }}>
+                  <FaUndo />
+                </div>
+                <h2 style={{ margin: "0 0 8px", fontSize: "17px", fontWeight: "800", color: colors.texto }}>Equipo Reasignado</h2>
+                <p style={{ fontSize: "12.5px", color: colors.textoSec, lineHeight: "1.6", marginBottom: "16px" }}>
+                  Registra un equipo ya existente en el Inventario que será reasignado a un nuevo usuario. Revisa el historial y actualiza la información.
+                </p>
+                <ul style={{ padding: 0, margin: "0 0 20px", listStyle: "none" }}>
+                  {["Revisar historial de asignaciones", "Verificar estado actual del equipo", "Agregar accesorios y nuevo usuario", "Imprimir hoja de entrega actualizada"].map((item) => (
+                    <CheckItem key={item} text={item} />
+                  ))}
+                </ul>
               </div>
-              <h2 style={{ margin: "0 0 10px", fontSize: "18px", fontWeight: "700", color: colors.texto, fontFamily: "'Manrope', 'Segoe UI', sans-serif" }}>Equipo Reasignado</h2>
-              <p style={{ fontSize: "13px", color: colors.textoSec, lineHeight: "1.6", marginBottom: "20px" }}>
-                Registra un equipo que ya exista en el Inventario y será reasignado a un nuevo usuario. Podrás revisar el historial de asignaciones, verificar el estado actual y actualizar la información.
-              </p>
-              <ul style={{ textAlign: "left", padding: 0, margin: "0 0 24px", listStyle: "none", fontSize: "13px", color: "#444", lineHeight: "2.2" }}>
-                {["Revisar historial de asignaciones", "Verificar estado actual del equipo", "Agregar accesorios y nuevo usuario", "Imprimir hoja de entrega actualizada"].map((item) => (
-                  <li key={item} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ color: colors.naranja, fontWeight: "700" }}>✓</span> {item}
-                  </li>
-                ))}
-              </ul>
-              <button
-                style={{ background: "white", color: colors.naranja, border: `2px solid ${colors.naranja}`, padding: "11px", width: "100%", borderRadius: "9px", fontWeight: "700", cursor: "pointer", fontSize: "13.5px", transition: "background 0.15s" }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = colors.naranjaClaro)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
-              >
-                Seleccionar Equipo Reasignado
-              </button>
+              <div style={{ padding: "0 28px 28px", marginTop: "auto" }}>
+                <button
+                  onClick={() => navigate("/admin/equipo-reasignado")}
+                  style={{ background: "white", color: colors.naranja, border: `2px solid ${colors.naranja}`, padding: "11px", width: "100%", borderRadius: "9px", fontWeight: "700", cursor: "pointer", fontSize: "13.5px", fontFamily: "inherit", transition: "all 0.15s" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = colors.naranja; e.currentTarget.style.color = "white"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "white"; e.currentTarget.style.color = colors.naranja; }}
+                >
+                  Seleccionar Equipo Reasignado
+                </button>
+              </div>
             </div>
           </div>
 
-          <p style={{ textAlign: "center", fontSize: "13px", color: colors.textoMuted, marginTop: "36px" }}>
+          <p style={{ textAlign: "center", fontSize: "12.5px", color: colors.textoMuted, marginTop: "32px" }}>
             ◈ Si no estás seguro del tipo de entrada, consulta con el área de soporte técnico antes de continuar.
           </p>
         </div>
