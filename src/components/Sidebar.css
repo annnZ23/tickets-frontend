@@ -12,13 +12,14 @@
 }
 
 .rail {
-  width: 72px;
+  width: 240px;
   min-height: 100vh;
   height: 100vh;
-  background-color: #ff7a00;
+  background-color: #ffffff;
+  border-right: 1px solid #eef1f5;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   padding: 8px 0;
   position: sticky;
   top: 0;
@@ -26,85 +27,113 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-.rail-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background-color: #ffffff;
-  color: #ff7a00;
+.rail-logo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 12px;
-  margin-bottom: 18px;
-  cursor: pointer;
-  position: relative;
+  justify-content: flex-start;
+  padding: 14px 20px 18px;
+}
+
+.rail-logo img {
+  max-width: 100%;
+  height: 38px;
+  object-fit: contain;
+}
+
+.rail-section-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  padding: 4px 22px 8px;
 }
 
 .rail-menu {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
   flex: 1;
   width: 100%;
-  align-items: center;
+  align-items: stretch;
+  padding: 0 12px;
 }
 
 .rail-item {
-  width: 42px;
+  width: 100%;
   height: 42px;
-  border-radius: 11px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 17px;
+  gap: 12px;
+  padding: 0 12px;
+  color: #475569;
+  font-size: 15px;
   cursor: pointer;
   position: relative;
   transition: background-color 0.15s ease, color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.rail-item-icon {
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.rail-item-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rail-item:hover {
-  background-color: rgba(255, 255, 255, 0.16);
-  color: #ffffff;
+  background-color: #fff1e6;
+  color: #ff7a00;
 }
 
 .rail-item.active {
-  background-color: #ffffff;
-  color: #ff7a00;
+  background-color: #ff7a00;
+  color: #ffffff;
 }
 
 .rail-item.active:hover {
-  background-color: #ffffff;
-  color: #ff7a00;
+  background-color: #ff7a00;
+  color: #ffffff;
 }
 
+/* Bloqueado: se ve, pero apagado — el cursor "not-allowed" lo deja claro */
 .rail-item.blocked {
-  color: rgba(255, 255, 255, 0.38);
+  color: #cbd5e1;
   cursor: not-allowed;
 }
 
 .rail-item.blocked:hover {
-  background-color: transparent;
-  color: rgba(255, 255, 255, 0.38);
+  background-color: #f8fafc;
+  color: #cbd5e1;
 }
 
 .rail-item.logout {
-  color: rgba(255, 255, 255, 0.85);
+  color: #ef4444;
   margin-top: auto;
 }
 
 .rail-item.logout:hover {
-  background-color: rgba(0, 0, 0, 0.12);
-  color: #ffffff;
+  background-color: #fee2e2;
+  color: #ef4444;
 }
 
 .rail-tooltip {
   position: absolute;
-  left: 56px;
+  left: 100%;
   top: 50%;
   transform: translateY(-50%);
+  margin-left: 8px;
   background-color: #1e293b;
   color: #ffffff;
   font-size: 12px;
@@ -114,21 +143,7 @@
   white-space: nowrap;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
   z-index: 50;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
   pointer-events: none;
-}
-
-.rail-tooltip strong {
-  font-size: 12.5px;
-  font-weight: 700;
-}
-
-.rail-tooltip span {
-  font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.65);
-  font-weight: 500;
 }
 
 .rail-tooltip::before {

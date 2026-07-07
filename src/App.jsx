@@ -12,6 +12,7 @@ import Configuracion from "./pages/Configuracion";
 import EncuestaSatisfaccion from "./pages/EncuestaSatisfaccion";
 import RegistroEntrada from "./pages/RegistroEntrada";
 import EquipoNuevo from "./pages/EquipoNuevo";
+import RegistroUsuario from "./pages/RegistroUsuario";
 
 const ROLES_ADMIN = ["SUPERADMIN", "ADMIN"];
 const ROLES_GESTION_USUARIOS = ["SUPERADMIN"];
@@ -148,6 +149,8 @@ function App() {
     <EquipoNuevo usuario={usuario} cerrarSesion={cerrarSesion} />
   </RutaProtegida>
 } />
+
+<Route path="/registro" element={<RegistroUsuario />} />
 
         <Route path="/encuesta/:id" element={<EncuestaSatisfaccion />} />
 
