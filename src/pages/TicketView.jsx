@@ -8,8 +8,6 @@ function TicketView({ ticket }) {
 
   return (
     <div style={layout}>
-
-      {/* IZQUIERDA */}
       <div style={left}>
 
         <div style={card}>
@@ -24,8 +22,7 @@ function TicketView({ ticket }) {
         </div>
 
       </div>
-
-      {/* DERECHA */}
+      
       <div style={right}>
 
         <Accordion title="Propiedades">

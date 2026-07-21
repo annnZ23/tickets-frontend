@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import RegisterTicket from "./pages/RegisterTicket";
-import ChatTicket from "./pages/ChatTicket";
+import MisConversaciones from "./pages/MisConversaciones";
 import AdminDashboard from "./pages/AdminDashboard";
 import AsignacionTareas from "./pages/AsignacionTareas";
 import ChatPorArea from "./pages/ChatPorArea";
@@ -12,7 +12,12 @@ import Configuracion from "./pages/Configuracion";
 import EncuestaSatisfaccion from "./pages/EncuestaSatisfaccion";
 import RegistroEntrada from "./pages/RegistroEntrada";
 import EquipoNuevo from "./pages/EquipoNuevo";
-import RegistroUsuario from "./pages/RegistroUsuario";
+import EquipoReasignado from "./pages/EquipoReasignado";
+import Historial from "./pages/Historial";
+import AlmacenBodega from "./pages/AlmacenBodega";
+import PagoProveedores from "./pages/PagoProveedores";
+import RegistroSalida from "./pages/RegistroSalida";
+import HistorialMovimientos from "./pages/HistorialMovimientos";
 
 const ROLES_ADMIN = ["SUPERADMIN", "ADMIN"];
 const ROLES_GESTION_USUARIOS = ["SUPERADMIN"];
@@ -73,10 +78,18 @@ function App() {
         />
 
         <Route
+          path="/chat"
+          element={
+            <RutaProtegida usuario={usuario}>
+              <MisConversaciones usuario={usuario} cerrarSesion={cerrarSesion} />
+            </RutaProtegida>
+          }
+        />
+        <Route
           path="/chat/:id"
           element={
             <RutaProtegida usuario={usuario}>
-              <ChatTicket usuario={usuario} />
+              <MisConversaciones usuario={usuario} cerrarSesion={cerrarSesion} />
             </RutaProtegida>
           }
         />
@@ -96,7 +109,7 @@ function App() {
           path="/admin/usuarios"
           element={
             <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_GESTION_USUARIOS}>
-              <Usuarios usuario={usuario} />
+              <Usuarios usuario={usuario} cerrarSesion={cerrarSesion} />
             </RutaProtegida>
           }
         />
@@ -105,7 +118,7 @@ function App() {
           path="/admin/reportes"
           element={
             <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
-              <Reportes usuario={usuario} />
+              <Reportes usuario={usuario} cerrarSesion={cerrarSesion} />
             </RutaProtegida>
           }
         />
@@ -113,8 +126,8 @@ function App() {
         <Route
           path="/admin/tareas"
           element={
-            <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_GESTION_USUARIOS}>
-              <AsignacionTareas usuario={usuario} />
+            <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+              <AsignacionTareas usuario={usuario} cerrarSesion={cerrarSesion} />
             </RutaProtegida>
           }
         />
@@ -139,7 +152,7 @@ function App() {
           path="/admin/configuracion"
           element={
             <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_GESTION_USUARIOS}>
-              <Configuracion usuario={usuario} />
+              <Configuracion usuario={usuario} cerrarSesion={cerrarSesion} />
             </RutaProtegida>
           }
         />
@@ -150,7 +163,41 @@ function App() {
   </RutaProtegida>
 } />
 
-<Route path="/registro" element={<RegistroUsuario />} />
+<Route path="/admin/equipo-reasignado" element={
+  <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+    <EquipoReasignado usuario={usuario} cerrarSesion={cerrarSesion} />
+  </RutaProtegida>
+} />
+
+<Route path="/admin/historial" element={
+  <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+    <Historial usuario={usuario} cerrarSesion={cerrarSesion} />
+  </RutaProtegida>
+} />
+
+<Route path="/admin/almacen" element={
+  <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+    <AlmacenBodega usuario={usuario} cerrarSesion={cerrarSesion} />
+  </RutaProtegida>
+} />
+
+<Route path="/admin/pagos" element={
+  <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+    <PagoProveedores usuario={usuario} cerrarSesion={cerrarSesion} />
+  </RutaProtegida>
+} />
+
+<Route path="/admin/registro-salida" element={
+  <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+    <RegistroSalida usuario={usuario} cerrarSesion={cerrarSesion} />
+  </RutaProtegida>
+} />
+
+<Route path="/admin/movimientos" element={
+  <RutaProtegida usuario={usuario} rolesPermitidos={ROLES_ADMIN}>
+    <HistorialMovimientos usuario={usuario} cerrarSesion={cerrarSesion} />
+  </RutaProtegida>
+} />
 
         <Route path="/encuesta/:id" element={<EncuestaSatisfaccion />} />
 

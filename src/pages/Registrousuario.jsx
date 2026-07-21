@@ -20,7 +20,7 @@ export default function RegistroUsuario() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
-  const [registrado, setRegistrado] = useState(null); // { username }
+  const [registrado, setRegistrado] = useState(null);
 
   useEffect(() => {
     const cargarAreas = async () => {
@@ -33,8 +33,6 @@ export default function RegistroUsuario() {
         }
         const data = await res.json();
         console.log("Áreas recibidas del backend:", data);
-        // "IT" queda reservada — los asesores (rol ADMIN) los crea SUPERADMIN
-        // manualmente desde el panel de Usuarios, no por auto-registro.
         const areasPublicas = Array.isArray(data) ? data.filter((a) => a.nombre !== "IT") : [];
         setAreas(areasPublicas);
       } catch (err) {

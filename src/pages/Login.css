@@ -15,7 +15,6 @@ body {
   position: relative;
 }
 
-/* LOGO */
 .logo {
   position: absolute;
   top: 10px;
@@ -23,7 +22,6 @@ body {
   width: 150px;
 }
 
-/* PANEL IZQUIERDO */
 .panel-left {
   background: #FF8C00;
   color: white;
@@ -52,7 +50,6 @@ body {
   width: 35px;
 }
 
-/* TITULO */
 .panel-left h2 {
   margin-top: 20px;
   margin-bottom: 8px;
@@ -64,7 +61,6 @@ body {
   font-size: 14px;
 }
 
-/* LINEA */
 .divider-line {
   width: 35px;
   height: 2px;
@@ -72,7 +68,6 @@ body {
   margin: 15px auto 25px;
 }
 
-/* LISTA */
 .features {
   display: flex;
   flex-direction: column;
@@ -108,7 +103,6 @@ body {
   box-shadow: 0 12px 30px rgba(0,0,0,0.12);
 }
 
-/* TITULO LOGIN */
 .panel-right h3 {
   display: flex;
   justify-content: center;
@@ -125,7 +119,6 @@ body {
   color: #888;
 }
 
-/* INPUT */
 .input-row {
   display: flex;
   align-items: center;
@@ -160,11 +153,55 @@ body {
   background: #f1e3d1;
 }
 
-.input-group:focus-within {
-  border: 2px solid #FF8C00;
+/* Login.css - Correcciones de Diseño */
+
+/* ... (tu CSS existente del login) ... */
+
+/* CORRECCIÓN: Evitar el cuadro blanco/outline azul al enfocar inputs (Usuario/Contraseña) */
+.input-group input:focus {
+    outline: none !important; /* Quitar outline por defecto */
+    box-shadow: none !important; /* Quitar box-shadow por defecto */
+    /* Si quieres un borde sutil naranja al enfocar: */
+    border-color: #ff7f22 !important; 
+    background-color: #ffffff; /* Mantener fondo blanco pero sin el efecto 'cuadro extra' */
 }
 
-/* LABEL */
+/* CORRECCIÓN: Arreglar el select de área (Quitar azul por defecto y usar naranja Baprosa) */
+.input-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #eef1f5;
+    background-color: #fff;
+    font-size: 13px;
+    color: #333;
+    appearance: none; /* Quitar flecha por defecto para estilizar */
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff7f22' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+/* Cambiar el color de fondo de las opciones seleccionadas (estilo Baprosa naranja) */
+.input-group select option:checked,
+.input-group select option:hover {
+    background-color: #ff7f22 !important; /* Naranja */
+    color: white !important;
+}
+
+/* Para navegadores que soportan estilizar las opciones */
+.input-group select:focus option {
+    background-color: #ffffff;
+    color: #333;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: #ff7f22;
+}
+
 .form-label {
   margin-left: 28px;
   margin-bottom: 5px;
@@ -250,29 +287,4 @@ button {
   color: #777;
 }
 
-@keyframes bounce {
-  0% { transform: translateY(0); }
-  30% { transform: translateY(-8px); }
-  50% { transform: translateY(0); }
-  70% { transform: translateY(-4px); }
-  100% { transform: translateY(0); }
-}
 
-
-.chat-icon {
-  position: fixed;
-  bottom: 20px;
-  right: 25px;
-  width: 60px;
-  height: 60px;
-  background: white;
-  border-radius: 50%;
-  padding: 6px;
-  border: 4px solid #FF8C00;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-  animation: bounce 2.5s infinite;
-}
-
-.chat-icon:hover {
-  transform: scale(1.1);
-}

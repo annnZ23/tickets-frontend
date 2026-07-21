@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import baprosaLogo from "../assets/baprosa-logo.png";
 
 import {
   FaTicketAlt,
@@ -15,6 +14,8 @@ import {
   FaChartBar,
   FaCog,
   FaSignOutAlt,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 
 const ROLES_GESTION_USUARIOS = ["SUPERADMIN"];
@@ -23,7 +24,18 @@ const ROLES_ADMIN = ["SUPERADMIN", "ADMIN"];
 export default function Sidebar({ usuario, cerrarSesion }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [hoverBloqueado, setHoverBloqueado] = useState(null);
+  const [hoverItem, setHoverItem] = useState(null);
+  const [colapsado, setColapsado] = useState(() => {
+    return localStorage.getItem("sidebarColapsado") === "true";
+  });
+
+  const toggleColapsado = () => {
+    setColapsado((prev) => {
+      const nuevo = !prev;
+      localStorage.setItem("sidebarColapsado", String(nuevo));
+      return nuevo;
+    });
+  };
 
   const isActive = (path) => location.pathname === path;
   const handleLogout = () => {
@@ -41,8 +53,11 @@ export default function Sidebar({ usuario, cerrarSesion }) {
 
   const items = [
     { key: "tickets", icon: <FaTicketAlt />, label: "Tickets Soporte", path: esEquipoIT ? "/admin/dashboard" : "/crear", permitido: true },
-    { key: "tareas", icon: <FaListUl />, label: "Asignación Tareas IT", path: "/admin/tareas", permitido: puedeGestionUsuarios },
-    { key: "chat", icon: <FaComments />, label: "Chat por Área", path: "/admin/chat-area", permitido: true },
+    { key: "tareas", icon: <FaListUl />, label: "Asignación Tareas IT", path: "/admin/tareas", permitido: esEquipoIT },
+   
+    ...(!esEquipoIT
+      ? [{ key: "chat", icon: <FaComments />, label: "Mis Conversaciones", path: "/chat", permitido: true }]
+      : []),
     { key: "entrada", icon: <FaArrowRight />, label: "Registro de Entrada", path: "/admin/registro-entrada", permitido: esEquipoIT },
     { key: "historial", icon: <FaHistory />, label: "Historial", path: "/admin/historial", permitido: esEquipoIT },
     { key: "almacen", icon: <FaWarehouse />, label: "Almacén", path: "/admin/almacen", permitido: esEquipoIT },
@@ -59,25 +74,33 @@ export default function Sidebar({ usuario, cerrarSesion }) {
   };
 
   return (
-    <div className="w-[240px] h-screen sticky top-0 flex flex-col bg-white border-r border-gray-100 flex-shrink-0 font-['Inter',sans-serif]">
-      {/* Logo */}
-      <div className="flex items-center px-5 pt-4 pb-5">
-        <img src={baprosaLogo} alt="Baprosa" className="h-9 w-auto object-contain" />
+    <div
+      className={`h-screen sticky top-0 flex flex-col bg-white border-r border-gray-100 flex-shrink-0 font-['Inter',sans-serif] transition-all duration-200 ease-in-out ${
+        colapsado ? "w-[72px]" : "w-[240px]"
+      }`}
+    >
+      <div className={`flex items-center pt-5 pb-2 ${colapsado ? "justify-center px-0" : "justify-between px-5"}`}>
+        {!colapsado && (
+          <span className="text-[10.5px] font-bold tracking-wide text-gray-400 uppercase">Navegación</span>
+        )}
+        <button
+          onClick={toggleColapsado}
+          className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-[#f58220] transition-colors"
+          title={colapsado ? "Expandir menú" : "Colapsar menú"}
+        >
+          {colapsado ? <FaChevronRight className="text-xs" /> : <FaChevronLeft className="text-xs" />}
+        </button>
       </div>
 
-      <div className="px-5 pb-2 text-[10.5px] font-bold tracking-wide text-gray-400 uppercase">
-        Navegación
-      </div>
-
-      {/* Menú */}
       <div className="flex-1 flex flex-col gap-[3px] px-3">
         {items.map((item) => (
           <div
             key={item.key}
             onClick={() => handleClickItem(item)}
-            onMouseEnter={() => !item.permitido && setHoverBloqueado(item.key)}
-            onMouseLeave={() => setHoverBloqueado(null)}
-            className={`relative flex items-center gap-3 h-[42px] px-3 rounded-[10px] text-[13.5px] font-semibold transition-colors
+            onMouseEnter={() => setHoverItem(item.key)}
+            onMouseLeave={() => setHoverItem(null)}
+            className={`relative flex items-center h-[42px] rounded-[10px] text-[13.5px] font-semibold transition-colors
+              ${colapsado ? "justify-center px-0" : "gap-3 px-3"}
               ${isActive(item.path)
                 ? "bg-[#f58220] text-white"
                 : item.permitido
@@ -85,30 +108,39 @@ export default function Sidebar({ usuario, cerrarSesion }) {
                 : "text-gray-300 cursor-not-allowed hover:bg-gray-50"
               }`}
           >
-            <span className="w-5 flex items-center justify-center text-base">
+            <span className="w-5 flex items-center justify-center text-base flex-shrink-0">
               {item.icon}
             </span>
-            <span className="truncate">{item.label}</span>
-
-            {hoverBloqueado === item.key && (
-              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 whitespace-nowrap bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-md shadow-lg z-50 pointer-events-none">
-                Acceso bloqueado
-                <div className="absolute right-full top-1/2 -translate-y-1/2 border-[5px] border-transparent border-r-slate-800" />
+            {!colapsado && <span className="truncate">{item.label}</span>}
+            {hoverItem === item.key && (colapsado || !item.permitido) && (
+              <div className={`absolute left-full top-1/2 -translate-y-1/2 ml-2 whitespace-nowrap text-white text-xs font-semibold px-3 py-1.5 rounded-md shadow-lg z-50 pointer-events-none ${item.permitido ? "bg-[#e66a10]" : "bg-slate-500"}`}>
+                {item.permitido ? item.label : "Acceso bloqueado"}
+                <div className={`absolute right-full top-1/2 -translate-y-1/2 border-[5px] border-transparent ${item.permitido ? "border-r-[#e66a10]" : "border-r-slate-500"}`} />
               </div>
             )}
           </div>
         ))}
       </div>
 
-      {/* Cerrar sesión, anclado abajo */}
       <div
         onClick={handleLogout}
-        className="flex items-center gap-3 h-[42px] mx-3 mb-3 px-3 rounded-[10px] text-[13.5px] font-semibold text-red-500 hover:bg-red-50 cursor-pointer"
+        onMouseEnter={() => setHoverItem("logout")}
+        onMouseLeave={() => setHoverItem(null)}
+        className={`relative flex items-center h-[42px] mx-3 mb-3 rounded-[10px] text-[13.5px] font-semibold text-red-500 hover:bg-red-50 cursor-pointer ${
+          colapsado ? "justify-center px-0" : "gap-3 px-3"
+        }`}
       >
-        <span className="w-5 flex items-center justify-center text-base">
+        <span className="w-5 flex items-center justify-center text-base flex-shrink-0">
           <FaSignOutAlt />
         </span>
-        <span>Cerrar sesión</span>
+        {!colapsado && <span>Cerrar sesión</span>}
+
+        {hoverItem === "logout" && colapsado && (
+          <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 whitespace-nowrap bg-red-500 text-white text-xs font-semibold px-3 py-1.5 rounded-md shadow-lg z-50 pointer-events-none">
+            Cerrar sesión
+            <div className="absolute right-full top-1/2 -translate-y-1/2 border-[5px] border-transparent border-r-red-500" />
+          </div>
+        )}
       </div>
     </div>
   );

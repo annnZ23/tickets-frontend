@@ -3,7 +3,6 @@ import io from "socket.io-client";
 
 const socket = io("http://localhost:3000");
 
-// Hook global de notificaciones — importar en cualquier página que necesite toasts
 export function useNotificaciones(usuario) {
   const [toasts, setToasts] = useState([]);
 

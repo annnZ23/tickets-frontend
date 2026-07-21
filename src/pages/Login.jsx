@@ -10,10 +10,7 @@ import logo from "../assets/baprosa-logo.png";
 import seguridad from "../assets/Seguridad.png";
 import userIcon from "../assets/usuario.png";
 import passIcon from "../assets/contraseña.png";
-import chatIcon from "../assets/chat.png";
 
-// Modal obligatorio: aparece cuando el login responde passwordTemporal: true.
-// No se puede cerrar sin definir una contraseña nueva.
 function ModalCambiarPasswordObligatorio({ token, onCompletado }) {
   const [passwordNueva, setPasswordNueva] = useState("");
   const [passwordConfirmar, setPasswordConfirmar] = useState("");
@@ -91,7 +88,6 @@ function ModalCambiarPasswordObligatorio({ token, onCompletado }) {
   );
 }
 
-// Panel de "olvidé mi contraseña": pide usuario + correo, sin salir de la pantalla.
 function PanelOlvidePassword({ onVolver }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -177,10 +173,7 @@ function Login({ setUsuario }) {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
   const [vistaOlvide, setVistaOlvide] = useState(false);
-
-  // Cuando el login detecta passwordTemporal, guardamos estos datos
-  // y mostramos el modal obligatorio antes de dejarlo pasar al dashboard.
-  const [pendienteCambio, setPendienteCambio] = useState(null); // { token, user }
+  const [pendienteCambio, setPendienteCambio] = useState(null); 
 
   const irADashboard = (user) => {
     const role = user.role;
@@ -219,17 +212,12 @@ function Login({ setUsuario }) {
         setCargando(false);
         return;
       }
-
-      // "Recordarme" ya se resolvió en el backend (duración del JWT: 30d vs 1d).
-      // Guardamos siempre en localStorage porque el resto de la app
-      // (EquipoNuevo, AsignacionTareas, etc.) ya lee el token de ahí.
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       if (setUsuario) setUsuario(data.user);
 
       if (data.passwordTemporal) {
-        // No lo dejamos avanzar todavía — primero debe definir su contraseña real.
         setPendienteCambio({ token: data.token, user: data.user });
         setCargando(false);
         return;
@@ -341,15 +329,9 @@ function Login({ setUsuario }) {
               ¿Olvidaste tu contraseña?
             </button>
 
-            <p style={{ textAlign: "center", fontSize: "12.5px", color: "#64748b", margin: "12px 0 0" }}>
-              ¿No tienes cuenta?{" "}
-              <span
-                onClick={() => navigate("/registro")}
-                style={{ color: "#ff7f22", fontWeight: "700", cursor: "pointer" }}
-              >
-                Regístrate
-              </span>
-            </p>
+            {/* ELIMINADO: el link "¿No tienes cuenta? Regístrate" — las
+                cuentas ahora solo se crean desde el panel de Usuarios
+                (SUPERADMIN), no por auto-registro público. */}
 
             <p className="support">
               ¿Necesitas ayuda?<br />
@@ -359,7 +341,9 @@ function Login({ setUsuario }) {
         )}
       </div>
 
-      <img src={chatIcon} alt="chat" className="chat-icon" />
+      {/* ANTES había un <img className="chat-icon"> aquí, suelto y sin onClick —
+          era el ícono duplicado que veías flotando encima del que sí funciona.
+          <Chatbot /> ya trae su propio ícono flotante funcional, así que basta con esto: */}
       <Chatbot />
 
       {pendienteCambio && (

@@ -92,7 +92,6 @@ function TicketForm({
 
       <div style={grid}>
 
-        {/* PLANTILLA */}
         <div style={field}>
           <label>Plantilla</label>
 
@@ -110,13 +109,11 @@ function TicketForm({
           </select>
         </div>
 
-        {/* TIPO */}
         <div style={field}>
           <label>Tipo</label>
           <input value={tipo} disabled style={input} />
         </div>
 
-        {/* AREA */}
         <div style={field}>
           <label>Área</label>
 
@@ -131,7 +128,6 @@ function TicketForm({
           </select>
         </div>
 
-        {/* ASESOR */}
         <div style={field}>
           <label>Asesor</label>
 
@@ -148,7 +144,6 @@ function TicketForm({
 
       </div>
 
-      {/* ASUNTO */}
       <div style={field}>
         <label>Asunto</label>
 
@@ -159,7 +154,6 @@ function TicketForm({
         />
       </div>
 
-      {/* DESCRIPCIÓN */}
       <div style={field}>
         <label>Descripción</label>
 
@@ -170,7 +164,6 @@ function TicketForm({
         />
       </div>
 
-      {/* ARCHIVOS */}
       <div style={field}>
         <label>Adjuntos</label>
 
@@ -181,7 +174,6 @@ function TicketForm({
         />
       </div>
 
-      {/* PREVIEW */}
       <div style={previewBox}>
         {archivos.map((a, i) => {
 
