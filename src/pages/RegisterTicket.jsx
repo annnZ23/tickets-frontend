@@ -21,6 +21,36 @@ const inputCls =
 
 const labelCls = "block text-xs font-bold text-slate-500 mb-1.5";
 const sectionCls = "bg-white rounded-lg shadow-sm border border-gray-100 p-6";
+const PRIORIDAD_BASE_POR_TIPO = {
+  "Incidente": "Alta",
+  "Problema": "Media",
+  "Solicitud de mantenimiento": "Baja",
+  "Solicitud de información": "Baja",
+};
+
+const PALABRAS_IMPACTO_MASIVO = /\btodo\b|\btodos\b|toda la empresa|departamento completo|nadie puede|cr[ií]tico|urgente|ca[ií]do|ca[ií]da|no funciona nada/i;
+
+const escalarPrioridad = (base) => {
+  if (base === "Baja") return "Media";
+  if (base === "Media") return "Alta";
+  if (base === "Alta") return "Urgente";
+  return base;
+};
+
+const calcularPrioridadAutomatica = (tipoVal, detalleImpactoVal) => {
+  if (!tipoVal) return "";
+  const base = PRIORIDAD_BASE_POR_TIPO[tipoVal] || "Media";
+  const hayImpactoMasivo = PALABRAS_IMPACTO_MASIVO.test(detalleImpactoVal || "");
+  return hayImpactoMasivo ? escalarPrioridad(base) : base;
+};
+const badgePrioridadCls = (p) => {
+  const v = (p || "").toLowerCase();
+  if (v === "urgente") return "bg-purple-50 text-purple-700 border-purple-200";
+  if (v === "alta") return "bg-red-50 text-red-600 border-red-200";
+  if (v === "media") return "bg-orange-50 text-[#e66a10] border-orange-200";
+  if (v === "baja") return "bg-green-50 text-green-700 border-green-200";
+  return "bg-gray-50 text-gray-400 border-gray-200";
+};
 
 function Dropdown({ value, onChange, options, placeholder, disabled }) {
   const [abierto, setAbierto] = useState(false);
@@ -94,6 +124,9 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
   const [asunto, setAsunto] = useState("");
   const [detallesImpacto, setDetallesImpacto] = useState("");
   const [area, setArea] = useState("");
+  useEffect(() => {
+    setPrioridad(calcularPrioridadAutomatica(tipo, detallesImpacto));
+  }, [tipo, detallesImpacto]);
 
   const [categorias, setCategorias] = useState([]);
   const [categoriaId, setCategoriaId] = useState("");
@@ -458,13 +491,11 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
                       />
                     </div>
                     <div>
-                      <label className={labelCls}>Prioridad *</label>
-                      <Dropdown
-                        value={prioridad}
-                        onChange={setPrioridad}
-                        placeholder="Selecciona una opción"
-                        options={["Urgente", "Alta", "Media", "Baja"]}
-                      />
+                   
+                      <label className={labelCls}>Prioridad (automática) *</label>
+                      <div className={`w-full px-3.5 py-2.5 rounded-lg border text-sm font-bold ${badgePrioridadCls(prioridad)}`}>
+                        {prioridad || "Se calcula al elegir el tipo de solicitud"}
+                      </div>
                     </div>
                   </div>
 
@@ -481,6 +512,8 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
                         onChange={(e) => setDetallesImpacto(e.target.value)}
                         className={inputCls}
                       />
+                      <p className="text-[10.5px] text-gray-400 mt-1">
+                      </p>
                     </div>
                   </div>
 
@@ -522,7 +555,7 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
                     <input value={nombre} readOnly className={`${inputCls} text-slate-500`} />
                   </div>
                   <div>
-                    <label className={labelCls}>Correo institucional</label>
+                    <label className={labelCls}>Correo </label>
                     <input value={correo} readOnly className={`${inputCls} text-slate-500`} />
                   </div>
                 </div>
@@ -532,7 +565,7 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
 
                 <fieldset disabled={bloqueado} className={`grid grid-cols-2 gap-4 mt-4 ${bloqueado ? "opacity-60" : ""}`}>
                   <div>
-                    <label className={labelCls}>Área (informativo)</label>
+                    <label className={labelCls}>Área (IT)</label>
                     <Dropdown
                       value={area}
                       onChange={setArea}

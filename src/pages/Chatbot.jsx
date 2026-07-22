@@ -22,6 +22,249 @@ import {
 import chatIcon from "../assets/chat.png";
 import "./chatbot.css";
 
+const CAUSAS_POR_CATEGORIA = {
+  impresora: [
+    {
+      id: "imp-no-imprime",
+      text: "No imprime nada",
+      pasos: [
+        "Verifica que la impresora esté encendida y conectada (USB o red).",
+        "Revisa que tenga papel y tinta/tóner suficiente.",
+        "En Windows: Configuración > Impresoras y confírmala como predeterminada.",
+        "Reinicia la impresora (apágala, espera 10 segundos, enciéndela).",
+        "Intenta imprimir una página de prueba.",
+      ],
+    },
+    {
+      id: "imp-atascado",
+      text: "Papel atascado",
+      pasos: [
+        "Apaga la impresora antes de manipularla.",
+        "Abre con cuidado la bandeja o la puerta trasera.",
+        "Retira el papel atascado jalando en la dirección de impresión, sin forzar.",
+        "Revisa que no queden fragmentos de papel adentro.",
+        "Enciende la impresora e intenta imprimir de nuevo.",
+      ],
+    },
+    {
+      id: "imp-fuera-linea",
+      text: "Aparece \"fuera de línea\"",
+      pasos: [
+        "Verifica el cable de red/USB o la conexión Wi-Fi de la impresora.",
+        "Click derecho sobre la impresora en Windows > \"Usar impresora en línea\".",
+        "Reinicia el servicio de cola de impresión (o reinicia el equipo).",
+        "Reinicia la impresora.",
+        "Intenta imprimir de nuevo.",
+      ],
+    },
+    {
+      id: "imp-mala-calidad",
+      text: "Impresión manchada o de mala calidad",
+      pasos: [
+        "Revisa los niveles de tinta o tóner.",
+        "Ejecuta la limpieza de cabezales desde el panel o software de la impresora.",
+        "Verifica que el papel no esté húmedo o doblado.",
+        "Imprime una página de prueba de alineación.",
+        "Si persiste, puede necesitar cambio de cartucho — genera un ticket.",
+      ],
+    },
+    {
+      id: "imp-otro",
+      text: "Otro / no es esto",
+      pasos: null, 
+    },
+  ],
+  laptop: [
+    {
+      id: "lap-lenta-general",
+      text: "Va lenta en general",
+      pasos: [
+        "Cierra programas y pestañas del navegador que no estés usando.",
+        "Abre el Administrador de tareas (Ctrl+Shift+Esc) y revisa qué consume más recursos.",
+        "Reinicia el equipo completamente (no solo cerrar sesión).",
+        "Verifica que Windows Update no esté instalando algo en segundo plano.",
+        "Si sigue lenta después de reiniciar, genera un ticket.",
+      ],
+    },
+    {
+      id: "lap-disco-lleno",
+      text: "Se queda sin espacio en disco",
+      pasos: [
+        "Ve a Configuración > Almacenamiento y revisa qué ocupa más espacio.",
+        "Vacía la Papelera de reciclaje.",
+        "Desinstala programas que ya no uses.",
+        "Borra archivos temporales (ejecuta \"Liberador de espacio en disco\").",
+        "Si el disco sigue casi lleno, genera un ticket para revisar opciones.",
+      ],
+    },
+    {
+      id: "lap-actualizaciones",
+      text: "Pide reiniciar por actualizaciones constantemente",
+      pasos: [
+        "Guarda tu trabajo y deja que la actualización termine por completo.",
+        "No apagues el equipo a la fuerza durante una actualización.",
+        "Después de reiniciar, verifica en Windows Update si quedan pendientes.",
+        "Si el proceso se queda \"pegado\" por más de 30-40 minutos, genera un ticket.",
+      ],
+    },
+    {
+      id: "lap-caliente",
+      text: "Se calienta mucho / el ventilador suena fuerte",
+      pasos: [
+        "Verifica que las rejillas de ventilación no estén tapadas (usa una superficie dura, no la cama).",
+        "Cierra programas pesados que no necesites en este momento.",
+        "Deja que repose unos minutos apagada si está muy caliente.",
+        "Evita usarla mientras carga en superficies blandas.",
+        "Si el sobrecalentamiento es frecuente, genera un ticket — puede necesitar limpieza interna.",
+      ],
+    },
+    {
+      id: "lap-otro",
+      text: "Otro / no es esto",
+      pasos: null,
+    },
+  ],
+  internet: [
+    {
+      id: "int-sin-conexion",
+      text: "No tengo conexión / sin internet",
+      pasos: [
+        "Verifica que el cable de red esté bien conectado (si usas cable).",
+        "Revisa el ícono de Wi-Fi/red en la barra de tareas.",
+        "Reinicia el adaptador de red: desactívalo y actívalo de nuevo.",
+        "Reinicia el equipo.",
+        "Si otros compañeros también están sin internet, genera un ticket de inmediato.",
+      ],
+    },
+    {
+      id: "int-lento",
+      text: "El internet está muy lento",
+      pasos: [
+        "Cierra descargas, videos o transmisiones que no estés usando.",
+        "Verifica si otros equipos en tu área también están lentos.",
+        "Prueba acercarte más al router si usas Wi-Fi.",
+        "Reinicia tu conexión de red.",
+        "Si persiste, genera un ticket con la hora en que empezó.",
+      ],
+    },
+    {
+      id: "int-pagina-especifica",
+      text: "Una página o sistema específico no carga",
+      pasos: [
+        "Verifica que la dirección esté bien escrita.",
+        "Prueba abrir la misma página desde otro navegador.",
+        "Borra caché y cookies del navegador.",
+        "Prueba desde tu celular con datos móviles para descartar que sea general.",
+        "Si solo falla ese sistema para todos, genera un ticket.",
+      ],
+    },
+    {
+      id: "int-vpn",
+      text: "La VPN no conecta",
+      pasos: [
+        "Verifica tu usuario y contraseña de VPN.",
+        "Confirma que tienes conexión a internet normal (sin VPN) primero.",
+        "Cierra y vuelve a abrir el programa de VPN.",
+        "Reinicia el equipo.",
+        "Si sigue sin conectar, genera un ticket.",
+      ],
+    },
+    {
+      id: "int-otro",
+      text: "Otro / no es esto",
+      pasos: null,
+    },
+  ],
+  correo: [
+    {
+      id: "cor-no-envia-recibe",
+      text: "No puedo enviar o recibir correos",
+      pasos: [
+        "Verifica que tengas conexión a internet.",
+        "Revisa que la bandeja de entrada no esté llena (elimina correos viejos con adjuntos grandes).",
+        "Cierra sesión y vuelve a iniciar sesión en el correo.",
+        "Prueba acceder desde el navegador (webmail) para descartar problema de la app.",
+        "Si el problema continúa, genera un ticket.",
+      ],
+    },
+    {
+      id: "cor-olvide-contrasena",
+      text: "Olvidé mi contraseña",
+      pasos: [
+        "Usa la opción \"¿Olvidaste tu contraseña?\" en la pantalla de inicio de sesión, si está disponible.",
+        "Si no tienes esa opción, genera un ticket — un asesor debe restablecerla por ti.",
+      ],
+    },
+    {
+      id: "cor-no-llegan-adjuntos",
+      text: "No me llegan correos con adjuntos",
+      pasos: [
+        "Revisa la carpeta de Spam / No deseado.",
+        "Confirma con quien te lo envió el tamaño del archivo (adjuntos muy grandes pueden rebotar).",
+        "Verifica que tu buzón no esté lleno.",
+        "Pide que te lo reenvíen comprimido en ZIP si es muy pesado.",
+        "Si sigue sin llegar, genera un ticket.",
+      ],
+    },
+    {
+      id: "cor-outlook-congela",
+      text: "Outlook no abre o se congela",
+      pasos: [
+        "Cierra Outlook completamente desde el Administrador de tareas.",
+        "Vuelve a abrirlo y espera un momento a que cargue.",
+        "Reinicia el equipo.",
+        "Verifica que Outlook no esté actualizándose en segundo plano.",
+        "Si sigue sin abrir, genera un ticket.",
+      ],
+    },
+    {
+      id: "cor-otro",
+      text: "Otro / no es esto",
+      pasos: null,
+    },
+  ],
+  otro: [
+    {
+      id: "otro-app-especifica",
+      text: "Problema con una aplicación específica",
+      pasos: [
+        "Cierra por completo la aplicación e ábrela de nuevo.",
+        "Verifica que esté actualizada a la última versión.",
+        "Reinicia el equipo.",
+        "Prueba abrir la aplicación con otro usuario de Windows, si es posible.",
+        "Si el problema continúa, genera un ticket indicando el nombre de la aplicación.",
+      ],
+    },
+    {
+      id: "otro-no-enciende",
+      text: "El equipo no enciende",
+      pasos: [
+        "Verifica que el cargador esté bien conectado (y a un tomacorriente que funcione).",
+        "Mantén presionado el botón de encendido 10 segundos y suelta.",
+        "Prueba con otro cable/cargador si tienes uno a la mano.",
+        "Si tiene batería removible, revisa que esté bien colocada.",
+        "Si no enciende, genera un ticket — puede requerir revisión física.",
+      ],
+    },
+    {
+      id: "otro-periferico",
+      text: "Mouse, teclado o monitor no funciona",
+      pasos: [
+        "Verifica que esté bien conectado (cable o USB inalámbrico).",
+        "Prueba conectarlo en otro puerto USB.",
+        "Si es inalámbrico, revisa o cambia las baterías.",
+        "Prueba el periférico en otro equipo, si puedes, para descartar que esté dañado.",
+        "Si no funciona, genera un ticket.",
+      ],
+    },
+    {
+      id: "otro-describir",
+      text: "Otro / prefiero explicarlo con mis palabras",
+      pasos: null,
+    },
+  ],
+};
+
 function Chatbot() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -108,10 +351,37 @@ function Chatbot() {
     menuPrincipal();
   };
 
+  // CAMBIO: al elegir una categoría, si tiene causas comunes
+  // predefinidas, se muestran como botones en vez de pedirle al
+  // usuario que escriba/lea con la IA de una vez.
   const handleOptionClick = (opcion) => {
     addMessage("user_msg", opcion.text, false);
+    const causas = CAUSAS_POR_CATEGORIA[opcion.id];
+    if (causas && causas.length > 0) {
+      setEstado("CAUSAS_MENU");
+      addMessage("bot_msg", `Estas son las causas más comunes relacionadas con **${opcion.text}**. Selecciona la que más se parezca a lo que te pasa:`);
+      addMessage("causas", causas);
+    } else {
+      setEstado("CHATTING");
+      addMessage("bot_msg", `Entendido. Por favor, describe brevemente el problema que tienes con ${opcion.text}.`);
+    }
+  };
+
+  // NUEVO: al elegir una causa, muestra sus pasos (si tiene) y deja
+  // los mismos botones de "Solucionado" / "Generar Ticket" que ya
+  // usabas después de la respuesta de la IA. Si la causa no trae
+  // pasos (ej. "Prefiero explicarlo con mis palabras"), cae al chat
+  // libre de siempre.
+  const handleCausaClick = (causa) => {
+    addMessage("user_msg", causa.text, false);
     setEstado("CHATTING");
-    addMessage("bot_msg", `Entendido. Por favor, describe brevemente el problema que tienes con ${opcion.text}.`);
+    if (causa.pasos && causa.pasos.length > 0) {
+      const pasosTexto = causa.pasos.map((p, idx) => `${idx + 1}. ${p}`).join("\n");
+      addMessage("bot_msg", `Prueba estos pasos:\n\n${pasosTexto}`);
+      addMessage("acciones", null);
+    } else {
+      addMessage("bot_msg", "Cuéntame con más detalle qué te está pasando y te ayudo a resolverlo.");
+    }
   };
 
   const enviarTexto = () => {
@@ -273,6 +543,18 @@ function Chatbot() {
         </div>
       );
     }
+    // NUEVO: submenú de causas comunes de la categoría elegida
+    if (m.tipo === "causas" && estado === "CAUSAS_MENU") {
+      return (
+        <div key={i} className="menu-options">
+          {m.content.map(c => (
+            <button key={c.id} className="menu-btn" onClick={() => handleCausaClick(c)}>
+              <span className="menu-btn-text">{c.text}</span>
+            </button>
+          ))}
+        </div>
+      );
+    }
     if (m.tipo === "acciones" && (estado === "CHATTING" || estado === "SUCCESS")) {
       return (
         <div key={i} className="action-buttons">
@@ -321,7 +603,7 @@ function Chatbot() {
             <div className="chat-body" ref={chatBodyRef}>
               <div className="welcome-box">
                 <h2>Hola</h2>
-                <p>Bienvenido al asistente virtual de IT (Nivel 1 y 2). ¿En qué puedo ayudarte hoy?</p>
+                <p>Bienvenido al asistente virtual de IT. ¿En qué puedo ayudarte hoy?</p>
                 <button className="start-btn" onClick={iniciarChat}>
                   Iniciar conversación
                 </button>
@@ -429,7 +711,7 @@ function Chatbot() {
                     </div>
                   </div>
                 </form>
-              ) : estado === "MENU" || estado === "SUCCESS" ? (
+              ) : estado === "MENU" || estado === "SUCCESS" || estado === "CAUSAS_MENU" ? (
                 <div className="chat-paused-footer">
                   <FaEllipsisV />
                   <span>El chat está a la espera de tu selección...</span>

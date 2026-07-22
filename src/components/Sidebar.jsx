@@ -58,13 +58,13 @@ export default function Sidebar({ usuario, cerrarSesion }) {
     ...(!esEquipoIT
       ? [{ key: "chat", icon: <FaComments />, label: "Mis Conversaciones", path: "/chat", permitido: true }]
       : []),
+      { key: "reportes", icon: <FaChartBar />, label: "Reportes", path: "/admin/reportes", permitido: esEquipoIT },
     { key: "entrada", icon: <FaArrowRight />, label: "Registro de Entrada", path: "/admin/registro-entrada", permitido: esEquipoIT },
     { key: "historial", icon: <FaHistory />, label: "Historial", path: "/admin/historial", permitido: esEquipoIT },
     { key: "almacen", icon: <FaWarehouse />, label: "Almacén", path: "/admin/almacen", permitido: esEquipoIT },
     { key: "pagos", icon: <FaMoneyBillWave />, label: "Pago de Proveedores", path: "/admin/pagos", permitido: esEquipoIT },
     { key: "usuarios", icon: <FaUsers />, label: "Usuarios", path: "/admin/usuarios", permitido: puedeGestionUsuarios },
     { key: "salida", icon: <FaArrowLeft />, label: "Registro de Salida", path: "/admin/registro-salida", permitido: esEquipoIT },
-    { key: "reportes", icon: <FaChartBar />, label: "Reportes", path: "/admin/reportes", permitido: esEquipoIT },
     { key: "config", icon: <FaCog />, label: "Configuración", path: "/admin/configuracion", permitido: puedeGestionUsuarios },
   ];
 
@@ -81,7 +81,7 @@ export default function Sidebar({ usuario, cerrarSesion }) {
     >
       <div className={`flex items-center pt-5 pb-2 ${colapsado ? "justify-center px-0" : "justify-between px-5"}`}>
         {!colapsado && (
-          <span className="text-[10.5px] font-bold tracking-wide text-gray-400 uppercase">Navegación</span>
+          <span className="text-[10.5px] font-bold tracking-wide text-gray-400 uppercase">Sistema de Tickets</span>
         )}
         <button
           onClick={toggleColapsado}

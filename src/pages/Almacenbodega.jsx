@@ -231,7 +231,7 @@ function ModalAgregarItem({ tipo, token, onClose, onGuardado }) {
 }
 
 function ModalSalidaItem({ item, token, onClose, onSalidaExitosa }) {
-  const [form, setForm] = useState({ area: "", cantidad: "1", responsable: "" });
+  const [form, setForm] = useState({ area: "", cantidad: "1", responsable: "", marca: "", modelo: "", numeroSerie: "" });
   const [procesando, setProcesando] = useState(false);
 
   const ejecutarSalida = async (e) => {
@@ -241,7 +241,12 @@ function ModalSalidaItem({ item, token, onClose, onSalidaExitosa }) {
     if (!form.area.trim()) return alert("Debe seleccionar un área destino");
     if (isNaN(cantNum) || cantNum <= 0) return alert("Ingrese una cantidad válida");
     if (cantNum > item.stockActual) return alert(`No puedes retirar más de lo disponible (${item.stockActual})`);
-    if (item.tipo === "equipo" && !form.responsable.trim()) return alert("Los equipos requieren asignar un responsable");
+    if (item.tipo === "equipo") {
+      if (!form.responsable.trim()) return alert("Los equipos requieren asignar un responsable");
+      if (!form.marca.trim() || !form.modelo.trim() || !form.numeroSerie.trim()) {
+        return alert("Para dar salida a un equipo debes indicar marca, modelo y número de serie — quedará registrado en el Historial como equipo individual.");
+      }
+    }
 
     setProcesando(true);
     try {
@@ -251,11 +256,17 @@ function ModalSalidaItem({ item, token, onClose, onSalidaExitosa }) {
         body: JSON.stringify({
           area: form.area,
           cantidad: cantNum,
-          responsable: item.tipo === "equipo" ? form.responsable : null
+          responsable: item.tipo === "equipo" ? form.responsable : null,
+          marca: item.tipo === "equipo" ? form.marca : undefined,
+          modelo: item.tipo === "equipo" ? form.modelo : undefined,
+          numeroSerie: item.tipo === "equipo" ? form.numeroSerie : undefined,
         }),
       });
       const data = await res.json();
       if (!res.ok) { alert(data.message || "Error al registrar la salida"); return; }
+      if (data.equipo) {
+        alert(`Salida registrada. El equipo quedó guardado en el Historial con folio ${data.equipo.folio}.`);
+      }
       onSalidaExitosa();
       onClose();
     } catch (err) {
@@ -294,11 +305,34 @@ function ModalSalidaItem({ item, token, onClose, onSalidaExitosa }) {
           </div>
 
           {item.tipo === "equipo" && (
-            <div>
-              <label style={{ fontSize: "11.5px", fontWeight: "700", color: colors.textoSec, display: "block", marginBottom: "5px" }}>Responsable del Equipo</label>
-              <input placeholder="Nombre completo del custodio" required value={form.responsable}
-                onChange={(e) => setForm({ ...form, responsable: e.target.value })} style={inputStyle} />
-            </div>
+            <>
+              <div>
+                <label style={{ fontSize: "11.5px", fontWeight: "700", color: colors.textoSec, display: "block", marginBottom: "5px" }}>Responsable del Equipo</label>
+                <input placeholder="Nombre completo del custodio" required value={form.responsable}
+                  onChange={(e) => setForm({ ...form, responsable: e.target.value })} style={inputStyle} />
+              </div>
+
+              <div style={{ background: colors.naranjaClaro, border: "1px solid #ffd49e", borderRadius: "9px", padding: "12px 14px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                <p style={{ margin: 0, fontSize: "11px", color: "#92400e", fontWeight: "700" }}>
+                  Este equipo quedará registrado individualmente en el Historial:
+                </p>
+                <div>
+                  <label style={{ fontSize: "11px", fontWeight: "700", color: colors.textoSec, display: "block", marginBottom: "4px" }}>Marca</label>
+                  <input placeholder="Ej. Dell, HP..." required value={form.marca}
+                    onChange={(e) => setForm({ ...form, marca: e.target.value })} style={inputStyle} />
+                </div>
+                <div>
+                  <label style={{ fontSize: "11px", fontWeight: "700", color: colors.textoSec, display: "block", marginBottom: "4px" }}>Modelo</label>
+                  <input placeholder="Ej. Latitude 5540" required value={form.modelo}
+                    onChange={(e) => setForm({ ...form, modelo: e.target.value })} style={inputStyle} />
+                </div>
+                <div>
+                  <label style={{ fontSize: "11px", fontWeight: "700", color: colors.textoSec, display: "block", marginBottom: "4px" }}>Número de serie</label>
+                  <input placeholder="Único por equipo" required value={form.numeroSerie}
+                    onChange={(e) => setForm({ ...form, numeroSerie: e.target.value })} style={inputStyle} />
+                </div>
+              </div>
+            </>
           )}
 
           <button type="submit" disabled={procesando}

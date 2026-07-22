@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import { FaPlus, FaPrint, FaEnvelope, FaFileInvoiceDollar, FaCalendarAlt, FaPaperclip, FaFileAlt } from "react-icons/fa";
+import { FaPlus, FaEnvelope, FaFileInvoiceDollar, FaCalendarAlt, FaPaperclip, FaFileAlt } from "react-icons/fa";
 
 const colors = {
   naranja: "#ff7f22", naranjaOscuro: "#e66a10", naranjaClaro: "#fff1e6",
@@ -20,6 +20,7 @@ const labelStyle = {
   marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.3px",
 };
 
+// Formato de Lempiras (moneda de Honduras) — antes se mostraba en dólares.
 const formatoLempiras = (valor) =>
   `L. ${Number(valor || 0).toLocaleString("es-HN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
@@ -32,6 +33,10 @@ const fechaHoraActual = () => {
 
 export default function PagoProveedores({ usuario, cerrarSesion }) {
   const token = localStorage.getItem("token");
+  // NUEVO: authHeaders ya NO fuerza Content-Type — cuando mandamos
+  // FormData (con archivo), el navegador tiene que poner el
+  // "multipart/form-data; boundary=..." él mismo. Si lo forzamos a
+  // "application/json" aquí, el archivo llega corrupto/vacío al backend.
   const authHeaders = () => ({ Authorization: `Bearer ${token}` });
 
   const [pagos, setPagos] = useState([]);
@@ -44,7 +49,9 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
     proveedor: "", fechaEntrega: "", valor: "", factura: "",
     descripcion: "", mesAPagar: "", recibidoPor: "",
   });
-  const [archivo, setArchivo] = useState(null); 
+  const [archivo, setArchivo] = useState(null); // NUEVO: archivo de evidencia
+
+  // Reloj vivo en el header — se actualiza cada minuto.
   useEffect(() => {
     const intervalo = setInterval(() => setAhoraTexto(fechaHoraActual()), 60000);
     return () => clearInterval(intervalo);
@@ -64,6 +71,9 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
   };
 
   useEffect(() => { cargarPagos(); }, []);
+
+  // CAMBIO: ahora arma un FormData en vez de JSON.stringify, para poder
+  // ir el archivo de evidencia en la misma petición.
   const guardarRegistro = async (e) => {
     e.preventDefault();
     if (!form.proveedor || !form.fechaEntrega || !form.valor || !form.factura || !form.mesAPagar || !form.recibidoPor) {
@@ -99,10 +109,9 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
     }
   };
 
-  const imprimirHoja = () => {
-    window.print();
-  };
-
+  // El backend ahora puede adjuntar el archivo guardado en este pago
+  // (si existe) al correo — no hace falta cambiar nada aquí, solo que
+  // el controller lo agregue como attachment.
   const enviarCorreo = async (pago) => {
     const correo = window.prompt(`¿A qué correo se le notifica la entrega de la factura ${pago.factura} (${pago.proveedor})?`);
     if (!correo || !correo.trim()) return;
@@ -251,6 +260,7 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
                 </div>
               </div>
 
+              {/* NUEVO: adjuntar evidencia de la factura (foto/PDF/scan) */}
               <div style={{ marginBottom: "20px" }}>
                 <label style={labelStyle}>Evidencia de Factura (foto o PDF)</label>
                 <label
@@ -286,15 +296,11 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
           </div>
 
           <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, overflow: "hidden" }}>
-            <div style={{ padding: "16px 20px", borderBottom: `1px solid ${colors.borde}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ padding: "16px 20px", borderBottom: `1px solid ${colors.borde}` }}>
               <h3 style={{ margin: 0, fontSize: "14px", fontWeight: "700", color: colors.texto, display: "flex", alignItems: "center", gap: "8px" }}>
                 <span style={{ width: "4px", height: "16px", background: colors.naranja, borderRadius: "2px", display: "inline-block" }} />
                 Registro de Pagos
               </h3>
-              <button onClick={imprimirHoja}
-                style={{ display: "flex", alignItems: "center", gap: "7px", padding: "8px 16px", borderRadius: "8px", border: `1px solid ${colors.borde}`, background: "#fff", color: colors.texto, fontSize: "12.5px", fontWeight: "700", cursor: "pointer" }}>
-                <FaPrint /> Imprimir Hoja
-              </button>
             </div>
 
             <div style={{ overflowX: "auto" }}>

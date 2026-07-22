@@ -683,7 +683,6 @@ export default function AsignacionTareas() {
                               </td>
                               <td className="px-3 py-3 whitespace-nowrap text-right">
                                 <div className="inline-flex gap-1.5">
-                                  {/* El ENCARGADO trabaja la tarea */}
                                   {(t.encargadoId === user?.id || t.encargado?.id === user?.id) && estado !== "Completada" && (
                                     <>
                                       {estado === "Pendiente" && (
@@ -924,7 +923,6 @@ export default function AsignacionTareas() {
                                   </td>
                                   <td className="px-3 py-3 whitespace-nowrap text-right">
                                     <div className="inline-flex gap-1.5">
-                                      {/* Iniciar/Completar: solo para quien la RECIBIÓ, no para quien la asignó */}
                                       {st.receptorId === user?.id && st.estado === "Pendiente" && (
                                         <button onClick={() => cambiarEstadoST(st.id, "EnProceso")} className="text-[11px] px-2.5 py-1 rounded-md border border-gray-200 bg-white font-semibold text-slate-500 hover:border-[#f58220]">
                                           Iniciar
@@ -940,7 +938,7 @@ export default function AsignacionTareas() {
                                           <FaReply className="text-[10px]" /> Responder
                                         </button>
                                       )}
-                                      {/* NUEVO: Editar sub-tarea — mismo permiso que Eliminar (asignador o SUPERADMIN), y nunca si ya está completada */}
+                                     
                                       {puedeEditarST && st.estado !== "Completada" && (
                                         <button onClick={() => abrirEditarST(st)} className="text-[11px] px-2.5 py-1 rounded-md border border-blue-500 bg-white font-bold text-blue-600 hover:bg-blue-50 inline-flex items-center gap-1">
                                           <FaPen className="text-[10px]" /> Editar
@@ -1092,7 +1090,6 @@ export default function AsignacionTareas() {
         </div>
       )}
 
-      {/* NUEVO: modal de edición de sub-tarea */}
       {editandoST !== null && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-[1000]">
           <div className="bg-white rounded-2xl p-7 w-[440px] shadow-2xl">
@@ -1174,7 +1171,6 @@ export default function AsignacionTareas() {
         </div>
       )}
 
-      {/* NUEVO: modal de Completar — pide comentario obligatorio, para Tareas y Sub-tareas */}
       {completandoInfo !== null && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-[1000]">
           <div className="bg-white rounded-2xl p-7 w-[420px] shadow-2xl">

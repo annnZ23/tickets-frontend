@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import baprosaLogo from "../assets/baprosa-logo.png";
 import {
   FaLaptop, FaDesktop, FaMobileAlt, FaPrint, FaTabletAlt, FaNetworkWired,
   FaServer, FaExchangeAlt, FaHandshake, FaSyncAlt, FaTools, FaHistory, FaPlus,
   FaBoxOpen, FaCheckCircle, FaExclamationTriangle, FaMapMarkerAlt,
   FaKey, FaWrench, FaTimes, FaSearch, FaVideo, FaBatteryFull, FaCube,
-  FaChevronRight, FaListUl,
+  FaChevronRight, FaListUl, FaArrowLeft, FaBan,
 } from "react-icons/fa";
 
 const colors = {
@@ -17,6 +19,7 @@ const colors = {
   rojo: "#dc2626", rojoClaro: "#fee2e2",
   amarillo: "#d97706", amarilloClaro: "#fef3c7",
   azul: "#2563eb", azulClaro: "#eff6ff",
+  gris: "#94a3b8", grisClaro: "#f1f5f9",
 };
 
 const CATEGORIAS = [
@@ -34,6 +37,10 @@ const CATEGORIAS = [
   { key: "rentado",   label: "Equipo rentado", icono: <FaHandshake /> },
   { key: "otros",     label: "Otros",       icono: <FaCube /> },
 ];
+
+// Columnas fijas para que las categorías queden en EXACTAMENTE 2 filas
+// parejas. Si agregas/quitas categorías, ajusta a Math.ceil(len/2).
+const COLUMNAS_GRID_CATEGORIAS = Math.ceil(CATEGORIAS.length / 2);
 
 const ESTADOS_EQUIPO = [
   "Operativo", "Detalles menores", "En revisión",
@@ -180,6 +187,7 @@ function EditorLista({ items, setItems, placeholder = "Agregar otro...", sugeren
 }
 
 export default function Historial({ usuario, cerrarSesion }) {
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const authHeaders = () => ({ Authorization: `Bearer ${token}` });
 
@@ -217,12 +225,15 @@ export default function Historial({ usuario, cerrarSesion }) {
     return match || "otros";
   };
 
+  // CAMBIO: el conteo de las tarjetas ("2 equipos") ahora solo cuenta
+  // equipos ACTIVOS — un equipo dado de baja ya no debe sumar aquí,
+  // aunque siga apareciendo en la tabla de abajo para documentarlo.
   const conteoPorCategoria = (key) => {
     if (key === "otros") {
       const fijas = CATEGORIAS.filter((c) => c.key !== "otros").map((c) => c.key);
-      return equipos.filter((eq) => !fijas.some((k) => perteneceA(eq, k))).length;
+      return equipos.filter((eq) => !fijas.some((k) => perteneceA(eq, k)) && eq.activo !== false).length;
     }
-    return equipos.filter((eq) => perteneceA(eq, key)).length;
+    return equipos.filter((eq) => perteneceA(eq, key) && eq.activo !== false).length;
   };
 
   const equiposDeCategoriaActiva = () => {
@@ -233,6 +244,34 @@ export default function Historial({ usuario, cerrarSesion }) {
     }
     return equipos.filter((eq) => perteneceA(eq, categoriaActiva));
   };
+
+  // NUEVO: búsqueda dentro de la tabla de la categoría seleccionada,
+  // por responsable (además de folio/marca/modelo como respaldo).
+  const [busquedaCategoria, setBusquedaCategoria] = useState("");
+  const equiposFiltradosCategoria = () => {
+    const base = equiposDeCategoriaActiva();
+    const q = busquedaCategoria.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter((eq) =>
+      [eq.responsable, eq.folio, eq.numeroSerie, eq.marca, eq.modelo]
+        .filter(Boolean)
+        .some((campo) => String(campo).toLowerCase().includes(q))
+    );
+  };
+
+  // NUEVO: paginación de la tabla — mismo patrón que ya usas en
+  // AlmacenBodega.jsx (8 registros por página).
+  const [paginaCategoria, setPaginaCategoria] = useState(1);
+  const PORPAGINA_CATEGORIA = 8;
+  const equiposPaginadosCategoria = () => {
+    const filtrados = equiposFiltradosCategoria();
+    const inicio = (paginaCategoria - 1) * PORPAGINA_CATEGORIA;
+    return filtrados.slice(inicio, inicio + PORPAGINA_CATEGORIA);
+  };
+  const totalPaginasCategoria = () => Math.max(1, Math.ceil(equiposFiltradosCategoria().length / PORPAGINA_CATEGORIA));
+
+  useEffect(() => { setBusquedaCategoria(""); setPaginaCategoria(1); }, [categoriaActiva]);
+  useEffect(() => { setPaginaCategoria(1); }, [busquedaCategoria]);
 
  
   const [busquedaGlobal, setBusquedaGlobal] = useState("");
@@ -266,6 +305,7 @@ export default function Historial({ usuario, cerrarSesion }) {
   const [modalUbicacion, setModalUbicacion] = useState(false);
   const [modalPanel, setModalPanel] = useState(false); 
   const [modalElegirEquipo, setModalElegirEquipo] = useState(false); 
+  const [modalBaja, setModalBaja] = useState(false); // NUEVO
   const [equiposParaElegir, setEquiposParaElegir] = useState([]);
   const [accionPendiente, setAccionPendiente] = useState(null); 
   const [equipoSel, setEquipoSel] = useState(null);
@@ -307,12 +347,19 @@ export default function Historial({ usuario, cerrarSesion }) {
   const [aeLicencias, setAeLicencias] = useState([]);
   const [aeObservaciones, setAeObservaciones] = useState("");
   const [guardandoAE, setGuardandoAE] = useState(false);
+  const [aeEquipoGuardado, setAeEquipoGuardado] = useState(null);
 
   const resetAE = () => {
     setAeCategoria(""); setAeCategoriaOtra(""); setAeMarca(""); setAeModelo("");
     setAeSerie(""); setAeResponsable(""); setAeArea(""); setAeAreaOtra("");
     setAeEstado("Operativo"); setAeEstadoOtro("");
     setAeAccesorios([]); setAeLicencias([]); setAeObservaciones("");
+    setAeEquipoGuardado(null);
+  };
+
+  const cerrarModalAgregar = () => {
+    setModalAgregar(false);
+    resetAE();
   };
 
   const guardarEquipoHistorial = async () => {
@@ -348,8 +395,7 @@ export default function Historial({ usuario, cerrarSesion }) {
         alert(data.message || data.error || "No se pudo agregar el equipo");
         return;
       }
-      setModalAgregar(false);
-      resetAE();
+      setAeEquipoGuardado(data);
       cargar();
     } catch (e) {
       console.error(e);
@@ -357,6 +403,71 @@ export default function Historial({ usuario, cerrarSesion }) {
     } finally {
       setGuardandoAE(false);
     }
+  };
+
+  const imprimirHojaDesdeHistorial = async () => {
+    const eq = aeEquipoGuardado;
+    if (!eq) return;
+    const fecha = new Date(eq.createdAt).toLocaleDateString("es-HN", { day: "2-digit", month: "2-digit", year: "numeric" });
+    const accs = parseArray(eq.accesorios).join(", ");
+    const art = ["a", "e", "i", "o", "u"].includes((eq.categoria[0] || "").toLowerCase()) ? "un" : "una";
+    let logoBase64 = "";
+    try {
+      const respuesta = await fetch(baprosaLogo);
+      const blob = await respuesta.blob();
+      logoBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      logoBase64 = "";
+    }
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+  body{font-family:Arial,sans-serif;margin:40px;color:#222;font-size:13px;}
+  .logo{text-align:center;margin-bottom:8px;}
+  .logo img{height:60px;}
+  h2{text-align:center;font-size:16px;margin:16px 0 24px;}
+  p{margin:0 0 10px;line-height:1.7;text-align:justify;}
+  .specs p{margin:2px 0;}
+  .firma-line{border-top:1px solid #222;width:280px;margin-bottom:4px;}
+  .footer{text-align:center;font-size:10px;color:#666;margin-top:60px;border-top:1px solid #ccc;padding-top:8px;}
+  .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:20px;}
+</style></head><body>
+<div class="logo">${logoBase64 ? `<img src="${logoBase64}" alt="Baprosa">` : ""}</div>
+<h2>Entrega de ${eq.categoria}</h2>
+<p>Yo, <strong>${(eq.responsable || "___________________").toUpperCase()}</strong>, por medio de la presente hago constar que recibo de la empresa Beneficio de Arroz Progreso (BAPROSA), ${art} ${eq.categoria.toLowerCase()} para uso exclusivo en el desempeño de mis labores y hacer eficiente la comunicación, también es entendido que el dispositivo es propiedad de la empresa, por el cual me comprometo a cuidarlo y darle el uso adecuado al mismo, en caso de despido o renuncia debo devolver en buen estado en el momento que se me solicite, en caso de extravío, daño o destrucción, autorizo a la empresa a deducir el valor equivalente al equipo, de mi salario, derechos o prestaciones laborales para la cancelación de este dispositivo.</p>
+<div class="specs" style="margin:20px 0;">
+  <p>Especificaciones: <strong>${(eq.estadoInicial || "").toUpperCase()}</strong></p>
+  <p>${eq.categoria.toUpperCase()} ${(eq.marca || "").toUpperCase()} ${(eq.modelo || "").toUpperCase()}</p>
+  ${eq.direccionIp ? `<p>IP: ${eq.direccionIp}</p>` : ""}
+  <p>SN: ${eq.numeroSerie}</p>
+  ${eq.areaEmpresa ? `<p>Área: ${eq.areaEmpresa}</p>` : ""}
+  ${eq.telefono ? `<p>Teléfono de contacto: ${eq.telefono}</p>` : ""}
+  ${accs ? `<p>Accesorios: ${accs.toUpperCase()}.</p>` : ""}
+  ${eq.observaciones ? `<p>Observaciones: ${eq.observaciones}</p>` : ""}
+</div>
+<p>Recibí conforme en la ciudad de El Progreso, Yoro. A los días ${fecha}.</p>
+<p style="font-size:11px;color:#666;">Folio: ${eq.folio}</p>
+<div style="margin-top:60px;">
+  <div class="firma-line"></div>
+  <p><strong>${(eq.responsable || "___________________").toUpperCase()}</strong></p>
+  <div class="row">
+    <p>ID#: ___________________</p>
+    ${eq.valor ? `<p><strong>Valor: L. ${Number(eq.valor).toLocaleString("es-HN", { minimumFractionDigits: 2 })}</strong></p>` : ""}
+  </div>
+</div>
+<div class="footer">
+  Kilómetro 4 Carretera salida a Tela &bull; El Progreso, Yoro, Honduras, C.A.<br>
+  Apdo. Postal 108 &bull; Tel.: 2544-0070. Fax: 2642-5640 &bull; e-mail: info@baprosa.com
+</div>
+</body></html>`;
+    const win = window.open("", "_blank");
+    win.document.write(html);
+    win.document.close();
+    setTimeout(() => win.print(), 500);
   };
 
   const cargarHistorialDe = async (eq) => {
@@ -393,6 +504,35 @@ export default function Historial({ usuario, cerrarSesion }) {
     } catch (e) {
       console.error(e);
       alert("No se pudo registrar el evento");
+    }
+  };
+
+  // NUEVO: Dar de baja
+  const [bajaMotivo, setBajaMotivo] = useState("");
+  const [guardandoBaja, setGuardandoBaja] = useState(false);
+
+  const confirmarBaja = async () => {
+    if (!equipoSel) return;
+    if (!bajaMotivo.trim()) { alert("Escribe el motivo por el que se da de baja el equipo"); return; }
+    setGuardandoBaja(true);
+    try {
+      const res = await fetch(`http://localhost:3000/api/equipos/${equipoSel.id}/dar-baja`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ motivo: bajaMotivo }),
+      });
+      const data = await res.json();
+      if (!res.ok) { alert(data.message || "No se pudo dar de baja el equipo"); return; }
+      setEquipoSel(data);
+      setModalBaja(false);
+      setBajaMotivo("");
+      cargar();
+      alert("Equipo dado de baja. Queda documentado en el historial como fuera de servicio.");
+    } catch (e) {
+      console.error(e);
+      alert("Error de conexión al dar de baja el equipo");
+    } finally {
+      setGuardandoBaja(false);
     }
   };
 
@@ -500,8 +640,7 @@ export default function Historial({ usuario, cerrarSesion }) {
     <button
       onClick={onClick}
       style={{
-        flex: "1 1 150px", minWidth: "150px", maxWidth: "220px",
-        background: "#fff", borderRadius: "12px", padding: "22px 16px",
+        width: "100%", background: "#fff", borderRadius: "12px", padding: "22px 14px",
         border: `2px solid ${activa ? colors.naranja : "transparent"}`,
         display: "flex", flexDirection: "column", alignItems: "center", gap: "10px",
         cursor: "pointer", fontFamily: "inherit",
@@ -512,29 +651,38 @@ export default function Historial({ usuario, cerrarSesion }) {
       <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: colors.naranjaClaro, color: colors.naranja, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
         {icono}
       </div>
-      <div style={{ fontSize: "13.5px", fontWeight: "800", color: colors.texto }}>{label}</div>
+      <div style={{ fontSize: "13.5px", fontWeight: "800", color: colors.texto, textAlign: "center" }}>{label}</div>
       <div style={{ fontSize: "12px", color: colors.textoSec }}>{count} {count === 1 ? "equipo" : "equipos"}</div>
     </button>
   );
 
-  const AccionCard = ({ icono, titulo, desc, color, bg, onClick }) => (
-    <button
-      onClick={onClick}
-      style={{
-        background: bg, borderRadius: "12px", padding: "16px 18px", textAlign: "left",
-        border: `1px solid ${colors.borde}`, cursor: "pointer", fontFamily: "inherit",
-        display: "flex", flexDirection: "column", gap: "6px",
-        transition: "transform 0.15s, box-shadow 0.15s",
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 18px rgba(15,23,42,0.08)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", color, fontWeight: "800", fontSize: "13.5px" }}>
-        {icono} {titulo}
-      </div>
-      <p style={{ margin: 0, fontSize: "12px", color: colors.textoSec, lineHeight: 1.4 }}>{desc}</p>
-    </button>
-  );
+  // CAMBIO: ahora acepta "vacio" — cuando es true, la tarjeta se pinta
+  // en gris (falta ese dato en el equipo seleccionado) pero se sigue
+  // pudiendo clickear para completarlo.
+  const AccionCard = ({ icono, titulo, desc, color, bg, onClick, vacio }) => {
+    const colorFinal = vacio ? colors.gris : color;
+    const bgFinal = vacio ? colors.grisClaro : bg;
+    return (
+      <button
+        onClick={onClick}
+        style={{
+          background: bgFinal, borderRadius: "12px", padding: "16px 18px", textAlign: "left",
+          border: `1px solid ${vacio ? colors.borde : colors.borde}`, cursor: "pointer", fontFamily: "inherit",
+          display: "flex", flexDirection: "column", gap: "6px",
+          transition: "transform 0.15s, box-shadow 0.15s",
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 18px rgba(15,23,42,0.08)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: colorFinal, fontWeight: "800", fontSize: "13.5px" }}>
+          {icono} {titulo}
+        </div>
+        <p style={{ margin: 0, fontSize: "12px", color: colors.textoSec, lineHeight: 1.4 }}>
+          {vacio ? "Sin registrar todavía — click para agregar." : desc}
+        </p>
+      </button>
+    );
+  };
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: colors.fondo, fontFamily: "'Segoe UI', sans-serif" }}>
@@ -545,6 +693,16 @@ export default function Historial({ usuario, cerrarSesion }) {
         <Topbar usuario={usuario} cerrarSesion={cerrarSesion} />
 
         <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px" }}>
+
+          {/* NUEVO: botón volver al menú */}
+          <button
+            onClick={() => navigate(-1)}
+            style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", color: colors.textoSec, fontSize: "12.5px", fontWeight: "700", cursor: "pointer", padding: "0 0 14px", fontFamily: "inherit" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = colors.naranja)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = colors.textoSec)}
+          >
+            <FaArrowLeft style={{ fontSize: "11px" }} /> Volver al menú
+          </button>
         
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "22px", gap: "12px", flexWrap: "wrap" }}>
             <div>
@@ -636,7 +794,12 @@ export default function Historial({ usuario, cerrarSesion }) {
             </div>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "14px", marginBottom: "22px" }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(${COLUMNAS_GRID_CATEGORIAS}, 1fr)`,
+            gap: "14px",
+            marginBottom: "22px",
+          }}>
             {CATEGORIAS.map((c) => (
               <Tarjeta
                 key={c.key}
@@ -701,8 +864,19 @@ export default function Historial({ usuario, cerrarSesion }) {
                 />
               </div>
 
+              {/* NUEVO: buscador por responsable dentro de esta categoría */}
+              <div style={{ marginTop: "18px", marginBottom: "10px", position: "relative", maxWidth: "320px" }}>
+                <FaSearch style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: colors.textoMuted, fontSize: "12px" }} />
+                <input
+                  value={busquedaCategoria}
+                  onChange={(e) => setBusquedaCategoria(e.target.value)}
+                  placeholder="Buscar por responsable..."
+                  style={{ ...inputStyle, paddingLeft: "32px" }}
+                />
+              </div>
+
               {/* Mini-tabla de equipos de la categoría */}
-              <div style={{ marginTop: "20px", overflowX: "auto", border: `1px solid ${colors.borde}`, borderRadius: "10px" }}>
+              <div style={{ overflowX: "auto", border: `1px solid ${colors.borde}`, borderRadius: "10px" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12.5px" }}>
                   <thead>
                     <tr style={{ background: colors.naranjaClaro }}>
@@ -712,24 +886,34 @@ export default function Historial({ usuario, cerrarSesion }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {equiposDeCategoriaActiva().length === 0 ? (
-                      <tr><td colSpan={6} style={{ padding: "24px", textAlign: "center", color: colors.textoSec }}>Sin equipos en esta categoría todavía.</td></tr>
-                    ) : equiposDeCategoriaActiva().map((eq) => {
-                      const c = colorEstado(eq.estadoInicial);
+                    {equiposFiltradosCategoria().length === 0 ? (
+                      <tr><td colSpan={6} style={{ padding: "24px", textAlign: "center", color: colors.textoSec }}>
+                        {busquedaCategoria ? `Sin resultados para "${busquedaCategoria}"` : "Sin equipos en esta categoría todavía."}
+                      </td></tr>
+                    ) : equiposPaginadosCategoria().map((eq) => {
+                      const c = eq.activo === false
+                        ? { bg: "#f1f5f9", color: colors.gris }
+                        : colorEstado(eq.estadoInicial);
                       return (
-                        <tr key={eq.id} style={{ borderTop: `1px solid ${colors.borde}` }}>
+                        <tr
+                          key={eq.id}
+                          onClick={() => { setEquipoSel(eq); setModalPanel(true); }}
+                          style={{ borderTop: `1px solid ${colors.borde}`, cursor: "pointer" }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = colors.fondo)}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                        >
                           <td style={{ padding: "10px 12px", fontWeight: "700" }}>{eq.folio || eq.numeroSerie}</td>
                           <td style={{ padding: "10px 12px" }}>{eq.marca} {eq.modelo}</td>
                           <td style={{ padding: "10px 12px", color: colors.textoSec }}>{eq.responsable || "Sin asignar"}</td>
                           <td style={{ padding: "10px 12px", color: colors.textoSec }}>{eq.areaEmpresa || "—"}</td>
                           <td style={{ padding: "10px 12px" }}>
                             <span style={{ padding: "3px 10px", borderRadius: "20px", fontSize: "10.5px", fontWeight: "700", background: c.bg, color: c.color }}>
-                              {eq.estadoInicial || "—"}
+                              {eq.activo === false ? "Dado de baja" : (eq.estadoInicial || "—")}
                             </span>
                           </td>
                           <td style={{ padding: "10px 12px", textAlign: "right" }}>
                             <button
-                              onClick={() => { setEquipoSel(eq); setModalPanel(true); }}
+                              onClick={(e) => { e.stopPropagation(); setEquipoSel(eq); setModalPanel(true); }}
                               style={{ padding: "5px 10px", fontSize: "11px", borderRadius: "6px", border: `1px solid ${colors.borde}`, background: "#fff", color: colors.texto, cursor: "pointer", fontWeight: "700", fontFamily: "inherit" }}
                             >
                               Ver
@@ -741,6 +925,38 @@ export default function Historial({ usuario, cerrarSesion }) {
                   </tbody>
                 </table>
               </div>
+
+              {/* NUEVO: paginación — solo se muestra si hay más de una página */}
+              {equiposFiltradosCategoria().length > PORPAGINA_CATEGORIA && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 4px 0" }}>
+                  <span style={{ fontSize: "11.5px", color: colors.textoSec }}>
+                    Mostrando {(paginaCategoria - 1) * PORPAGINA_CATEGORIA + 1}
+                    –{Math.min(paginaCategoria * PORPAGINA_CATEGORIA, equiposFiltradosCategoria().length)}
+                    {" "}de {equiposFiltradosCategoria().length}
+                  </span>
+                  <div style={{ display: "flex", gap: "6px" }}>
+                    <button
+                      onClick={() => setPaginaCategoria((p) => Math.max(1, p - 1))}
+                      disabled={paginaCategoria === 1}
+                      style={{ padding: "5px 10px", borderRadius: "6px", border: `1px solid ${colors.borde}`, background: "#fff", cursor: paginaCategoria === 1 ? "not-allowed" : "pointer", fontSize: "12px", color: colors.textoSec }}
+                    >‹</button>
+                    {Array.from({ length: totalPaginasCategoria() }, (_, i) => i + 1).slice(0, 6).map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setPaginaCategoria(p)}
+                        style={{ padding: "5px 11px", borderRadius: "6px", border: "none", background: p === paginaCategoria ? colors.naranja : "#f1f5f9", color: p === paginaCategoria ? "#fff" : colors.textoSec, cursor: "pointer", fontSize: "12px", fontWeight: "700" }}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setPaginaCategoria((p) => Math.min(totalPaginasCategoria(), p + 1))}
+                      disabled={paginaCategoria === totalPaginasCategoria()}
+                      style={{ padding: "5px 10px", borderRadius: "6px", border: `1px solid ${colors.borde}`, background: "#fff", cursor: paginaCategoria === totalPaginasCategoria() ? "not-allowed" : "pointer", fontSize: "12px", color: colors.textoSec }}
+                    >›</button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -790,7 +1006,14 @@ export default function Historial({ usuario, cerrarSesion }) {
           <div style={modalContenido} onClick={(e) => e.stopPropagation()}>
             <div style={{ padding: "18px 22px", borderBottom: `1px solid ${colors.borde}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "800", color: colors.texto }}>{equipoSel.folio || equipoSel.numeroSerie}</h3>
+                <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "800", color: colors.texto }}>
+                  {equipoSel.folio || equipoSel.numeroSerie}
+                  {equipoSel.activo === false && (
+                    <span style={{ marginLeft: "8px", fontSize: "10.5px", fontWeight: "700", color: colors.gris, background: colors.grisClaro, padding: "3px 9px", borderRadius: "20px" }}>
+                      Dado de baja
+                    </span>
+                  )}
+                </h3>
                 <p style={{ margin: "2px 0 0", fontSize: "12px", color: colors.textoSec }}>{equipoSel.marca} {equipoSel.modelo} · {equipoSel.responsable || "Sin asignar"}</p>
               </div>
               <FaTimes onClick={() => setModalPanel(false)} style={{ cursor: "pointer", color: colors.textoSec }} />
@@ -799,15 +1022,26 @@ export default function Historial({ usuario, cerrarSesion }) {
               <AccionCard icono={<FaCheckCircle />} titulo="Estado Actual" color={colors.naranja} bg={colors.naranjaClaro}
                 desc="Ver y actualizar el estado." onClick={() => { setModalPanel(false); setModalEstado(true); }} />
               <AccionCard icono={<FaKey />} titulo="Licencias" color={colors.verde} bg={colors.verdeClaro}
-                desc="Agregar o quitar licencias." onClick={() => { setModalPanel(false); setModalLicencias(true); }} />
+                desc="Agregar o quitar licencias." vacio={parseArray(equipoSel.licencias).length === 0}
+                onClick={() => { setModalPanel(false); setModalLicencias(true); }} />
               <AccionCard icono={<FaBoxOpen />} titulo="Accesorios" color={colors.naranja} bg={colors.naranjaClaro}
-                desc="Agregar o quitar accesorios." onClick={() => { setModalPanel(false); setModalAccesorios(true); }} />
+                desc="Agregar o quitar accesorios." vacio={parseArray(equipoSel.accesorios).length === 0}
+                onClick={() => { setModalPanel(false); setModalAccesorios(true); }} />
               <AccionCard icono={<FaMapMarkerAlt />} titulo="Ubicación" color={colors.naranja} bg={colors.naranjaClaro}
-                desc="Ver área y ubicación actual." onClick={() => { setModalPanel(false); setModalUbicacion(true); }} />
+                desc="Ver área y ubicación actual." vacio={!equipoSel.ubicacion}
+                onClick={() => { setModalPanel(false); setModalUbicacion(true); }} />
               <AccionCard icono={<FaHistory />} titulo="Historial" color={colors.naranja} bg={colors.naranjaClaro}
                 desc="Ver asignaciones anteriores." onClick={() => { setModalPanel(false); cargarHistorialDe(equipoSel); }} />
               <AccionCard icono={<FaWrench />} titulo="Mantenimiento" color={colors.azul} bg={colors.azulClaro}
                 desc="Registrar un mantenimiento." onClick={() => { setModalPanel(false); setMtEquipoId(String(equipoSel.id)); setModalMantenimiento(true); }} />
+              {/* NUEVO: Dar de baja — ocupa las 2 columnas, siempre visible salvo que ya esté de baja */}
+              {equipoSel.activo !== false && (
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <AccionCard icono={<FaBan />} titulo="Dar de baja" color={colors.rojo} bg={colors.rojoClaro}
+                    desc="Marcar este equipo como dañado / fuera de servicio permanentemente."
+                    onClick={() => { setModalPanel(false); setModalBaja(true); }} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -815,12 +1049,32 @@ export default function Historial({ usuario, cerrarSesion }) {
 
       {/*MODAL: Agregar equipo al historial*/}
       {modalAgregar && (
-        <div style={modalOverlay} onClick={() => setModalAgregar(false)}>
+        <div style={modalOverlay} onClick={cerrarModalAgregar}>
           <div style={modalContenido} onClick={(e) => e.stopPropagation()}>
             <div style={{ padding: "18px 22px", borderBottom: `1px solid ${colors.borde}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "800", color: colors.texto }}>Agregar equipo al historial</h3>
-              <FaTimes onClick={() => setModalAgregar(false)} style={{ cursor: "pointer", color: colors.textoSec }} />
+              <FaTimes onClick={cerrarModalAgregar} style={{ cursor: "pointer", color: colors.textoSec }} />
             </div>
+
+            {aeEquipoGuardado ? (
+              <div style={{ padding: "24px 22px" }}>
+                <div style={{ background: colors.verdeClaro, border: `1px solid ${colors.verde}`, borderRadius: "10px", padding: "14px 16px", marginBottom: "18px", display: "flex", alignItems: "center", gap: "10px", color: colors.verde, fontSize: "13px", fontWeight: "700" }}>
+                  <FaCheckCircle /> Equipo registrado exitosamente. Folio: <strong>{aeEquipoGuardado.folio}</strong>
+                </div>
+                <p style={{ margin: "0 0 18px", fontSize: "12.5px", color: colors.textoSec }}>
+                  Ya puedes imprimir la hoja de entrega como comprobante, o cerrar y registrar otro equipo.
+                </p>
+                <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+                  <button onClick={cerrarModalAgregar} style={{ padding: "10px 18px", borderRadius: "9px", border: `1px solid ${colors.borde}`, background: "#fff", color: colors.textoSec, fontWeight: "700", fontSize: "12.5px", fontFamily: "inherit", cursor: "pointer" }}>
+                    Cerrar
+                  </button>
+                  <button onClick={imprimirHojaDesdeHistorial}
+                    style={{ display: "flex", alignItems: "center", gap: "7px", padding: "10px 20px", borderRadius: "9px", border: "none", background: colors.naranja, color: "#fff", fontWeight: "800", fontSize: "12.5px", fontFamily: "inherit", cursor: "pointer" }}>
+                    <FaPrint /> Imprimir hoja de entrega
+                  </button>
+                </div>
+              </div>
+            ) : (
             <div style={{ padding: "20px 22px", display: "flex", flexDirection: "column", gap: "14px" }}>
               <p style={{ margin: 0, fontSize: "12.5px", color: colors.textoSec }}>
                 Registra un equipo que ya está en uso en la empresa (compras anteriores o traspasos).
@@ -896,7 +1150,7 @@ export default function Historial({ usuario, cerrarSesion }) {
               </InputField>
 
               <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "6px" }}>
-                <button onClick={() => setModalAgregar(false)} style={{ padding: "10px 18px", borderRadius: "9px", border: `1px solid ${colors.borde}`, background: "#fff", color: colors.textoSec, fontWeight: "700", fontSize: "12.5px", fontFamily: "inherit", cursor: "pointer" }}>
+                <button onClick={cerrarModalAgregar} style={{ padding: "10px 18px", borderRadius: "9px", border: `1px solid ${colors.borde}`, background: "#fff", color: colors.textoSec, fontWeight: "700", fontSize: "12.5px", fontFamily: "inherit", cursor: "pointer" }}>
                   Cancelar
                 </button>
                 <button onClick={guardarEquipoHistorial} disabled={guardandoAE}
@@ -905,6 +1159,7 @@ export default function Historial({ usuario, cerrarSesion }) {
                 </button>
               </div>
             </div>
+            )}
           </div>
         </div>
       )}
@@ -1114,6 +1369,43 @@ export default function Historial({ usuario, cerrarSesion }) {
               Área actual: <b style={{ color: colors.texto }}>{equipoSel.areaEmpresa || "Sin asignar"}</b><br />
               Ubicación específica: <b style={{ color: colors.texto }}>{equipoSel.ubicacion || "No registrada"}</b><br /><br />
               Los cambios de ubicación se registran automáticamente desde la pantalla de <b>Equipo Reasignado</b> cada vez que se traslada un equipo a otra área.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* NUEVO: MODAL Dar de baja */}
+      {modalBaja && equipoSel && (
+        <div style={modalOverlay} onClick={() => { setModalBaja(false); setBajaMotivo(""); }}>
+          <div style={modalContenido} onClick={(e) => e.stopPropagation()}>
+            <div style={{ padding: "18px 22px", borderBottom: `1px solid ${colors.borde}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "800", color: colors.rojo, display: "flex", alignItems: "center", gap: "8px" }}>
+                <FaBan /> Dar de baja — {equipoSel.folio || equipoSel.numeroSerie}
+              </h3>
+              <FaTimes onClick={() => { setModalBaja(false); setBajaMotivo(""); }} style={{ cursor: "pointer", color: colors.textoSec }} />
+            </div>
+            <div style={{ padding: "20px 22px", display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ background: colors.rojoClaro, border: `1px solid ${colors.rojo}`, borderRadius: "9px", padding: "12px 14px", color: colors.rojo, fontSize: "12.5px", fontWeight: "600" }}>
+                Esta acción marca el equipo como fuera de servicio permanentemente. Queda documentado en el Historial, pero deja de contarse como equipo activo.
+              </div>
+              <InputField label="Motivo de la baja" required>
+                <textarea
+                  value={bajaMotivo}
+                  onChange={(e) => setBajaMotivo(e.target.value)}
+                  rows={3}
+                  placeholder="Ej: pantalla dañada irreparable, equipo obsoleto, robo confirmado..."
+                  style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }}
+                />
+              </InputField>
+              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "4px" }}>
+                <button onClick={() => { setModalBaja(false); setBajaMotivo(""); }} style={{ padding: "10px 18px", borderRadius: "9px", border: `1px solid ${colors.borde}`, background: "#fff", color: colors.textoSec, fontWeight: "700", fontSize: "12.5px", fontFamily: "inherit", cursor: "pointer" }}>
+                  Cancelar
+                </button>
+                <button onClick={confirmarBaja} disabled={guardandoBaja}
+                  style={{ padding: "10px 20px", borderRadius: "9px", border: "none", background: colors.rojo, color: "#fff", fontWeight: "800", fontSize: "12.5px", fontFamily: "inherit", cursor: guardandoBaja ? "default" : "pointer" }}>
+                  {guardandoBaja ? "Guardando..." : "Confirmar baja"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
