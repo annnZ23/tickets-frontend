@@ -59,7 +59,6 @@ export default function Usuarios({ usuario, cerrarSesion }) {
   });
 
   const [editandoAusenciaId, setEditandoAusenciaId] = useState(null);
-  // NUEVO: rango de dos fechas en vez de una sola
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
   const [guardandoAusencia, setGuardandoAusencia] = useState(false);

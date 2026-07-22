@@ -74,8 +74,6 @@ export default function ChatPorArea({ usuario, cerrarSesion }) {
       <ToastContainer toasts={toasts} />
 
       <div style={{ flex: 1, padding: "24px", display: "flex", flexDirection: "column", gap: "20px" }}>
-
-        {/* Header */}
         <div style={{ background: `linear-gradient(135deg, ${colors.naranja} 0%, ${colors.naranjaOscuro} 100%)`, padding: "18px 24px", borderRadius: "14px", boxShadow: "0 4px 15px rgba(255,127,34,0.25)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "white" }}>
             <FaComments style={{ fontSize: "26px" }} />

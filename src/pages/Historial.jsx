@@ -38,8 +38,6 @@ const CATEGORIAS = [
   { key: "otros",     label: "Otros",       icono: <FaCube /> },
 ];
 
-// Columnas fijas para que las categorías queden en EXACTAMENTE 2 filas
-// parejas. Si agregas/quitas categorías, ajusta a Math.ceil(len/2).
 const COLUMNAS_GRID_CATEGORIAS = Math.ceil(CATEGORIAS.length / 2);
 
 const ESTADOS_EQUIPO = [
@@ -140,7 +138,6 @@ function EditorLista({ items, setItems, placeholder = "Agregar otro...", sugeren
         </div>
       )}
 
-      {/* Input estilo pill + botón + */}
       <div style={{
         display: "flex", alignItems: "center", gap: "8px",
         background: "#fff", border: `1px solid ${colors.borde}`,
@@ -225,9 +222,6 @@ export default function Historial({ usuario, cerrarSesion }) {
     return match || "otros";
   };
 
-  // CAMBIO: el conteo de las tarjetas ("2 equipos") ahora solo cuenta
-  // equipos ACTIVOS — un equipo dado de baja ya no debe sumar aquí,
-  // aunque siga apareciendo en la tabla de abajo para documentarlo.
   const conteoPorCategoria = (key) => {
     if (key === "otros") {
       const fijas = CATEGORIAS.filter((c) => c.key !== "otros").map((c) => c.key);
@@ -245,8 +239,6 @@ export default function Historial({ usuario, cerrarSesion }) {
     return equipos.filter((eq) => perteneceA(eq, categoriaActiva));
   };
 
-  // NUEVO: búsqueda dentro de la tabla de la categoría seleccionada,
-  // por responsable (además de folio/marca/modelo como respaldo).
   const [busquedaCategoria, setBusquedaCategoria] = useState("");
   const equiposFiltradosCategoria = () => {
     const base = equiposDeCategoriaActiva();
@@ -259,8 +251,6 @@ export default function Historial({ usuario, cerrarSesion }) {
     );
   };
 
-  // NUEVO: paginación de la tabla — mismo patrón que ya usas en
-  // AlmacenBodega.jsx (8 registros por página).
   const [paginaCategoria, setPaginaCategoria] = useState(1);
   const PORPAGINA_CATEGORIA = 8;
   const equiposPaginadosCategoria = () => {
@@ -507,7 +497,6 @@ export default function Historial({ usuario, cerrarSesion }) {
     }
   };
 
-  // NUEVO: Dar de baja
   const [bajaMotivo, setBajaMotivo] = useState("");
   const [guardandoBaja, setGuardandoBaja] = useState(false);
 
@@ -656,9 +645,6 @@ export default function Historial({ usuario, cerrarSesion }) {
     </button>
   );
 
-  // CAMBIO: ahora acepta "vacio" — cuando es true, la tarjeta se pinta
-  // en gris (falta ese dato en el equipo seleccionado) pero se sigue
-  // pudiendo clickear para completarlo.
   const AccionCard = ({ icono, titulo, desc, color, bg, onClick, vacio }) => {
     const colorFinal = vacio ? colors.gris : color;
     const bgFinal = vacio ? colors.grisClaro : bg;
@@ -694,7 +680,6 @@ export default function Historial({ usuario, cerrarSesion }) {
 
         <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px" }}>
 
-          {/* NUEVO: botón volver al menú */}
           <button
             onClick={() => navigate(-1)}
             style={{ display: "flex", alignItems: "center", gap: "8px", background: "none", border: "none", color: colors.textoSec, fontSize: "12.5px", fontWeight: "700", cursor: "pointer", padding: "0 0 14px", fontFamily: "inherit" }}
@@ -812,7 +797,6 @@ export default function Historial({ usuario, cerrarSesion }) {
             ))}
           </div>
 
-          {/* Detalle de la categoría seleccionada */}
           {catActiva && (
             <div style={{ background: "#fff", borderRadius: "14px", border: `1px solid ${colors.borde}`, padding: "22px", marginBottom: "20px" }}>
               <h3 style={{ margin: "0 0 16px", fontSize: "16px", fontWeight: "800", color: colors.texto, fontFamily: "'Manrope', sans-serif" }}>
@@ -864,7 +848,6 @@ export default function Historial({ usuario, cerrarSesion }) {
                 />
               </div>
 
-              {/* NUEVO: buscador por responsable dentro de esta categoría */}
               <div style={{ marginTop: "18px", marginBottom: "10px", position: "relative", maxWidth: "320px" }}>
                 <FaSearch style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: colors.textoMuted, fontSize: "12px" }} />
                 <input
@@ -875,7 +858,6 @@ export default function Historial({ usuario, cerrarSesion }) {
                 />
               </div>
 
-              {/* Mini-tabla de equipos de la categoría */}
               <div style={{ overflowX: "auto", border: `1px solid ${colors.borde}`, borderRadius: "10px" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12.5px" }}>
                   <thead>
@@ -925,8 +907,7 @@ export default function Historial({ usuario, cerrarSesion }) {
                   </tbody>
                 </table>
               </div>
-
-              {/* NUEVO: paginación — solo se muestra si hay más de una página */}
+              
               {equiposFiltradosCategoria().length > PORPAGINA_CATEGORIA && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 4px 0" }}>
                   <span style={{ fontSize: "11.5px", color: colors.textoSec }}>
@@ -968,7 +949,6 @@ export default function Historial({ usuario, cerrarSesion }) {
         </div>
       </div>
 
-      {/*MODAL: Elegir equipo (cuando hay varios en la categoría)*/}
       {modalElegirEquipo && (
         <div style={modalOverlay} onClick={() => setModalElegirEquipo(false)}>
           <div style={modalContenido} onClick={(e) => e.stopPropagation()}>
@@ -1000,7 +980,6 @@ export default function Historial({ usuario, cerrarSesion }) {
         </div>
       )}
 
-      {/*MODAL: Panel de acciones rápidas de un equipo (desde búsqueda o "Ver")*/}
       {modalPanel && equipoSel && (
         <div style={modalOverlay} onClick={() => setModalPanel(false)}>
           <div style={modalContenido} onClick={(e) => e.stopPropagation()}>

@@ -367,11 +367,6 @@ function Chatbot() {
     }
   };
 
-  // NUEVO: al elegir una causa, muestra sus pasos (si tiene) y deja
-  // los mismos botones de "Solucionado" / "Generar Ticket" que ya
-  // usabas después de la respuesta de la IA. Si la causa no trae
-  // pasos (ej. "Prefiero explicarlo con mis palabras"), cae al chat
-  // libre de siempre.
   const handleCausaClick = (causa) => {
     addMessage("user_msg", causa.text, false);
     setEstado("CHATTING");
@@ -543,7 +538,7 @@ function Chatbot() {
         </div>
       );
     }
-    // NUEVO: submenú de causas comunes de la categoría elegida
+   
     if (m.tipo === "causas" && estado === "CAUSAS_MENU") {
       return (
         <div key={i} className="menu-options">

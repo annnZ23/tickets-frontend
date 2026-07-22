@@ -304,7 +304,6 @@ export default function EquipoReasignado({ usuario, cerrarSesion }) {
             </div>
           </div>
 
-          {/* ══ TABLA: Historial de Equipos Asignados*/}
           <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, padding: "20px", marginBottom: "20px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px", gap: "12px", flexWrap: "wrap" }}>
               <h3 style={{ margin: 0, fontSize: "14px", fontWeight: "700", color: colors.texto, display: "flex", alignItems: "center", gap: "8px" }}>

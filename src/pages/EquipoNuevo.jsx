@@ -222,9 +222,7 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
 
     const cat = resolver(eq.categoria, CATEGORIAS);
     const est = resolver(eq.estadoInicial, ESTADOS_INICIALES);
-
-    // "licencias" es un JSON array en la base de datos (ej: '["Office 365"]').
-    // El formulario solo maneja una licencia a la vez, así que tomamos la primera.
+    
     let licenciaGuardada = "";
     try {
       const arr = JSON.parse(eq.licencias || "[]");
@@ -424,13 +422,9 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
       <GlobalStyles />
       <Sidebar usuario={usuario} cerrarSesion={cerrarSesion} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* ============ TOPBAR ============ */}
+        
         <Topbar usuario={usuario} cerrarSesion={cerrarSesion} />
-        {/* ============ CONTENIDO ============ */}
         <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px" }}>
-          {/* NUEVO/RECUPERADO: buscador de equipos existentes — antes vivía
-              junto al logo en el topbar viejo; con el <Topbar/> compartido
-              ya no cabe ahí, así que queda aquí arriba del formulario. */}
           <div ref={buscadorRef} style={{ position: "relative", marginBottom: "18px", maxWidth: "460px" }}>
             <div style={{ position: "relative" }}>
               <FaSearch style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: colors.textoMuted, fontSize: "13px" }} />
@@ -496,7 +490,7 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
               </button>
             </div>
           </div>
-          {/* ============ BANNERS ============ */}
+          /*BANNERS*/
           {modoCorreccion && editando && (
             <div className="bp-banner" style={{ background: colors.azulClaro, border: `1px solid ${colors.azul}`, borderRadius: "9px", padding: "12px 18px", marginBottom: "16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", color: colors.azul, fontSize: "13px", fontWeight: "700" }}>
               <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -525,7 +519,7 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
           )}
           <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px" }}>
-              {/* ============ INFORMACIÓN DEL EQUIPO ============ */}
+              /*INFORMACIÓN DEL EQUIPO*/
               <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, padding: "22px", transition: "all 0.3s ease" }}>
                 <SeccionHeader icon={<FaLaptop />} titulo="Información del Equipo" />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "14px" }}>
@@ -600,7 +594,7 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
                   </InputField>
                 </div>
               </div>
-              {/* ============ ASIGNACIÓN ============ */}
+              /*ASIGNACIÓN*/
               <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, padding: "22px", transition: "all 0.3s ease" }}>
                 <SeccionHeader icon={<FaUser />} titulo="Asignación" />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "14px" }}>
@@ -631,7 +625,7 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
                   </InputField>
                 </div>
               </div>
-              {/* ============ ACCESORIOS ============ */}
+              /*ACCESORIOS*/
               <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, padding: "22px", transition: "all 0.3s ease" }}>
                 <SeccionHeader icon={<FaStar />} titulo="Accesorios opcionales" />
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
@@ -657,14 +651,14 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
                   </p>
                 )}
               </div>
-              {/* ============ OBSERVACIONES ============ */}
+              /*OBSERVACIONES*/
               <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, padding: "22px", transition: "all 0.3s ease" }}>
                 <SeccionHeader icon={<FaClipboard />} titulo="Observaciones" />
                 <textarea className="bp-textarea" value={form.observaciones} onChange={(e) => set("observaciones", e.target.value)}
                   placeholder="Escriba observaciones adicionales sobre el equipo..." rows={3}
                   style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
-              </div>
-              {/* ============ VALOR ============ */}
+              </div> 
+              /*VALOR*/
               <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, padding: "22px", transition: "all 0.3s ease" }}>
                 <SeccionHeader icon={<FaDollarSign />} titulo="Valor del equipo" />
                 <InputField label="Valor (L.) — opcional">
@@ -676,7 +670,7 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
                 </InputField>
               </div>
             </div>
-            {/*PANEL DERECHO*/}
+            /*PANEL DERECHO*/
             <div style={{ width: "260px", display: "flex", flexDirection: "column", gap: "14px", flexShrink: 0 }}>
               <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, padding: "18px" }}>
                 <h4 style={{ margin: "0 0 14px", fontSize: "13px", fontWeight: "700", color: colors.texto, display: "flex", alignItems: "center", gap: "7px" }}>

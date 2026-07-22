@@ -138,7 +138,6 @@ export default function Topbar({ usuario, cerrarSesion }) {
       />
 
       <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-        {/* PANEL CAMPANITA / NOTIFICACIONES */}
         <div ref={notifRef} style={{ position: "relative" }}>
           <button
             onClick={() => {
@@ -300,7 +299,6 @@ export default function Topbar({ usuario, cerrarSesion }) {
           )}
         </div>
 
-        {/* PANEL CORREO / TICKETS RECIENTES */}
         <div ref={correoRef} style={{ position: "relative" }}>
           <button
             onClick={() => {
@@ -361,8 +359,6 @@ export default function Topbar({ usuario, cerrarSesion }) {
         </div>
 
         <div style={{ width: "1px", height: "28px", backgroundColor: colors.borde, margin: "0 8px" }} />
-
-        {/* MENÚ PERFIL / AVATAR */}
         <div ref={avatarRef} style={{ position: "relative" }}>
           <div
             onClick={() => {

@@ -163,7 +163,6 @@ export default function Reportes({ usuario, cerrarSesion }) {
             ))}
           </div>
 
-          {/* Contenido según tab */}
           {tabActiva === "todos" && (
             <>
               <TablaTickets

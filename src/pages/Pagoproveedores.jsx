@@ -20,7 +20,6 @@ const labelStyle = {
   marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.3px",
 };
 
-// Formato de Lempiras (moneda de Honduras) — antes se mostraba en dólares.
 const formatoLempiras = (valor) =>
   `L. ${Number(valor || 0).toLocaleString("es-HN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 

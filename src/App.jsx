@@ -15,7 +15,7 @@ import EquipoNuevo from "./pages/EquipoNuevo";
 import EquipoReasignado from "./pages/EquipoReasignado";
 import Historial from "./pages/Historial";
 import AlmacenBodega from "./pages/AlmacenBodega";
-import PagoProveedores from "./pages/PagoProveedores";
+import PagoProveedores from "./pages/Pagoproveedores";
 import RegistroSalida from "./pages/RegistroSalida";
 import HistorialMovimientos from "./pages/HistorialMovimientos";
 
