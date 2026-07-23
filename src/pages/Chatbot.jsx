@@ -22,6 +22,10 @@ import {
 import chatIcon from "../assets/chat.png";
 import "./chatbot.css";
 
+// NUEVO: causas comunes por categoría, cada una con hasta 5 pasos
+// cortos y accionables. Esto evita mandar al usuario directo a
+// escribir/leer con la IA — la mayoría de los problemas se resuelven
+// con estos pasos estándar, sin esperar respuesta del modelo.
 const CAUSAS_POR_CATEGORIA = {
   impresora: [
     {
@@ -71,7 +75,7 @@ const CAUSAS_POR_CATEGORIA = {
     {
       id: "imp-otro",
       text: "Otro / no es esto",
-      pasos: null, 
+      pasos: null, // cae al chat libre para que lo describa con sus palabras
     },
   ],
   laptop: [
@@ -260,7 +264,7 @@ const CAUSAS_POR_CATEGORIA = {
     {
       id: "otro-describir",
       text: "Otro / prefiero explicarlo con mis palabras",
-      pasos: null,
+      pasos: null, // null = cae al chat libre con la IA, como ya funcionaba
     },
   ],
 };
@@ -272,16 +276,19 @@ function Chatbot() {
   const [estado, setEstado] = useState("WELCOME"); 
   const [input, setInput] = useState("");
   const [cargando, setCargando] = useState(false);
-
-  const [user] = useState(() => {
+  const leerUsuarioDeStorage = () => {
     try {
       const storedUser = localStorage.getItem("user");
-      return storedUser ? JSON.parse(storedUser) : null;
+      const token = localStorage.getItem("token");
+      if (!storedUser || !token) return null;
+      return JSON.parse(storedUser);
     } catch (error) {
       console.error("Error leyendo usuario de localStorage:", error);
       return null;
     }
-  });
+  };
+
+  const [user, setUser] = useState(leerUsuarioDeStorage);
 
   const [ticketData, setTicketData] = useState({
     nombre: user?.name || user?.username || "",
@@ -305,6 +312,16 @@ function Chatbot() {
       }));
     }
   }, [user]);
+
+
+  useEffect(() => {
+    if (!open) return;
+    const usuarioActual = leerUsuarioDeStorage();
+    setUser(usuarioActual);
+    if (!usuarioActual) {
+      setTicketData(prev => ({ ...prev, nombre: "", correo: "" }));
+    }
+  }, [open]);
 
   useEffect(() => {
     if (chatBodyRef.current) {
@@ -351,9 +368,6 @@ function Chatbot() {
     menuPrincipal();
   };
 
-  // CAMBIO: al elegir una categoría, si tiene causas comunes
-  // predefinidas, se muestran como botones en vez de pedirle al
-  // usuario que escriba/lea con la IA de una vez.
   const handleOptionClick = (opcion) => {
     addMessage("user_msg", opcion.text, false);
     const causas = CAUSAS_POR_CATEGORIA[opcion.id];
@@ -538,7 +552,7 @@ function Chatbot() {
         </div>
       );
     }
-   
+    
     if (m.tipo === "causas" && estado === "CAUSAS_MENU") {
       return (
         <div key={i} className="menu-options">
@@ -598,7 +612,7 @@ function Chatbot() {
             <div className="chat-body" ref={chatBodyRef}>
               <div className="welcome-box">
                 <h2>Hola</h2>
-                <p>Bienvenido al asistente virtual de IT. ¿En qué puedo ayudarte hoy?</p>
+                <p>Bienvenido al asistente virtual de IT (Nivel 1 y 2). ¿En qué puedo ayudarte hoy?</p>
                 <button className="start-btn" onClick={iniciarChat}>
                   Iniciar conversación
                 </button>
