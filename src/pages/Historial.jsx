@@ -195,7 +195,7 @@ export default function Historial({ usuario, cerrarSesion }) {
   const cargar = useCallback(async () => {
     setCargando(true);
     try {
-      const res = await fetch("http://localhost:3000/api/equipos", { headers: authHeaders() });
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/equipos", { headers: authHeaders() });
       const data = await res.json();
       const lista = Array.isArray(data) ? data : [];
       setEquipos(lista);
@@ -375,7 +375,7 @@ export default function Historial({ usuario, cerrarSesion }) {
         licencias: JSON.stringify(aeLicencias),
         observaciones: aeObservaciones,
       };
-      const res = await fetch("http://localhost:3000/api/equipos", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/equipos", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify(payload),
@@ -463,7 +463,7 @@ export default function Historial({ usuario, cerrarSesion }) {
   const cargarHistorialDe = async (eq) => {
     setEquipoSel(eq);
     try {
-      const res = await fetch(`http://localhost:3000/api/equipos/${eq.id}/asignaciones`, { headers: authHeaders() });
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/${eq.id}/asignaciones`, { headers: authHeaders() });
       const data = await res.json();
       setAsignaciones(Array.isArray(data) ? data : []);
     } catch { setAsignaciones([]); }
@@ -478,7 +478,7 @@ export default function Historial({ usuario, cerrarSesion }) {
     if (!mtEquipoId) { alert("Selecciona el equipo"); return; }
     if (!mtDescripcion.trim()) { alert("Describe brevemente el motivo"); return; }
     try {
-      await fetch(`http://localhost:3000/api/equipos/${mtEquipoId}`, {
+      await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/${mtEquipoId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({
@@ -505,7 +505,7 @@ export default function Historial({ usuario, cerrarSesion }) {
     if (!bajaMotivo.trim()) { alert("Escribe el motivo por el que se da de baja el equipo"); return; }
     setGuardandoBaja(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/equipos/${equipoSel.id}/dar-baja`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/${equipoSel.id}/dar-baja`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ motivo: bajaMotivo }),
@@ -547,7 +547,7 @@ export default function Historial({ usuario, cerrarSesion }) {
     if (!valorFinal) { alert("Escribe el estado personalizado"); return; }
     setGuardandoEstado(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/equipos/${equipoSel.id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/${equipoSel.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ estadoInicial: valorFinal }),
@@ -587,7 +587,7 @@ export default function Historial({ usuario, cerrarSesion }) {
         ? `${equipoSel.observaciones ? equipoSel.observaciones + "\n" : ""}${lineas.join("\n")}`
         : equipoSel.observaciones;
 
-      const res = await fetch(`http://localhost:3000/api/equipos/${equipoSel.id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/${equipoSel.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ [campo]: JSON.stringify(nuevos), observaciones: observacionesNuevas }),

@@ -70,3 +70,4 @@ const Line = ({ active }) => (
 );
 
 export default TicketStatus;
+

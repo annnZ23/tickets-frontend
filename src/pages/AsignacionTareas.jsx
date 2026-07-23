@@ -55,7 +55,7 @@ export default function AsignacionTareas() {
   useEffect(() => {
     const fetchAsesores = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/usuarios/asesores", {
+        const res = await fetch("https://sistema-tickets-it.onrender.com/api/usuarios/asesores", {
           headers: authHeaders(),
         });
         const data = await res.json();
@@ -82,7 +82,7 @@ export default function AsignacionTareas() {
     if (!user?.email) return;
     try {
       const response = await fetch(
-        `http://localhost:3000/api/tasks?email=${user.email}&role=${user.role}&_=${Date.now()}`,
+        `https://sistema-tickets-it.onrender.com/api/tasks?email=${user.email}&role=${user.role}&_=${Date.now()}`,
         {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
           cache: "no-store",
@@ -128,7 +128,7 @@ export default function AsignacionTareas() {
   const eliminarTarea = async (id) => {
     if (!window.confirm("¿Eliminar esta tarea? Esta acción no se puede deshacer.")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/tasks/${id}`, {
         method: "DELETE",
         headers: authHeaders(),
       });
@@ -160,8 +160,8 @@ export default function AsignacionTareas() {
         vence: new Date(formData.deadline).toISOString(),
       };
       const url = editandoId
-        ? `http://localhost:3000/api/tasks/${editandoId}`
-        : "http://localhost:3000/api/tasks";
+        ? `https://sistema-tickets-it.onrender.com/api/tasks/${editandoId}`
+        : "https://sistema-tickets-it.onrender.com/api/tasks";
       const response = await fetch(url, {
         method: editandoId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
@@ -185,7 +185,7 @@ export default function AsignacionTareas() {
   };
 
   const actualizarEstadoTarea = (taskId, nuevoEstado) => {
-    fetch(`http://localhost:3000/api/tasks/${taskId}`, {
+    fetch(`https://sistema-tickets-it.onrender.com/api/tasks/${taskId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify({ estado: nuevoEstado }),
@@ -221,8 +221,8 @@ export default function AsignacionTareas() {
     const { tipo, id } = completandoInfo;
     const url =
       tipo === "tarea"
-        ? `http://localhost:3000/api/tasks/${id}`
-        : `http://localhost:3000/api/subtareas/${id}`;
+        ? `https://sistema-tickets-it.onrender.com/api/tasks/${id}`
+        : `https://sistema-tickets-it.onrender.com/api/subtareas/${id}`;
     try {
       const res = await fetch(url, {
         method: "PUT",
@@ -263,7 +263,7 @@ export default function AsignacionTareas() {
     const cargarAreasIT = async () => {
       setCargandoAreas(true);
       try {
-        const res = await fetch("http://localhost:3000/api/areas-it?soloIT=true", {
+        const res = await fetch("https://sistema-tickets-it.onrender.com/api/areas-it?soloIT=true", {
           headers: authHeaders(),
         });
         const data = await res.json();
@@ -314,7 +314,7 @@ export default function AsignacionTareas() {
   const cargarSubTareas = useCallback(() => {
     if (!areaSTId) return;
     setCargandoST(true);
-    fetch(`http://localhost:3000/api/subtareas?areaId=${areaSTId}&_=${Date.now()}`, {
+    fetch(`https://sistema-tickets-it.onrender.com/api/subtareas?areaId=${areaSTId}&_=${Date.now()}`, {
       headers: authHeaders(),
       cache: "no-store",
     })
@@ -342,7 +342,7 @@ export default function AsignacionTareas() {
     if (stArchivo) fd.append("archivo", stArchivo);
 
     try {
-      const res = await fetch("http://localhost:3000/api/subtareas", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/subtareas", {
         method: "POST",
         headers: authHeaders(),
         body: fd,
@@ -365,7 +365,7 @@ export default function AsignacionTareas() {
   };
 
   const cambiarEstadoST = (id, estado) => {
-    fetch(`http://localhost:3000/api/subtareas/${id}`, {
+    fetch(`https://sistema-tickets-it.onrender.com/api/subtareas/${id}`, {
       method: "PUT",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
       body: JSON.stringify({ estado }),
@@ -379,7 +379,7 @@ export default function AsignacionTareas() {
 
   const eliminarST = (id) => {
     if (!window.confirm("¿Eliminar esta sub-tarea?")) return;
-    fetch(`http://localhost:3000/api/subtareas/${id}`, {
+    fetch(`https://sistema-tickets-it.onrender.com/api/subtareas/${id}`, {
       method: "DELETE",
       headers: authHeaders(),
     })
@@ -411,7 +411,7 @@ export default function AsignacionTareas() {
     }
     setGuardandoEdicionST(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/subtareas/${editandoST}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/subtareas/${editandoST}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({
@@ -446,7 +446,7 @@ export default function AsignacionTareas() {
     if (comentarioRespuesta) fd.append("comentario", comentarioRespuesta);
 
     try {
-      const res = await fetch(`http://localhost:3000/api/subtareas/${subTareaId}/respuesta`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/subtareas/${subTareaId}/respuesta`, {
         method: "POST",
         headers: authHeaders(),
         body: fd,
@@ -480,7 +480,7 @@ export default function AsignacionTareas() {
     if (comentarioRespuestaTarea) fd.append("comentario", comentarioRespuestaTarea);
 
     try {
-      const res = await fetch(`http://localhost:3000/api/tasks/${tareaId}/respuesta`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/tasks/${tareaId}/respuesta`, {
         method: "POST",
         headers: authHeaders(),
         body: fd,
@@ -914,7 +914,7 @@ export default function AsignacionTareas() {
                                     {st.archivoUrl ? (() => {
                                       const info = archivoInfo(st.archivoNombre || st.archivoUrl);
                                       return (
-                                        <a href={`http://localhost:3000${st.archivoUrl}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 font-semibold no-underline hover:underline truncate" style={{ color: info.color }}>
+                                        <a href={`https://sistema-tickets-it.onrender.com${st.archivoUrl}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 font-semibold no-underline hover:underline truncate" style={{ color: info.color }}>
                                           <span className="text-[13px] flex flex-shrink-0">{info.icono}</span>
                                           <span className="truncate">{st.archivoNombre || "Ver adjunto"}</span>
                                         </a>

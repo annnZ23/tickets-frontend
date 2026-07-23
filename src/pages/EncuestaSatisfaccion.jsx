@@ -22,7 +22,7 @@ export default function EncuestaSatisfaccion() {
     setEnviando(true);
 
     try {
-      const res = await fetch(`http://localhost:3000/api/tickets/${id}/encuesta`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/tickets/${id}/encuesta`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ calificacion, comentario }),

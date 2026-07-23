@@ -21,7 +21,7 @@ const archivoInfo = (fileType, fileUrl) => {
   return { icono: <FaFileAlt />, color: "#64748b", label: "Archivo adjunto", nombre };
 };
 
-const API = "http://localhost:3000";
+const API = "https://sistema-tickets-it.onrender.com";
 const URL_LISTA_TICKETS = `${API}/api/tickets`;
 
 const PASOS = ["Creado", "Asignado", "En Proceso", "Resuelto", "Encuesta"];

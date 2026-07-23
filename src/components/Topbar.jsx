@@ -43,7 +43,7 @@ export default function Topbar({ usuario, cerrarSesion }) {
   const avatarRef = useRef(null);
 
   const cargarNotificaciones = () => {
-    fetch("http://localhost:3000/api/notificaciones", { headers: authHeaders() })
+    fetch("https://sistema-tickets-it.onrender.com/api/notificaciones", { headers: authHeaders() })
       .then((r) => r.json())
       .then((data) => {
         setNotificaciones(data.notificaciones || []);
@@ -53,7 +53,7 @@ export default function Topbar({ usuario, cerrarSesion }) {
   };
 
   const cargarCorreos = () => {
-    fetch("http://localhost:3000/api/notificaciones/correos", { headers: authHeaders() })
+    fetch("https://sistema-tickets-it.onrender.com/api/notificaciones/correos", { headers: authHeaders() })
       .then((r) => r.json())
       .then((data) => setCorreos(Array.isArray(data) ? data : []))
       .catch((e) => console.error("Error correos:", e));

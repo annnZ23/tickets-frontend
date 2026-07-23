@@ -67,8 +67,8 @@ export default function Usuarios({ usuario, cerrarSesion }) {
     setCargando(true);
     try {
       const [resUsers, resAreas] = await Promise.all([
-        fetch("http://localhost:3000/api/usuarios", { headers: authHeaders() }),
-        fetch("http://localhost:3000/api/areas-it"),
+        fetch("https://sistema-tickets-it.onrender.com/api/usuarios", { headers: authHeaders() }),
+        fetch("https://sistema-tickets-it.onrender.com/api/areas-it"),
       ]);
       const dataUsers = await resUsers.json();
       const dataAreas = await resAreas.json();
@@ -88,7 +88,7 @@ export default function Usuarios({ usuario, cerrarSesion }) {
     if (!nuevaArea.trim()) return;
     setGuardandoArea(true);
     try {
-      const res = await fetch("http://localhost:3000/api/areas-it", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/areas-it", {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ nombre: nuevaArea.trim(), esAreaIT: nuevaAreaEsIT }),
@@ -112,7 +112,7 @@ export default function Usuarios({ usuario, cerrarSesion }) {
   const handleEliminarArea = async (id, nombre) => {
     if (!window.confirm(`¿Eliminar el área "${nombre}"? Esto no elimina a los usuarios que pertenecen a ella.`)) return;
     try {
-      await fetch(`http://localhost:3000/api/areas-it/${id}`, { method: "DELETE", headers: authHeaders() });
+      await fetch(`https://sistema-tickets-it.onrender.com/api/areas-it/${id}`, { method: "DELETE", headers: authHeaders() });
       cargarDatos();
     } catch (error) {
       console.error(error);
@@ -147,7 +147,7 @@ export default function Usuarios({ usuario, cerrarSesion }) {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/usuarios", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/usuarios", {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify(payload),
@@ -174,7 +174,7 @@ export default function Usuarios({ usuario, cerrarSesion }) {
 
   const handleCambiarRol = async (id, nuevoRol) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/usuarios/${id}`, {
         method: "PUT",
         headers: authHeaders(),
         body: JSON.stringify({ role: nuevoRol }),
@@ -194,7 +194,7 @@ export default function Usuarios({ usuario, cerrarSesion }) {
   const handleEliminarUsuario = async (id, nombre) => {
     if (!window.confirm(`¿Dar de baja a "${nombre}"? Esta acción no se puede deshacer.`)) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/usuarios/${id}`, {
         method: "DELETE",
         headers: authHeaders(),
       });
@@ -227,7 +227,7 @@ export default function Usuarios({ usuario, cerrarSesion }) {
     }
     setGuardandoAusencia(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/usuarios/${id}/ausencia`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/usuarios/${id}/ausencia`, {
         method: "PUT",
         headers: authHeaders(),
         body: JSON.stringify({ desde: fechaDesde, hasta: fechaHasta }),
@@ -248,7 +248,7 @@ export default function Usuarios({ usuario, cerrarSesion }) {
 
   const cancelarAusencia = async (id) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/usuarios/${id}/ausencia`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/usuarios/${id}/ausencia`, {
         method: "PUT",
         headers: authHeaders(),
         body: JSON.stringify({ desde: null, hasta: null }),

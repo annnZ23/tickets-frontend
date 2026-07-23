@@ -185,7 +185,7 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
     if (texto.trim().length < 2) { setResultados([]); return; }
     setBuscando(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/equipos/buscar?q=${encodeURIComponent(texto)}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/buscar?q=${encodeURIComponent(texto)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -297,8 +297,8 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
     try {
       const esEdicion = editando && equipoGuardado?.id;
       const url = esEdicion
-        ? `http://localhost:3000/api/equipos/${equipoGuardado.id}`
-        : "http://localhost:3000/api/equipos";
+        ? `https://sistema-tickets-it.onrender.com/api/equipos/${equipoGuardado.id}`
+        : "https://sistema-tickets-it.onrender.com/api/equipos";
       
       const payload = {
         categoria: valorFinal(form.categoria, form.categoriaOtro),

@@ -161,7 +161,7 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
   useEffect(() => {
     const fetchAsesores = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/usuarios/asesores", { headers: authHeaders() });
+        const res = await fetch("https://sistema-tickets-it.onrender.com/api/usuarios/asesores", { headers: authHeaders() });
         if (!res.ok) throw new Error("No se pudo cargar la lista de asesores");
         const data = await res.json();
         setAsesores(Array.isArray(data) ? data : []);
@@ -177,7 +177,7 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
   useEffect(() => {
     const fetchAreasIT = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/areas-it?soloIT=true", { headers: authHeaders() });
+        const res = await fetch("https://sistema-tickets-it.onrender.com/api/areas-it?soloIT=true", { headers: authHeaders() });
         const data = await res.json();
         setAreasIT(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -190,7 +190,7 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/categorias");
+        const res = await fetch("https://sistema-tickets-it.onrender.com/api/categorias");
         const data = await res.json();
         setCategorias(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -201,7 +201,7 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
   }, []);
 
   const cargarNotificaciones = () => {
-    fetch("http://localhost:3000/api/notificaciones", { headers: authHeaders() })
+    fetch("https://sistema-tickets-it.onrender.com/api/notificaciones", { headers: authHeaders() })
       .then((r) => r.json())
       .then((data) => {
         setNotificaciones(data.notificaciones || []);
@@ -211,7 +211,7 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
   };
 
   const cargarCorreos = () => {
-    fetch("http://localhost:3000/api/notificaciones/correos", { headers: authHeaders() })
+    fetch("https://sistema-tickets-it.onrender.com/api/notificaciones/correos", { headers: authHeaders() })
       .then((r) => r.json())
       .then((data) => setCorreosRecientes(Array.isArray(data) ? data : []))
       .catch((e) => console.error("Error correos:", e));
@@ -312,7 +312,7 @@ export default function RegisterTicket({ usuario, cerrarSesion }) {
       formData.append("adminIds", JSON.stringify([Number(asesorId)]));
       archivos.forEach(({ file }) => formData.append("archivos", file));
 
-      const res = await fetch("http://localhost:3000/api/tickets", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/tickets", {
         method: "POST",
         headers: authHeaders(),
         body: formData,

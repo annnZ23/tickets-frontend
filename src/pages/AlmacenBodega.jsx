@@ -41,7 +41,7 @@ function TablaAlmacen({ tipo, titulo, token, onAgregar, onDarSalida }) {
     setCargando(true);
     try {
       const params = new URLSearchParams({ tipo, pagina, porPagina, ...(busqueda ? { busqueda } : {}), _: Date.now() });
-      const res = await fetch(`http://localhost:3000/api/almacen?${params}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/almacen?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
@@ -177,7 +177,7 @@ function ModalAgregarItem({ tipo, token, onClose, onGuardado }) {
     if (!form.nombre.trim()) { alert("El nombre/descripción es requerido"); return; }
     setGuardando(true);
     try {
-      const res = await fetch("http://localhost:3000/api/almacen", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/almacen", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ ...form, tipo }),
@@ -250,7 +250,7 @@ function ModalSalidaItem({ item, token, onClose, onSalidaExitosa }) {
 
     setProcesando(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/almacen/salida/${item.id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/almacen/salida/${item.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
@@ -354,7 +354,7 @@ export default function AlmacenBodega({ usuario, cerrarSesion }) {
 
   const cargarAlerta = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/almacen/alerta-stock-bajo?_=${Date.now()}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/almacen/alerta-stock-bajo?_=${Date.now()}`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });

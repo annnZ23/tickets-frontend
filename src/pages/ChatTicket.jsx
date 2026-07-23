@@ -42,7 +42,7 @@ export default function ChatTicket({ usuario, cerrarSesion }) {
   const cargarTicket = useCallback(async () => {
     setCargando(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/tickets/${id}`, { headers: authHeaders() });
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/tickets/${id}`, { headers: authHeaders() });
       if (!res.ok) throw new Error("No se pudo cargar el ticket");
       const data = await res.json();
       setTicket(data);
@@ -110,7 +110,7 @@ export default function ChatTicket({ usuario, cerrarSesion }) {
       formData.append("enviadoPor", nombreRemitente);
       if (archivo) formData.append("archivo", archivo);
 
-      const res = await fetch(`http://localhost:3000/api/tickets/${id}/mensajes`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/tickets/${id}/mensajes`, {
         method: "POST",
         headers: authHeaders(),
         body: formData,
@@ -232,13 +232,13 @@ export default function ChatTicket({ usuario, cerrarSesion }) {
                     }}>
                       {m.contenido && <div dangerouslySetInnerHTML={{ __html: m.contenido }} />}
                       {m.fileUrl && m.fileType?.startsWith("audio") && (
-                        <audio controls src={m.fileUrl.startsWith("blob:") ? m.fileUrl : `http://localhost:3000${m.fileUrl}`} style={{ marginTop: m.contenido ? "8px" : 0, maxWidth: "220px" }} />
+                        <audio controls src={m.fileUrl.startsWith("blob:") ? m.fileUrl : `https://sistema-tickets-it.onrender.com${m.fileUrl}`} style={{ marginTop: m.contenido ? "8px" : 0, maxWidth: "220px" }} />
                       )}
                       {m.fileUrl && m.fileType?.startsWith("image") && (
-                        <img src={m.fileUrl.startsWith("blob:") ? m.fileUrl : `http://localhost:3000${m.fileUrl}`} alt="" style={{ marginTop: m.contenido ? "8px" : 0, maxWidth: "220px", borderRadius: "8px", display: "block" }} />
+                        <img src={m.fileUrl.startsWith("blob:") ? m.fileUrl : `https://sistema-tickets-it.onrender.com${m.fileUrl}`} alt="" style={{ marginTop: m.contenido ? "8px" : 0, maxWidth: "220px", borderRadius: "8px", display: "block" }} />
                       )}
                       {m.fileUrl && !m.fileType?.startsWith("audio") && !m.fileType?.startsWith("image") && (
-                        <a href={m.fileUrl.startsWith("blob:") ? m.fileUrl : `http://localhost:3000${m.fileUrl}`} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: m.contenido ? "8px" : 0, color: esMio ? "#fff" : colors.naranja, fontWeight: "600", textDecoration: "none" }}>
+                        <a href={m.fileUrl.startsWith("blob:") ? m.fileUrl : `https://sistema-tickets-it.onrender.com${m.fileUrl}`} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: m.contenido ? "8px" : 0, color: esMio ? "#fff" : colors.naranja, fontWeight: "600", textDecoration: "none" }}>
                           <FaFileAlt /> Ver archivo
                         </a>
                       )}

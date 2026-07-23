@@ -404,7 +404,7 @@ function Chatbot() {
   const enviarMensajeGemini = async (msg) => {
     setCargando(true);
     try {
-      const response = await fetch("http://localhost:3000/api/chat-gemini", {
+      const response = await fetch("https://sistema-tickets-it.onrender.com/api/chat-gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -491,7 +491,7 @@ function Chatbot() {
     if (user?.id) formData.append("usuarioId", user.id);
 
     try {
-      const response = await fetch("http://localhost:3000/api/tickets/crear-con-archivo", {
+      const response = await fetch("https://sistema-tickets-it.onrender.com/api/tickets/crear-con-archivo", {
         method: "POST",
         body: formData
       });

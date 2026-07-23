@@ -25,7 +25,7 @@ export default function RegistroUsuario() {
   useEffect(() => {
     const cargarAreas = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/areas-it");
+        const res = await fetch("https://sistema-tickets-it.onrender.com/api/areas-it");
         if (!res.ok) {
           console.error("areas-it respondió con error:", res.status, await res.text());
           setAreas([]);
@@ -51,7 +51,7 @@ export default function RegistroUsuario() {
     }
     setEnviando(true);
     try {
-      const res = await fetch("http://localhost:3000/api/auth/registro", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/auth/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

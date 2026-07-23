@@ -29,7 +29,7 @@ function ModalCambiarPasswordObligatorio({ token, onCompletado }) {
     }
     setGuardando(true);
     try {
-      const res = await fetch("http://localhost:3000/api/auth/cambiar-password", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/auth/cambiar-password", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ passwordNueva }),
@@ -103,7 +103,7 @@ function PanelOlvidePassword({ onVolver }) {
     }
     setEnviando(true);
     try {
-      const res = await fetch("http://localhost:3000/api/auth/olvide-password", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/auth/olvide-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.trim().toLowerCase(), email: email.trim().toLowerCase() }),
@@ -195,7 +195,7 @@ function Login({ setUsuario }) {
     setCargando(true);
 
     try {
-      const res = await fetch("http://localhost:3000/api/login", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

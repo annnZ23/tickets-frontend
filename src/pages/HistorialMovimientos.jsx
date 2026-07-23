@@ -10,11 +10,11 @@ import {
 } from "react-icons/fa";
 
 const URLS_MOVIMIENTOS = [
-  "http://localhost:3000/api/movimientos",
-  "http://localhost:3000/api/movimientos/todos",
-  "http://localhost:3000/api/movimientos/recientes",
-  "http://localhost:3000/api/registro-salida/movimientos",
-  "http://localhost:3000/api/salidas/movimientos",
+  "https://sistema-tickets-it.onrender.com/api/movimientos",
+  "https://sistema-tickets-it.onrender.com/api/movimientos/todos",
+  "https://sistema-tickets-it.onrender.com/api/movimientos/recientes",
+  "https://sistema-tickets-it.onrender.com/api/registro-salida/movimientos",
+  "https://sistema-tickets-it.onrender.com/api/salidas/movimientos",
 ];
 
 const colors = {

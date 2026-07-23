@@ -45,10 +45,10 @@ export default function Reportes({ usuario, cerrarSesion }) {
       try {
         setLoading(true);
         const [resTickets, resStats, resArea, resAsesor] = await Promise.all([
-          fetch(`http://localhost:3000/api/reportes/todos?page=${paginaActual}&limit=15`, { headers }),
-          fetch("http://localhost:3000/api/reportes/estadisticas", { headers }),
-          fetch("http://localhost:3000/api/reportes/por-area", { headers }),
-          fetch("http://localhost:3000/api/reportes/por-asesor", { headers }),
+          fetch(`https://sistema-tickets-it.onrender.com/api/reportes/todos?page=${paginaActual}&limit=15`, { headers }),
+          fetch("https://sistema-tickets-it.onrender.com/api/reportes/estadisticas", { headers }),
+          fetch("https://sistema-tickets-it.onrender.com/api/reportes/por-area", { headers }),
+          fetch("https://sistema-tickets-it.onrender.com/api/reportes/por-asesor", { headers }),
         ]);
         const dataTickets = await resTickets.json();
         const dataStats = await resStats.json();
@@ -74,7 +74,7 @@ export default function Reportes({ usuario, cerrarSesion }) {
   const manejarExportacion = async () => {
     setExportando(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/reportes/exportar?vista=${tabActiva}`, { headers });
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/reportes/exportar?vista=${tabActiva}`, { headers });
       if (!res.ok) throw new Error("No se pudo generar el archivo");
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);

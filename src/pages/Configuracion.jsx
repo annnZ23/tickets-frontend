@@ -41,8 +41,8 @@ export default function Configuracion({ usuario, cerrarSesion }) {
     setCargando(true);
     try {
       const [resSla, resAreas] = await Promise.all([
-        fetch("http://localhost:3000/api/sla", { headers: authHeaders() }),
-        fetch("http://localhost:3000/api/areas-it-chat"), 
+        fetch("https://sistema-tickets-it.onrender.com/api/sla", { headers: authHeaders() }),
+        fetch("https://sistema-tickets-it.onrender.com/api/areas-it-chat"), 
       ]);
       const dataSla = await resSla.json();
       const dataAreas = await resAreas.json();
@@ -64,7 +64,7 @@ export default function Configuracion({ usuario, cerrarSesion }) {
   const guardar = async (item) => {
     setGuardandoId(item.id);
     try {
-      const res = await fetch(`http://localhost:3000/api/sla/${item.id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/sla/${item.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ horasRespuesta: item.horasRespuesta }),
@@ -88,7 +88,7 @@ export default function Configuracion({ usuario, cerrarSesion }) {
     if (!window.confirm(`¿Eliminar el SLA de "${item.prioridad}" para ${item.area?.nombre || "esta área"}?`)) return;
     setEliminandoId(item.id);
     try {
-      const res = await fetch(`http://localhost:3000/api/sla/${item.id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/sla/${item.id}`, {
         method: "DELETE",
         headers: authHeaders(),
       });
@@ -119,7 +119,7 @@ export default function Configuracion({ usuario, cerrarSesion }) {
     }
     setGuardandoNuevo(true);
     try {
-      const res = await fetch("http://localhost:3000/api/sla", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/sla", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({

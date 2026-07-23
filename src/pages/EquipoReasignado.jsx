@@ -69,7 +69,7 @@ export default function EquipoReasignado({ usuario, cerrarSesion }) {
   const cargarEquipos = async () => {
     setCargando(true);
     try {
-      const res = await fetch("http://localhost:3000/api/equipos", { headers: authHeaders() });
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/equipos", { headers: authHeaders() });
       const data = await res.json();
       setEquipos(Array.isArray(data) ? data : []);
     } catch { setEquipos([]); }
@@ -130,7 +130,7 @@ export default function EquipoReasignado({ usuario, cerrarSesion }) {
     setCorrigiendo(true);
     setCorreccionOk(false);
     try {
-      const res = await fetch(`http://localhost:3000/api/equipos/${equipoSeleccionado.id}`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/${equipoSeleccionado.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({
@@ -166,7 +166,7 @@ export default function EquipoReasignado({ usuario, cerrarSesion }) {
     }
     setGuardando(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/equipos/${equipoSeleccionado.id}/reasignar`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/${equipoSeleccionado.id}/reasignar`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({
@@ -191,7 +191,7 @@ export default function EquipoReasignado({ usuario, cerrarSesion }) {
 
   const registrarEntrega = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/equipos/${equipoSeleccionado.id}/entregar`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/equipos/${equipoSeleccionado.id}/entregar`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
       });

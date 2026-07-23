@@ -94,7 +94,7 @@ const [totalPaginas, setTotalPaginas] = useState(1);
   const notifRef = useRef(null);
   const correoRef = useRef(null);
   const cargarNotificaciones = () => {
-    fetch("http://localhost:3000/api/notificaciones", { headers: authHeaders() })
+    fetch("https://sistema-tickets-it.onrender.com/api/notificaciones", { headers: authHeaders() })
       .then((r) => r.json())
       .then((data) => {
         setNotificaciones(data.notificaciones || []);
@@ -103,13 +103,13 @@ const [totalPaginas, setTotalPaginas] = useState(1);
       .catch((e) => console.error("Error notificaciones:", e));
   };
   const cargarCorreos = () => {
-    fetch("http://localhost:3000/api/notificaciones/correos", { headers: authHeaders() })
+    fetch("https://sistema-tickets-it.onrender.com/api/notificaciones/correos", { headers: authHeaders() })
       .then((r) => r.json())
       .then((data) => setCorreosRecientes(Array.isArray(data) ? data : []))
       .catch((e) => console.error("Error correos:", e));
   };
   const cargarTareasGlobales = () => {
-    fetch(`http://localhost:3000/api/tasks?email=${usuario?.email}&role=${usuario?.role}`, {
+    fetch(`https://sistema-tickets-it.onrender.com/api/tasks?email=${usuario?.email}&role=${usuario?.role}`, {
       headers: authHeaders(),
     })
       .then((r) => r.json())
@@ -118,11 +118,11 @@ const [totalPaginas, setTotalPaginas] = useState(1);
   };
   const cargarSubtareasMias = async () => {
     try {
-      const resAreas = await fetch("http://localhost:3000/api/areas-it?soloIT=true", { headers: authHeaders() });
+      const resAreas = await fetch("https://sistema-tickets-it.onrender.com/api/areas-it?soloIT=true", { headers: authHeaders() });
       const areas = await resAreas.json();
       const listas = await Promise.all(
         (Array.isArray(areas) ? areas : []).map((a) =>
-          fetch(`http://localhost:3000/api/subtareas?areaId=${a.id}`, { headers: authHeaders() })
+          fetch(`https://sistema-tickets-it.onrender.com/api/subtareas?areaId=${a.id}`, { headers: authHeaders() })
             .then((r) => (r.ok ? r.json() : []))
             .catch(() => [])
         )
@@ -157,14 +157,14 @@ const [totalPaginas, setTotalPaginas] = useState(1);
   };
   const cargarMisTareas = () => {
     setCargandoTareas(true);
-    fetch("http://localhost:3000/api/tasks", { headers: authHeaders() })
+    fetch("https://sistema-tickets-it.onrender.com/api/tasks", { headers: authHeaders() })
       .then((res) => res.json())
       .then((data) => setMisTareas(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error al cargar tareas:", err))
       .finally(() => setCargandoTareas(false));
   };
   const actualizarEstadoTarea = (taskId, nuevoEstado) => {
-    fetch(`http://localhost:3000/api/tasks/${taskId}`, {
+    fetch(`https://sistema-tickets-it.onrender.com/api/tasks/${taskId}`, {
       method: "PUT",
       headers: authHeaders(),
       body: JSON.stringify({ estado: nuevoEstado }),
@@ -190,7 +190,7 @@ const [totalPaginas, setTotalPaginas] = useState(1);
     return eventos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
   };
   const declararTiempo = (horas) => {
-    fetch(`http://localhost:3000/api/tickets/${ticketSeleccionado.id}/tiempo-estimado`, {
+    fetch(`https://sistema-tickets-it.onrender.com/api/tickets/${ticketSeleccionado.id}/tiempo-estimado`, {
       method: "PUT",
       headers: authHeaders(),
       body: JSON.stringify({ horasEstimadas: horas }),
@@ -223,7 +223,7 @@ const [totalPaginas, setTotalPaginas] = useState(1);
     filtroActivo === "historial"
       ? `&historial=true&mes=${mesHistorial}&anio=${anioHistorial}`
       : "";
-  fetch(`http://localhost:3000/api/tickets?page=${page}&limit=${limit}${historial}`, {
+  fetch(`https://sistema-tickets-it.onrender.com/api/tickets?page=${page}&limit=${limit}${historial}`, {
     headers: authHeaders(),
   })
     .then((res) => {
@@ -250,7 +250,7 @@ const [totalPaginas, setTotalPaginas] = useState(1);
 };
 
 const cargarConteoResueltos = () => {
-  fetch(`http://localhost:3000/api/tickets?historial=true&limit=1`, {
+  fetch(`https://sistema-tickets-it.onrender.com/api/tickets?historial=true&limit=1`, {
     headers: authHeaders(),
   })
     .then((res) => (res.ok ? res.json() : null))
@@ -269,7 +269,7 @@ const cargarConteoResueltos = () => {
 }, []);
 
 useEffect(() => {
-  fetch("http://localhost:3000/api/sla", { headers: authHeaders() })
+  fetch("https://sistema-tickets-it.onrender.com/api/sla", { headers: authHeaders() })
     .then((res) => (res.ok ? res.json() : []))
     .then((data) => setSlaConfig(Array.isArray(data) ? data : []))
     .catch((err) => console.error("Error al cargar configuración SLA:", err));
@@ -309,7 +309,7 @@ const limiteSLA = (ticket) => {
     setEstadoTicket(ticket.estado);
     setTabActiva("conversaciones");
     try {
-      const res = await fetch(`http://localhost:3000/api/tickets/${ticket.id}`, { headers: authHeaders() });
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/tickets/${ticket.id}`, { headers: authHeaders() });
       const data = await res.json();
       setTicketSeleccionado(data);
       setMensajesChat(data.mensajes || []);
@@ -333,7 +333,7 @@ const limiteSLA = (ticket) => {
     return () => socket.off("receive_message", onReceive);
   }, [ticketSeleccionado]);
   const cambiarEstado = (ticketId, nuevoEstado, actualizarSeleccionado = true) => {
-    fetch(`http://localhost:3000/api/tickets/${ticketId}`, {
+    fetch(`https://sistema-tickets-it.onrender.com/api/tickets/${ticketId}`, {
       method: "PUT",
       headers: authHeaders(),
       body: JSON.stringify({ estado: nuevoEstado }),
@@ -362,7 +362,7 @@ const limiteSLA = (ticket) => {
       if (!motivo || !motivo.trim()) return;
     }
     try {
-      const res = await fetch(`http://localhost:3000/api/tickets/${ticketSeleccionado.id}/pausar`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/tickets/${ticketSeleccionado.id}/pausar`, {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ motivo }),
@@ -403,7 +403,7 @@ const limiteSLA = (ticket) => {
       if (contenido) formData.append("contenido", contenido);
       formData.append("enviadoPor", nombreRemitente);
       if (archivo) formData.append("archivo", archivo);
-      const res = await fetch(`http://localhost:3000/api/tickets/${ticketSeleccionado.id}/mensajes`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/tickets/${ticketSeleccionado.id}/mensajes`, {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: formData,
@@ -446,7 +446,7 @@ const limiteSLA = (ticket) => {
     mediaRecorderRef.current?.stop();
     setGrabando(false);
   };
-  const urlArchivo = (fileUrl) => (fileUrl?.startsWith("blob:") ? fileUrl : `http://localhost:3000${fileUrl}`);
+  const urlArchivo = (fileUrl) => (fileUrl?.startsWith("blob:") ? fileUrl : `https://sistema-tickets-it.onrender.com${fileUrl}`);
   const getIniciales = (name) => {
     if (!name) return "A";
     const parts = name.split(" ");

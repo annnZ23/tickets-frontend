@@ -38,7 +38,7 @@ export default function RegistroSalida({ usuario, cerrarSesion }) {
   const cargarResumen = useCallback(async () => {
     setCargando(true);
     try {
-      const res = await fetch("http://localhost:3000/api/registro-salida/resumen", { headers: authHeaders() });
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/registro-salida/resumen", { headers: authHeaders() });
       const data = await res.json();
       setResumen(data);
     } catch (err) {

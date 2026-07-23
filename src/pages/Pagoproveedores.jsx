@@ -59,7 +59,7 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
   const cargarPagos = async () => {
     setCargando(true);
     try {
-      const res = await fetch("http://localhost:3000/api/pagos-proveedores", { headers: authHeaders() });
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/pagos-proveedores", { headers: authHeaders() });
       const data = await res.json();
       setPagos(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -87,7 +87,7 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
         datosForm.append("archivo", archivo);
       }
 
-      const res = await fetch("http://localhost:3000/api/pagos-proveedores", {
+      const res = await fetch("https://sistema-tickets-it.onrender.com/api/pagos-proveedores", {
         method: "POST",
         headers: authHeaders(),
         body: datosForm,
@@ -117,7 +117,7 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
 
     setEnviandoCorreoId(pago.id);
     try {
-      const res = await fetch(`http://localhost:3000/api/pagos-proveedores/${pago.id}/enviar-correo`, {
+      const res = await fetch(`https://sistema-tickets-it.onrender.com/api/pagos-proveedores/${pago.id}/enviar-correo`, {
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify({ correoDestino: correo.trim() }),
@@ -343,7 +343,7 @@ export default function PagoProveedores({ usuario, cerrarSesion }) {
                         <td style={{ padding: "13px 16px" }}>
                           {p.archivoUrl ? (
                             <a
-                              href={`http://localhost:3000${p.archivoUrl}`}
+                              href={`https://sistema-tickets-it.onrender.com${p.archivoUrl}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               style={{ display: "inline-flex", alignItems: "center", gap: "5px", fontSize: "11.5px", color: "#2563eb", fontWeight: "700", textDecoration: "none" }}
