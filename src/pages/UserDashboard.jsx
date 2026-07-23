@@ -1,6 +1,5 @@
 import Chat from "../components/Chat";
-import "./dashboard.css";
-
+import "./Dashboard.css";
 function UserDashboard() {
   return (
     <div className="dashboard-container">
