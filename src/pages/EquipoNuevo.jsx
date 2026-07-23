@@ -519,7 +519,7 @@ export default function EquipoNuevo({ usuario, cerrarSesion }) {
           )}
           <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px" }}>
-              /*INFORMACIÓN DEL EQUIPO*/
+              
               <div style={{ background: "#fff", borderRadius: "12px", border: `1px solid ${colors.borde}`, padding: "22px", transition: "all 0.3s ease" }}>
                 <SeccionHeader icon={<FaLaptop />} titulo="Información del Equipo" />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "14px" }}>
